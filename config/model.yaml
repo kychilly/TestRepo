@@ -1,0 +1,22 @@
+python: "3.11"
+modality: neftel
+cell_data_path: null
+patient_id_column: null
+gene_id_column: null
+gene_id_type: null
+split_file: null
+fold: 0
+checkpoint_path: null
+vocabulary_path: null
+output_path: results/compute/week1_scgpt_benchmark.json
+seed: 20260802
+batch_size: 32
+token_length: null
+precision: float32
+warmup_iterations: 2
+benchmark_cells: 1000
+requested_device: cuda
+required_special_tokens:
+  - <pad>
+  - <cls>
+  - <eoc>

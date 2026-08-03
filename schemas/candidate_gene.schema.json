@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "candidate_gene.schema.json",
+  "title": "Versioned transcriptomic candidate gene record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "candidate_id", "run_id", "created_at", "backbone",
+    "checkpoint_hash", "vocabulary_hash", "cohort", "fold", "seed", "split_hash",
+    "patient_scope", "contributing_patient_ids", "state", "gene_symbol",
+    "ensembl_gene_id", "gene_id_version", "score_method", "score_mean", "score_sd",
+    "rank", "n_cells", "n_patients", "training_only", "config_hash"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "candidate_id": {"type": "string", "minLength": 1},
+    "run_id": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "backbone": {"type": "string", "minLength": 1},
+    "checkpoint_hash": {"type": "string", "minLength": 1},
+    "vocabulary_hash": {"type": "string", "minLength": 1},
+    "cohort": {"type": "string", "minLength": 1},
+    "fold": {"type": "integer", "minimum": 0},
+    "seed": {"type": "integer", "minimum": 0},
+    "split_hash": {"type": "string", "minLength": 1},
+    "patient_scope": {"enum": ["train_only", "internal_refit", "external_forbidden"]},
+    "contributing_patient_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true},
+    "state": {"enum": ["AC", "MES", "NPC", "OPC"]},
+    "gene_symbol": {"type": "string", "pattern": "^[A-Z][A-Z0-9-]*$"},
+    "ensembl_gene_id": {"type": "string", "pattern": "^ENSG[0-9]+$"},
+    "gene_id_version": {"type": "string", "minLength": 1},
+    "score_method": {"enum": ["mask_delta_logit", "integrated_gradients", "gradient_times_input", "attention_secondary", "differential_expression_support"]},
+    "score_mean": {"type": "number"},
+    "score_sd": {"type": "number", "minimum": 0},
+    "rank": {"type": "integer", "minimum": 1},
+    "n_cells": {"type": "integer", "minimum": 1},
+    "n_patients": {"type": "integer", "minimum": 1},
+    "training_only": {"type": "boolean"},
+    "config_hash": {"type": "string", "minLength": 1}
+  },
+  "allOf": [
+    {"if": {"properties": {"training_only": {"const": true}}}, "then": {"properties": {"patient_scope": {"const": "train_only"}}}},
+    {"if": {"properties": {"patient_scope": {"const": "train_only"}}}, "then": {"properties": {"training_only": {"const": true}}}}
+  ]
+}

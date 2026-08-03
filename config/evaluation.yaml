@@ -1,0 +1,17 @@
+metric_units: cell_state
+fold: 0
+bootstrap_seed: 17
+bootstrap_replicates: 1000
+bootstrap_metrics:
+  - macro_f1
+  - balanced_accuracy
+metrics:
+  - auroc
+  - auprc
+  - balanced_accuracy
+  - sensitivity
+  - specificity
+  - brier_score
+  - calibration_slope
+  - calibration_intercept
+calibration_min_samples: 10

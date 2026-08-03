@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "prediction.schema.json",
+  "title": "Validated evaluation prediction row",
+  "oneOf": [
+    {
+      "title": "Cell state prediction",
+      "type": "object",
+      "required": ["run_id", "method", "fold", "seed", "patient_id", "cell_id", "true_state", "predicted_state", "probability_AC", "probability_MES", "probability_NPC", "probability_OPC", "split", "split_hash", "config_hash", "model_hash"],
+      "properties": {
+        "run_id": {"type": "string", "minLength": 1},
+        "method": {"type": "string", "minLength": 1},
+        "fold": {"type": "integer", "minimum": 0},
+        "seed": {"type": "integer", "minimum": 0},
+        "patient_id": {"type": "string", "minLength": 1},
+        "cell_id": {"type": "string", "minLength": 1},
+        "true_state": {"enum": ["AC", "MES", "NPC", "OPC"]},
+        "predicted_state": {"enum": ["AC", "MES", "NPC", "OPC"]},
+        "probability_AC": {"type": "number", "minimum": 0, "maximum": 1},
+        "probability_MES": {"type": "number", "minimum": 0, "maximum": 1},
+        "probability_NPC": {"type": "number", "minimum": 0, "maximum": 1},
+        "probability_OPC": {"type": "number", "minimum": 0, "maximum": 1},
+        "split": {"enum": ["train", "validation", "test"]},
+        "split_hash": {"type": "string", "minLength": 1},
+        "config_hash": {"type": "string", "minLength": 1},
+        "model_hash": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    },
+    {
+      "title": "Patient binary prediction",
+      "type": "object",
+      "required": ["run_id", "method", "fold", "seed", "patient_id", "task", "true_label", "probability_positive", "split", "split_hash", "config_hash", "model_hash"],
+      "properties": {
+        "run_id": {"type": "string", "minLength": 1},
+        "method": {"type": "string", "minLength": 1},
+        "fold": {"type": "integer", "minimum": 0},
+        "seed": {"type": "integer", "minimum": 0},
+        "patient_id": {"type": "string", "minLength": 1},
+        "task": {"enum": ["IDH", "TP53", "idh", "tp53"]},
+        "true_label": {"type": "integer", "enum": [0, 1]},
+        "probability_positive": {"type": "number", "minimum": 0, "maximum": 1},
+        "split": {"enum": ["train", "validation", "test"]},
+        "split_hash": {"type": "string", "minLength": 1},
+        "config_hash": {"type": "string", "minLength": 1},
+        "model_hash": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    }
+  ]
+}

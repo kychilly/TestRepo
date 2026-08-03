@@ -1,0 +1,22 @@
+state_labels: [AC, MES, NPC, OPC]
+patient_id_key: patient_id
+cell_id_key: cell_id
+state_key: state
+gene_id_key: gene_ids
+batch_key: null
+frozen_genes: null
+pca_logreg:
+  components: 2
+  class_weight: balanced
+  max_iter: 1000
+  C_candidates: [0.1, 1.0, 10.0]
+scvi_probe:
+  count_layer: X
+  latent_size: 10
+  epochs: 100
+  early_stopping: true
+  batch_key: null
+harmony_knn:
+  components: 2
+  n_neighbors: 15
+  covariate: null

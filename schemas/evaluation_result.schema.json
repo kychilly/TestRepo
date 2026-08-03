@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "evaluation_result.schema.json",
+  "title": "Evaluation result",
+  "type": "object",
+  "required": ["status", "metric_units", "point_estimate", "bootstrap"],
+  "properties": {
+    "status": {"enum": ["completed", "non_estimable"]},
+    "metric_units": {"enum": ["cell_state", "patient_binary"]},
+    "point_estimate": {"type": "object"},
+    "bootstrap": {"type": "object"}
+  },
+  "additionalProperties": true
+}

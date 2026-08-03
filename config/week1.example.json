@@ -1,0 +1,11 @@
+{
+  "modality": "neftel",
+  "data_manifest": null,
+  "split_file": null,
+  "checkpoint": null,
+  "vocabulary": null,
+  "output_dir": "results/week1",
+  "seed": 0,
+  "week": 1,
+  "uses_cgga": false
+}
