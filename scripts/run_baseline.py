@@ -40,11 +40,63 @@ def load_yaml(path: Path) -> dict[str, Any]:
     return payload
 
 
-def load_data(path: Path, config: dict[str, Any]) -> CellData:
-    """Load the documented intermediate NPZ representation."""
+def load_data(path: Path, config: dict[str, Any], method: str | None = None) -> CellData:
+    """Load Jeffrey's processed H5AD or the existing intermediate NPZ format."""
     if "cgga" in str(path).lower():
         raise BaselineError("CGGA data are prohibited for the Neftel baseline track")
     try:
+        if path.suffix.lower() == ".h5ad":
+            try:
+                import anndata as ad  # type: ignore[import-untyped]
+            except ImportError as exc:
+                raise BaselineError("H5AD input requires anndata") from exc
+            adata = ad.read_h5ad(path)
+            patient_key = str(config.get("patient_id_key", "patient_id"))
+            cell_key = str(config.get("cell_id_key", "cell_id"))
+            state_key = str(config.get("state_key", "state"))
+            gene_key = str(config.get("gene_id_key", "gene_ids"))
+            for key in (patient_key, state_key):
+                if key not in adata.obs:
+                    raise BaselineError(f"H5AD obs is missing configured column {key!r}")
+            patient_id = adata.obs[patient_key].astype(str).to_numpy()
+            cell_id = (
+                adata.obs[cell_key].astype(str).to_numpy()
+                if cell_key in adata.obs
+                else np.asarray(adata.obs_names).astype(str)
+            )
+            gene_ids = (
+                adata.var[gene_key].astype(str).tolist()
+                if gene_key in adata.var
+                else [str(value) for value in adata.var_names]
+            )
+            batch_key = config.get("batch_key")
+            batch = (
+                adata.obs[str(batch_key)].astype(str).to_numpy()
+                if batch_key and str(batch_key) in adata.obs
+                else None
+            )
+            if method == "scvi_probe":
+                if "counts" not in adata.layers:
+                    raise BaselineError(
+                        "scVI requires raw integer counts in H5AD layer 'counts'; "
+                        "Jeffrey's QC output contains log-normalized X and cannot be used for scVI"
+                    )
+                matrix_source = adata.layers["counts"]
+            else:
+                matrix_source = adata.X
+            matrix = (
+                matrix_source.toarray()
+                if hasattr(matrix_source, "toarray")
+                else np.asarray(matrix_source)
+            )
+            return CellData(
+                np.asarray(matrix),
+                patient_id,
+                cell_id,
+                adata.obs[state_key].astype(str).to_numpy(),
+                tuple(gene_ids),
+                batch,
+            )
         with np.load(path, allow_pickle=False) as archive:
             required = {"X", "patient_id", "cell_id", "state", "gene_ids"}
             if set(archive.files) < required:
@@ -123,7 +175,7 @@ def main(argv: list[str] | None = None) -> int:
     config = load_yaml(args.config)
     args.output.mkdir(parents=True, exist_ok=True)
     try:
-        data = load_data(args.adata, config)
+        data = load_data(args.adata, config, args.method)
         splits = load_patient_splits(args.splits, args.fold)
         if any(
             "cgga" in patient.lower()

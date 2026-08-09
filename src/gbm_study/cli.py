@@ -6,10 +6,10 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
 
 from .config import ConfigurationError, StudyConfig
-from .leakage import LeakageError, assert_zero_patient_overlap
+from .leakage import LeakageError, normalize_split_keys
 from .provenance import atomic_write_json, run_metadata
 
 
@@ -36,20 +36,7 @@ def _validate_split(config: StudyConfig) -> dict[str, Any]:
     config.require_run_inputs()
     assert config.split_file is not None
     payload = _load_json(config.split_file)
-    expected = {"train", "validation", "test"}
-    if set(payload) != expected:
-        raise LeakageError(f"Split file must contain exactly: {sorted(expected)}")
-    splits: dict[str, list[str]] = {}
-    for name in expected:
-        patients = payload[name]
-        if not isinstance(patients, list) or not all(
-            isinstance(item, str) and item for item in patients
-        ):
-            raise LeakageError(
-                f"Split {name!r} must be a non-empty list of patient IDs"
-            )
-        splits[name] = cast(list[str], patients)
-    assert_zero_patient_overlap(splits)
+    splits = normalize_split_keys(payload)
     return {
         "split_schema": "patient_ids_v1",
         "patient_counts": {name: len(ids) for name, ids in splits.items()},

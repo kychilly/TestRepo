@@ -17,6 +17,7 @@ import pandas as pd  # type: ignore[import-untyped]
 from .bootstrap import patient_bootstrap, summarize_bootstrap
 from .calibration import binary_calibration
 from .metrics import CELL_LABELS, EvaluationError, binary_metrics, cell_metrics
+from gbm_study.leakage import LeakageError, normalize_split_keys
 
 CELL_REQUIRED = {
     "run_id",
@@ -127,10 +128,10 @@ def validate_prediction_file(
         if fold < 0 or fold >= len(split_payload["folds"]):
             raise EvaluationError(f"Requested fold {fold} is absent from split file")
         split_payload = split_payload["folds"][fold]
-    if not isinstance(split_payload, dict) or set(split_payload) != VALID_SPLITS:
-        raise EvaluationError(
-            "Split file must contain exactly train, validation, and test"
-        )
+    try:
+        split_payload = normalize_split_keys(split_payload)
+    except LeakageError as exc:
+        raise EvaluationError(str(exc)) from exc
     split_sets = {name: set(values) for name, values in split_payload.items()}
     if any(
         len(values) == 0 or not all(isinstance(value, str) for value in values)

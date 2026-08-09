@@ -54,6 +54,17 @@ def test_overlap_rejection(tmp_path: Path) -> None:
         load_patient_splits(path, 0)
 
 
+def test_jeffrey_split_aliases_are_normalized(tmp_path: Path) -> None:
+    path = tmp_path / "jeffrey_splits.json"
+    path.write_text(
+        json.dumps({"train": ["p1"], "val": ["p2"], "test_cgga": ["p3"]}),
+        encoding="utf-8",
+    )
+    split = load_patient_splits(path, 0)
+    assert split.validation == frozenset({"p2"})
+    assert split.test == frozenset({"p3"})
+
+
 def test_missing_patient_rejection(tmp_path: Path) -> None:
     split = load_patient_splits(splits_file(tmp_path), 0)
     data = toy_data()
@@ -117,6 +128,29 @@ def test_harmony_non_applicability_is_structured() -> None:
 def test_scvi_failure_is_structured() -> None:
     with pytest.raises(Exception):
         ScVIProbe().fit(toy_data(), {})
+
+
+def test_h5ad_scvi_requires_raw_counts(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    anndata = pytest.importorskip("anndata")
+    adata = anndata.AnnData(
+        X=np.ones((4, 2)),
+        obs={"patient_id": ["p1", "p1", "p2", "p2"], "state": ["AC", "MES", "NPC", "OPC"]},
+        var={"gene_ids": ["g1", "g2"]},
+    )
+    path = tmp_path / "processed.h5ad"
+    adata.write(path)
+    from scripts.run_baseline import load_data
+
+    with pytest.raises(BaselineError, match="raw integer counts"):
+        load_data(
+            path,
+            {
+                "patient_id_key": "patient_id",
+                "state_key": "state",
+                "gene_id_key": "gene_ids",
+            },
+            "scvi_probe",
+        )
 
 
 def test_common_evaluation_outputs_cell_and_patient_rows(tmp_path: Path) -> None:

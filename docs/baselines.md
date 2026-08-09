@@ -4,12 +4,21 @@ The baseline track treats cells as observations nested within patients. The only
 
 ## Input contract
 
-The CLI accepts an intermediate NumPy archive because this repository does not contain an AnnData object. The archive must contain:
+The CLI accepts Jeffrey's processed `.h5ad` output or the intermediate NumPy
+archive used by the synthetic tests. For `.h5ad`, the configured observation
+columns (`patient_id_key`, `state_key`, optional `cell_id_key`, and optional
+`batch_key`) and gene column (`gene_id_key`, or `var_names`) are used; cell IDs
+fall back to `obs_names`. For `.npz`, the archive must contain:
 
 - `X`: finite cell-by-frozen-gene numeric matrix;
 - `patient_id`, `cell_id`, and `state`: one-dimensional arrays with one value per cell;
 - `gene_ids`: one-dimensional frozen gene identifier array;
 - optional `batch` for a prespecified covariate.
+
+The split loader accepts both the repository names `train`, `validation`,
+`test` and Jeffrey's generated names `train`, `val`, `test_cgga`, normalizing
+the latter in memory without changing the split hash. `test_cgga` remains the
+held-out test partition.
 
 The four state labels are fixed as `AC`, `MES`, `NPC`, `OPC`, and every probability file uses `probability_AC`, `probability_MES`, `probability_NPC`, `probability_OPC` in that order.
 
@@ -21,7 +30,8 @@ The four state labels are fixed as `AC`, `MES`, `NPC`, `OPC`, and every probabil
 and fits the shared logistic probe on that latent space. Query cells use
 scVI's query-data pathway and never participate in training. It requires
 non-negative integer-like raw counts and records count-layer/latent/epoch/batch
-settings. Missing scvi-tools or invalid data produces a structured
+settings. A Jeffrey-preprocessed H5AD is log-normalized in `X`; it is rejected
+for scVI unless a raw integer `layers["counts"]` is supplied. Missing scvi-tools or invalid data produces a structured
 non-applicability record.
 
 `harmony_knn` fits Harmony on training cells only, then learns a frozen Ridge

@@ -15,6 +15,8 @@ from typing import Any, ClassVar
 import numpy as np
 from numpy.typing import NDArray
 
+from gbm_study.leakage import LeakageError, normalize_split_keys
+
 STATE_LABELS: tuple[str, ...] = ("AC", "MES", "NPC", "OPC")
 
 
@@ -110,10 +112,10 @@ def load_patient_splits(path: Path, fold: int) -> PatientSplits:
         if fold < 0 or fold >= len(raw["folds"]):
             raise BaselineError(f"Requested fold {fold} is not present in {path}")
         payload = raw["folds"][fold]
-    if not isinstance(payload, dict) or set(payload) != {"train", "validation", "test"}:
-        raise BaselineError(
-            "Split must contain exactly train, validation, and test patient lists"
-        )
+    try:
+        payload = normalize_split_keys(payload)
+    except LeakageError as exc:
+        raise BaselineError(str(exc)) from exc
     sets: dict[str, frozenset[str]] = {}
     for name in ("train", "validation", "test"):
         values = payload[name]
