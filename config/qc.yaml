@@ -1,0 +1,14 @@
+cell_qc:
+  min_genes_per_cell: 200      # Filter out low-quality/empty droplets
+  max_pct_mito: 20.0          # Filter out damaged/dying cells (mitochondrial % threshold)
+
+gene_qc:
+  min_cells_expressing: 3     # Filter out non-expressed/ambient genes
+
+normalization:
+  target_sum: 10000            # Counts Per 10 Thousand (CP10K)
+  log_transform: true          # log1p transformation: log(CP10K + 1)
+
+hvg_selection:
+  n_top_genes: 2000            # Select top Highly Variable Genes via "Seurat" flavor
+  flavor: "seurat"

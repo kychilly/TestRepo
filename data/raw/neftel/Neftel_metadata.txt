@@ -1,1 +1,0 @@
-{"error":"No route matches [GET] \"/single_cell/api/v1/studies/SCP393/download\"","error_class":"ActionController::RoutingError","source":"/usr/local/rvm/gems/ruby-3.4.2/gems/actionpack-6.1.7.9/lib/action_dispatch/middleware/debug_exceptions.rb:33:in 'ActionDispatch::DebugExceptions#call'"}
