@@ -46,7 +46,12 @@ def runtime_info() -> dict[str, Any]:
 
 
 def run_metadata(
-    root: Path, config_path: Path, manifest: Path, split: Path, vocabulary: Path, seed: int
+    root: Path,
+    config_path: Path,
+    manifest: Path,
+    split: Path,
+    vocabulary: Path,
+    seed: int,
 ) -> dict[str, Any]:
     """Build the common provenance envelope required for every command result."""
     return {

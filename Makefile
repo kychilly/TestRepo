@@ -1,4 +1,4 @@
-.PHONY: environment-check scgpt-smoke baselines-smoke evaluate-smoke test week1-audit
+.PHONY: environment-check scgpt-smoke baselines-smoke evaluate-smoke gpu-plan chat-report synthetic-smoke test week1-audit
 
 PYTHON ?= python
 PYTHONPATH := src
@@ -17,6 +17,15 @@ baselines-smoke:
 
 evaluate-smoke:
 	PYTHONPATH=$(PYTHONPATH) $(PYTHON) -m pytest tests/test_evaluation.py
+
+gpu-plan:
+	PYTHONPATH=$(PYTHONPATH) $(PYTHON) scripts/plan_gpu.py --token-length 2048 --cells 10000 --output results/compute/week3_gpu_plan.json
+
+chat-report:
+	PYTHONPATH=$(PYTHONPATH) $(PYTHON) scripts/write_chat_report.py
+
+synthetic-smoke:
+	PYTHONPATH=$(PYTHONPATH) $(PYTHON) scripts/synthetic_smoke.py
 
 test:
 	ruff format --check .

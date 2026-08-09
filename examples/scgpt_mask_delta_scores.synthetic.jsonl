@@ -1,0 +1,12 @@
+{"state":"MES","gene":"TP53","patient_id":"P001","cell_id":"P001-C001","baseline_logit":3.0,"masked_logit":0.5}
+{"state":"MES","gene":"TP53","patient_id":"P001","cell_id":"P001-C002","baseline_logit":2.8,"masked_logit":0.4}
+{"state":"MES","gene":"TP53","patient_id":"P002","cell_id":"P002-C001","baseline_logit":2.4,"masked_logit":0.6}
+{"state":"MES","gene":"TP53","patient_id":"P002","cell_id":"P002-C002","baseline_logit":2.2,"masked_logit":0.5}
+{"state":"MES","gene":"EGFR","patient_id":"P001","cell_id":"P001-C001","baseline_logit":2.0,"masked_logit":0.8}
+{"state":"MES","gene":"EGFR","patient_id":"P001","cell_id":"P001-C002","baseline_logit":1.9,"masked_logit":0.7}
+{"state":"MES","gene":"EGFR","patient_id":"P002","cell_id":"P002-C001","baseline_logit":1.6,"masked_logit":0.7}
+{"state":"MES","gene":"EGFR","patient_id":"P002","cell_id":"P002-C002","baseline_logit":1.5,"masked_logit":0.6}
+{"state":"MES","gene":"RPRM","patient_id":"P001","cell_id":"P001-C001","baseline_logit":1.4,"masked_logit":0.8}
+{"state":"MES","gene":"RPRM","patient_id":"P001","cell_id":"P001-C002","baseline_logit":1.3,"masked_logit":0.7}
+{"state":"MES","gene":"RPRM","patient_id":"P002","cell_id":"P002-C001","baseline_logit":1.1,"masked_logit":0.7}
+{"state":"MES","gene":"RPRM","patient_id":"P002","cell_id":"P002-C002","baseline_logit":1.0,"masked_logit":0.6}

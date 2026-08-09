@@ -26,7 +26,7 @@ No GPU-seconds projection is reported because the 1,000-cell forward pass did no
 
 - **PCA + multinomial logistic regression:** completes end to end on the synthetic fixture. Standardization and PCA are fit only on the training partition; validation is used only for the configured C selection; test cells are not used for fitting or selection.
 - **scVI probe:** structured methodological blocker. The required scVI/AnnData runtime and verified loader/checkpointed architecture are unavailable.
-- **Harmony + KNN:** structured methodological blocker. The selected Harmony path has no valid transform for unseen validation/test cells; using all cells would be transductive leakage.
+- **Harmony + KNN:** code path now fits Harmony on training cells and applies a frozen train-learned query projection; the real run remains blocked on the current host because harmonypy and real data are unavailable.
 
 All arms consume the shared `PatientSplits` contract, including split hashing and independent pairwise overlap rejection. Prediction rows carry patient ID, cell ID, split, fold, seed, configuration hash, split hash, and model hash.
 
@@ -58,7 +58,7 @@ Candidate and variant records remain separate until `build_validator_inputs` per
 
 - scGPT inference was not run because the required real assets and runtime are absent.
 - scVI was not run because its required runtime and data loader are absent.
-- Harmony was not run because an unseen-cell transform could not be established without transductive leakage.
+- Harmony was not run on the current host; the implementation now uses a train-only frozen query projection rather than fitting on validation/test cells.
 - No scientific performance metrics, checkpoint benchmark, causal-driver claim, or Week 2 GPU estimate is reported.
 - Synthetic fixtures are used only for software and contract verification.
 
@@ -86,15 +86,15 @@ make week1-audit
 
 ## Final gate
 
-| Gate | Status |
-|---|---|
-| Verified scGPT forward pass on 1,000 real training cells | Blocked |
-| PCA-logistic baseline end to end | Passed on synthetic fixture |
-| scVI baseline | Documented blocker |
-| Harmony baseline | Documented blocker |
-| Evaluator hand-computable tests | Passed |
-| Intentional patient-overlap failure test | Passed |
-| Missense/amplification/silencing schema examples | Passed |
-| Clean smoke workflow documented | Passed |
+| Gate                                                     | Status                             |
+| -------------------------------------------------------- | ---------------------------------- |
+| Verified scGPT forward pass on 1,000 real training cells | Blocked                            |
+| PCA-logistic baseline end to end                         | Passed on synthetic fixture        |
+| scVI baseline                                            | Code implemented; real run blocked |
+| Harmony baseline                                         | Code implemented; real run blocked |
+| Evaluator hand-computable tests                          | Passed                             |
+| Intentional patient-overlap failure test                 | Passed                             |
+| Missense/amplification/silencing schema examples         | Passed                             |
+| Clean smoke workflow documented                          | Passed                             |
 
 Therefore the honest Week 1 status is **infrastructure complete, scientific run blocked**.

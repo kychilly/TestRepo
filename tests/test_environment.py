@@ -18,7 +18,10 @@ def adapter(tmp_path: Path, vocabulary: dict[str, int]) -> ScGPTAdapter:
     checkpoint.write_bytes(b"checkpoint")
     vocab.write_text(json.dumps(vocabulary), encoding="utf-8")
     return ScGPTAdapter(
-        lambda **_: {"cell_emb": np.ones((1, 2), dtype=np.float32)}, vocabulary, checkpoint, vocab
+        lambda **_: {"cell_emb": np.ones((1, 2), dtype=np.float32)},
+        vocabulary,
+        checkpoint,
+        vocab,
     )
 
 
@@ -26,7 +29,9 @@ def test_missing_checkpoint(tmp_path: Path) -> None:
     vocabulary = tmp_path / "vocab.json"
     vocabulary.write_text(json.dumps({"G1": 1}), encoding="utf-8")
     with pytest.raises(FileNotFoundError):
-        ScGPTAdapter(lambda **_: None, {"G1": 1}, tmp_path / "missing.pt", vocabulary).provenance()
+        ScGPTAdapter(
+            lambda **_: None, {"G1": 1}, tmp_path / "missing.pt", vocabulary
+        ).provenance()
 
 
 def test_missing_vocabulary(tmp_path: Path) -> None:
@@ -52,9 +57,13 @@ def test_incompatible_output_shape(tmp_path: Path) -> None:
     def model(**_: object) -> dict[str, np.ndarray[Any, Any]]:
         return {"cell_emb": np.ones((2, 2), dtype=np.float32)}
 
-    instance = ScGPTAdapter(model, {"G1": 1}, tmp_path / "checkpoint", tmp_path / "vocab")
+    instance = ScGPTAdapter(
+        model, {"G1": 1}, tmp_path / "checkpoint", tmp_path / "vocab"
+    )
     with pytest.raises(AdapterError, match="first dimension"):
-        instance.infer(instance.prepare_inputs({"X": [[1.0]], "var_names": ["G1"]}, "symbol"), 1)
+        instance.infer(
+            instance.prepare_inputs({"X": [[1.0]], "var_names": ["G1"]}, "symbol"), 1
+        )
 
 
 def test_deterministic_sampling_of_1000_cells() -> None:
@@ -67,7 +76,9 @@ def test_deterministic_sampling_of_1000_cells() -> None:
 
 def test_stable_output_shape_and_finite_embeddings(tmp_path: Path) -> None:
     instance = adapter(tmp_path, {"G1": 1})
-    prepared = instance.prepare_inputs({"X": [[1.0], [2.0]], "var_names": ["G1"]}, "symbol")
+    prepared = instance.prepare_inputs(
+        {"X": [[1.0], [2.0]], "var_names": ["G1"]}, "symbol"
+    )
     output = instance.infer(prepared, 1)
     assert output.shape == (2, 2)
     assert np.isfinite(output).all()

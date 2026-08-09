@@ -20,7 +20,9 @@ class ContractError(ValueError):
 
 
 def _load_schema(name: str) -> dict[str, Any]:
-    return cast(dict[str, Any], json.loads((SCHEMA_DIR / name).read_text(encoding="utf-8")))
+    return cast(
+        dict[str, Any], json.loads((SCHEMA_DIR / name).read_text(encoding="utf-8"))
+    )
 
 
 def _validate(document: Mapping[str, Any], schema_name: str) -> None:
@@ -28,14 +30,20 @@ def _validate(document: Mapping[str, Any], schema_name: str) -> None:
         "candidate_gene.schema.json": _load_schema("candidate_gene.schema.json"),
         "variant_record.schema.json": _load_schema("variant_record.schema.json"),
         "validator_input.schema.json": _load_schema("validator_input.schema.json"),
+        "protein_evidence.schema.json": _load_schema("protein_evidence.schema.json"),
+        "validator_payload.schema.json": _load_schema("validator_payload.schema.json"),
     }
     schema = schemas[schema_name]
     resolver = RefResolver.from_schema(
         schema,
         store={name: value for name, value in schemas.items()},
     )
-    validator = Draft202012Validator(schema, resolver=resolver, format_checker=FormatChecker())
-    errors = sorted(validator.iter_errors(dict(document)), key=lambda error: list(error.path))
+    validator = Draft202012Validator(
+        schema, resolver=resolver, format_checker=FormatChecker()
+    )
+    errors = sorted(
+        validator.iter_errors(dict(document)), key=lambda error: list(error.path)
+    )
     if errors:
         location = ".".join(str(part) for part in errors[0].path) or "$"
         raise ContractError(f"{schema_name} invalid at {location}: {errors[0].message}")
@@ -89,6 +97,49 @@ class ValidatorInput:
     def to_dict(self) -> dict[str, Any]:
         return dict(self.data)
 
+    def to_validator_payload(self) -> dict[str, Any]:
+        """Return the simplified object consumed by Ishaan's validator."""
+        candidate = self.data["candidate_provenance"]
+        payload = {
+            "schema_version": CONTRACT_VERSION,
+            "input_id": self.data["input_id"],
+            "candidate": {
+                "gene": candidate["gene"],
+                "state": candidate["state"],
+                "score": candidate["score"],
+                "rank": candidate["rank"],
+                "seed": candidate["seed"],
+            },
+            "variants": self.data["variant_provenance"],
+            "protein_evidence": self.data.get("protein_evidence", []),
+            "join_cardinality": self.data["join_cardinality"],
+            "validator_eligibility": self.data["validator_eligibility"],
+            "validator_config_version": self.data["validator_config_version"],
+        }
+        _validate(payload, "validator_payload.schema.json")
+        return payload
+
+
+@dataclass(frozen=True)
+class ProteinEvidence:
+    data: dict[str, Any]
+
+    @classmethod
+    def from_dict(
+        cls, data: Mapping[str, Any], aliases: Mapping[str, str] | None = None
+    ) -> "ProteinEvidence":
+        payload = dict(data)
+        _validate(payload, "protein_evidence.schema.json")
+        normalized = normalize_gene_symbol(str(payload["gene"]), aliases)
+        if normalized != payload["gene"]:
+            raise ContractError(
+                "protein evidence gene must be stored in normalized canonical form"
+            )
+        return cls(payload)
+
+    def to_dict(self) -> dict[str, Any]:
+        return dict(self.data)
+
 
 def validate_candidate_gene(
     record: Mapping[str, Any],
@@ -96,9 +147,9 @@ def validate_candidate_gene(
     forbidden_patient_ids: Iterable[str] = (),
 ) -> None:
     _validate(record, "candidate_gene.schema.json")
-    normalized = normalize_gene_symbol(str(record["gene_symbol"]), aliases)
-    if normalized != record["gene_symbol"]:
-        raise ContractError("gene_symbol must be stored in normalized canonical form")
+    normalized = normalize_gene_symbol(str(record["gene"]), aliases)
+    if normalized != record["gene"]:
+        raise ContractError("gene must be stored in normalized canonical form")
     patients = set(record["contributing_patient_ids"])
     forbidden = patients & set(forbidden_patient_ids)
     if forbidden:
@@ -106,7 +157,9 @@ def validate_candidate_gene(
             f"Candidate includes forbidden validation/external patients: {sorted(forbidden)}"
         )
     if int(record["n_patients"]) != len(patients):
-        raise ContractError("n_patients must equal the number of contributing_patient_ids")
+        raise ContractError(
+            "n_patients must equal the number of contributing_patient_ids"
+        )
 
 
 def validate_variant_record(
@@ -142,8 +195,12 @@ def _eligibility(variants: list[dict[str, Any]]) -> tuple[str, str]:
         return "none", "abstain_non_missense"
     status = variant["mapping_status"]
     if status != "resolved":
-        reason = "abstain_ambiguous" if status == "ambiguous" else "abstain_mapping_failed"
-        return ("transcript_ambiguous" if status == "ambiguous" else "mapping_failed"), reason
+        reason = (
+            "abstain_ambiguous" if status == "ambiguous" else "abstain_mapping_failed"
+        )
+        return (
+            "transcript_ambiguous" if status == "ambiguous" else "mapping_failed"
+        ), reason
     return "none", "eligible_missense"
 
 
@@ -153,14 +210,23 @@ def build_validator_inputs(
     validator_config_version: str,
     aliases: Mapping[str, str] | None = None,
     forbidden_patient_ids: Iterable[str] = (),
+    protein_evidence: Iterable[Mapping[str, Any]] = (),
 ) -> list[ValidatorInput]:
     """Create explicit candidate/variant joins; never collapse variant evidence."""
     candidate_records = [CandidateGene.from_dict(item, aliases) for item in candidates]
     variant_records = [VariantRecord.from_dict(item, aliases) for item in variants]
+    evidence_records = [
+        ProteinEvidence.from_dict(item, aliases) for item in protein_evidence
+    ]
+    evidence_by_variant: dict[str, list[dict[str, Any]]] = {}
+    for evidence in evidence_records:
+        evidence_by_variant.setdefault(evidence.data["variant_id"], []).append(
+            evidence.to_dict()
+        )
     by_candidate: list[ValidatorInput] = []
     for candidate in candidate_records:
         validate_candidate_gene(candidate.data, aliases, forbidden_patient_ids)
-        candidate_gene = candidate.data["gene_symbol"]
+        candidate_gene = candidate.data["gene"]
         candidate_ensembl = candidate.data["ensembl_gene_id"]
         patient_ids = set(candidate.data["contributing_patient_ids"])
         matches = [
@@ -168,11 +234,14 @@ def build_validator_inputs(
             for variant in variant_records
             if variant.data["patient_id"] in patient_ids
             and variant.data["cohort"] == candidate.data["cohort"]
-            and normalize_gene_symbol(variant.data["gene_symbol"], aliases) == candidate_gene
+            and normalize_gene_symbol(variant.data["gene_symbol"], aliases)
+            == candidate_gene
             and variant.data["ensembl_gene_id"] == candidate_ensembl
         ]
         matches.sort(key=lambda item: item["variant_id"])
-        cardinality = "zero" if not matches else "one" if len(matches) == 1 else "multiple"
+        cardinality = (
+            "zero" if not matches else "one" if len(matches) == 1 else "multiple"
+        )
         ambiguity, eligibility = _eligibility(matches)
         protein_mapping = [
             {
@@ -193,6 +262,11 @@ def build_validator_inputs(
             "join_cardinality": cardinality,
             "ambiguity_status": ambiguity,
             "protein_mapping": protein_mapping,
+            "protein_evidence": [
+                evidence
+                for variant in matches
+                for evidence in evidence_by_variant.get(variant["variant_id"], [])
+            ],
             "validator_config_version": validator_config_version,
             "validator_eligibility": eligibility,
         }
@@ -203,13 +277,17 @@ def build_validator_inputs(
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
-    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+    for line_number, line in enumerate(
+        path.read_text(encoding="utf-8").splitlines(), 1
+    ):
         if not line.strip():
             continue
         try:
             value = json.loads(line)
         except json.JSONDecodeError as exc:
-            raise ContractError(f"{path}:{line_number} is not valid JSON: {exc}") from exc
+            raise ContractError(
+                f"{path}:{line_number} is not valid JSON: {exc}"
+            ) from exc
         if not isinstance(value, dict):
             raise ContractError(f"{path}:{line_number} must contain a JSON object")
         records.append(value)

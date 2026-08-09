@@ -34,7 +34,9 @@ def read_json(path: Path) -> dict[str, Any]:
 def command_status(command: list[str]) -> dict[str, Any]:
     environment = os.environ.copy()
     environment["PYTHONPATH"] = str(ROOT / "src")
-    completed = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, env=environment)
+    completed = subprocess.run(
+        command, cwd=ROOT, capture_output=True, text=True, env=environment
+    )
     return {
         "returncode": completed.returncode,
         "stdout": completed.stdout[-2000:],
@@ -45,12 +47,24 @@ def command_status(command: list[str]) -> dict[str, Any]:
 def main() -> int:
     benchmark = read_json(COMPUTE / "week1_scgpt_benchmark.json")
     environment = read_json(COMPUTE / "week1_environment_check.json")
-    baseline_tests = command_status([sys.executable, "-m", "pytest", "tests/test_baselines.py"])
-    evaluation_tests = command_status([sys.executable, "-m", "pytest", "tests/test_evaluation.py"])
-    contract_tests = command_status(
-        [sys.executable, "-m", "pytest", "tests/test_schemas.py", "tests/test_contracts.py"]
+    baseline_tests = command_status(
+        [sys.executable, "-m", "pytest", "tests/test_baselines.py"]
     )
-    static_cgga = command_status(["rg", "--files-with-matches", "CGGA", "src", "scripts"])
+    evaluation_tests = command_status(
+        [sys.executable, "-m", "pytest", "tests/test_evaluation.py"]
+    )
+    contract_tests = command_status(
+        [
+            sys.executable,
+            "-m",
+            "pytest",
+            "tests/test_schemas.py",
+            "tests/test_contracts.py",
+        ]
+    )
+    static_cgga = command_status(
+        ["rg", "--files-with-matches", "CGGA", "src", "scripts"]
+    )
     manifest = {
         "status": "completed",
         "week": 1,
@@ -71,8 +85,12 @@ def main() -> int:
         },
         "gpu_and_checkpoint": {
             "environment_report": environment,
-            "checkpoint_sha256": benchmark.get("provenance", {}).get("checkpoint_sha256"),
-            "vocabulary_sha256": benchmark.get("provenance", {}).get("vocabulary_sha256"),
+            "checkpoint_sha256": benchmark.get("provenance", {}).get(
+                "checkpoint_sha256"
+            ),
+            "vocabulary_sha256": benchmark.get("provenance", {}).get(
+                "vocabulary_sha256"
+            ),
         },
         "benchmark": benchmark,
         "baseline_arms": {

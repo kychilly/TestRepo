@@ -60,7 +60,11 @@ def _torch_report() -> dict[str, Any]:
     for index in range(torch.cuda.device_count()):
         properties = torch.cuda.get_device_properties(index)
         devices.append(
-            {"index": index, "name": properties.name, "total_memory_bytes": properties.total_memory}
+            {
+                "index": index,
+                "name": properties.name,
+                "total_memory_bytes": properties.total_memory,
+            }
         )
     return {
         "installed": True,
@@ -84,11 +88,15 @@ def _load_vocabulary(path: Path) -> dict[str, int]:
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise EnvironmentError(f"Vocabulary must be a JSON gene-to-token mapping: {exc}") from exc
+        raise EnvironmentError(
+            f"Vocabulary must be a JSON gene-to-token mapping: {exc}"
+        ) from exc
     if not isinstance(payload, dict) or not all(
         isinstance(k, str) and isinstance(v, int) for k, v in payload.items()
     ):
-        raise EnvironmentError("Vocabulary must map string identifiers to integer token IDs")
+        raise EnvironmentError(
+            "Vocabulary must map string identifiers to integer token IDs"
+        )
     return payload
 
 
@@ -143,8 +151,12 @@ def inspect_environment(config: dict[str, Any], config_path: Path) -> dict[str, 
         failures.append(f"vocabulary is missing: {vocabulary_value!r}")
     else:
         vocabulary_mapping = _load_vocabulary(vocabulary)
-        required_tokens = [str(token) for token in config.get("required_special_tokens", [])]
-        missing_tokens = [token for token in required_tokens if token not in vocabulary_mapping]
+        required_tokens = [
+            str(token) for token in config.get("required_special_tokens", [])
+        ]
+        missing_tokens = [
+            token for token in required_tokens if token not in vocabulary_mapping
+        ]
         report["vocabulary"] = {
             "path": str(vocabulary),
             "sha256": sha256_file(vocabulary),
@@ -163,9 +175,17 @@ def inspect_environment(config: dict[str, Any], config_path: Path) -> dict[str, 
         }
         report["checkpoint"]["incompatible_shapes"] = incompatible
         if incompatible:
-            failures.append(f"incompatible checkpoint tensor shapes: {sorted(incompatible)}")
-    report["scgpt"] = {"version": _version("scgpt"), "git_commit": config.get("scgpt_git_commit")}
-    report["determinism"] = {"seed": config.get("seed"), "requested_device": requested_device}
+            failures.append(
+                f"incompatible checkpoint tensor shapes: {sorted(incompatible)}"
+            )
+    report["scgpt"] = {
+        "version": _version("scgpt"),
+        "git_commit": config.get("scgpt_git_commit"),
+    }
+    report["determinism"] = {
+        "seed": config.get("seed"),
+        "requested_device": requested_device,
+    }
     if failures:
         report["status"] = "failed"
         report["failures"] = failures
@@ -176,7 +196,10 @@ def inspect_environment(config: dict[str, Any], config_path: Path) -> dict[str, 
 def _export_environment(path: Path) -> None:
     """Persist the complete pip freeze and host metadata after successful setup."""
     freeze = subprocess.run(
-        [sys.executable, "-m", "pip", "freeze"], check=True, capture_output=True, text=True
+        [sys.executable, "-m", "pip", "freeze"],
+        check=True,
+        capture_output=True,
+        text=True,
     ).stdout.splitlines()
     payload = {
         "python": sys.version,
@@ -185,7 +208,9 @@ def _export_environment(path: Path) -> None:
         "environment": dict(os.environ).get("CONDA_PREFIX") or "venv/system",
     }
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
 
 
 def main(argv: list[str] | None = None) -> int:

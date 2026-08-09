@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "validator_payload.schema.json",
+  "title": "Simplified validator-consumer input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "input_id",
+    "candidate",
+    "variants",
+    "protein_evidence",
+    "join_cardinality",
+    "validator_eligibility",
+    "validator_config_version"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "input_id": { "type": "string", "minLength": 1 },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gene", "state", "score", "rank", "seed"],
+      "properties": {
+        "gene": { "type": "string", "pattern": "^[A-Z][A-Z0-9-]*$" },
+        "state": { "enum": ["AC", "MES", "NPC", "OPC"] },
+        "score": { "type": "number" },
+        "rank": { "type": "integer", "minimum": 1 },
+        "seed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "variants": {
+      "type": "array",
+      "items": { "$ref": "variant_record.schema.json" }
+    },
+    "protein_evidence": {
+      "type": "array",
+      "items": { "$ref": "protein_evidence.schema.json" }
+    },
+    "join_cardinality": { "enum": ["zero", "one", "multiple"] },
+    "validator_eligibility": {
+      "enum": [
+        "eligible_missense",
+        "abstain_non_missense",
+        "abstain_missing_evidence",
+        "abstain_ambiguous",
+        "abstain_mapping_failed"
+      ]
+    },
+    "validator_config_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    }
+  }
+}

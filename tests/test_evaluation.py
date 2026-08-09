@@ -18,7 +18,8 @@ from evaluation.reporting import run_evaluation, validate_prediction_file
 def split_file(tmp_path: Path) -> tuple[Path, str]:
     path = tmp_path / "splits.json"
     path.write_text(
-        json.dumps({"train": ["p1"], "validation": ["p2"], "test": ["p3", "p4"]}), encoding="utf-8"
+        json.dumps({"train": ["p1"], "validation": ["p2"], "test": ["p3", "p4"]}),
+        encoding="utf-8",
     )
     return path, hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -45,7 +46,12 @@ def cell_frame(split_hash: str) -> pd.DataFrame:
                 "true_state": state,
                 "predicted_state": predicted,
                 **probabilities,
-                "split": {"p1": "train", "p2": "validation", "p3": "test", "p4": "test"}[patient],
+                "split": {
+                    "p1": "train",
+                    "p2": "validation",
+                    "p3": "test",
+                    "p4": "test",
+                }[patient],
                 "split_hash": split_hash,
                 "config_hash": "config",
                 "model_hash": "model",
@@ -72,7 +78,18 @@ def test_patient_bootstrap_resamples_clusters() -> None:
     rows = pd.DataFrame(
         {
             "patient_id": ["p1"] * 1 + ["p2"] * 2 + ["p3"] * 3 + ["p4"] * 4,
-            "true_label": ["AC", "MES", "MES", "NPC", "NPC", "NPC", "OPC", "OPC", "OPC", "OPC"],
+            "true_label": [
+                "AC",
+                "MES",
+                "MES",
+                "NPC",
+                "NPC",
+                "NPC",
+                "OPC",
+                "OPC",
+                "OPC",
+                "OPC",
+            ],
             "predicted_label": ["AC"] * 10,
             **{
                 f"probability_{label}": [1.0 if label == "AC" else 0.0] * 10
@@ -120,7 +137,9 @@ def test_patient_bootstrap_resamples_clusters() -> None:
         39,
         40,
     }
-    assert all(len(json.loads(value)) == 4 for value in distribution["sampled_patients"])
+    assert all(
+        len(json.loads(value)) == 4 for value in distribution["sampled_patients"]
+    )
 
 
 def test_class_missing_bootstrap_replicates_are_recorded() -> None:

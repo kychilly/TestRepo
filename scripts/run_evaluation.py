@@ -21,7 +21,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
-        manifest = run_evaluation(args.predictions, args.splits, args.config, args.output)
+        manifest = run_evaluation(
+            args.predictions, args.splits, args.config, args.output
+        )
     except (EvaluationError, OSError, ValueError, ImportError) as exc:
         error = {"status": "failed", "error": str(exc)}
         args.output.mkdir(parents=True, exist_ok=True)

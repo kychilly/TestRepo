@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "protein_evidence.schema.json",
+  "title": "Versioned precomputed protein evidence record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "evidence_id",
+    "variant_id",
+    "gene",
+    "protein_accession",
+    "evidence_status",
+    "alphafold_source",
+    "alphafold_version",
+    "plddt_score",
+    "esm1b_source",
+    "esm1b_version",
+    "esm1b_score",
+    "stability_source",
+    "stability_version",
+    "delta_delta_g"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "evidence_id": { "type": "string", "minLength": 1 },
+    "variant_id": { "type": "string", "minLength": 1 },
+    "gene": { "type": "string", "pattern": "^[A-Z][A-Z0-9-]*$" },
+    "protein_accession": { "type": ["string", "null"] },
+    "evidence_status": { "enum": ["complete", "partial", "missing"] },
+    "alphafold_source": { "type": "string", "minLength": 1 },
+    "alphafold_version": { "type": "string", "minLength": 1 },
+    "plddt_score": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+    "esm1b_source": { "type": "string", "minLength": 1 },
+    "esm1b_version": { "type": "string", "minLength": 1 },
+    "esm1b_score": { "type": ["number", "null"] },
+    "stability_source": { "type": "string", "minLength": 1 },
+    "stability_version": { "type": "string", "minLength": 1 },
+    "delta_delta_g": { "type": ["number", "null"] }
+  }
+}

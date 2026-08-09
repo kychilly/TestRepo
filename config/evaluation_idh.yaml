@@ -1,0 +1,15 @@
+# Patient-level IDH status AUROC, as required by the task.
+metric_units: patient_binary
+fold: 0
+bootstrap_seed: 17
+bootstrap_replicates: 1000
+metrics:
+  - auroc
+  - auprc
+  - balanced_accuracy
+  - sensitivity
+  - specificity
+  - brier_score
+  - calibration_slope
+  - calibration_intercept
+calibration_min_samples: 10

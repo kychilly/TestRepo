@@ -34,13 +34,15 @@ def candidate(**overrides: object) -> dict[str, object]:
         "patient_scope": "train_only",
         "contributing_patient_ids": ["P001"],
         "state": "MES",
-        "gene_symbol": "EGFR",
+        "gene": "EGFR",
+        "gene_namespace": "HGNC",
         "ensembl_gene_id": "ENSG00000146648",
         "gene_id_version": "Ensembl-110",
         "score_method": "mask_delta_logit",
-        "score_mean": 1.0,
+        "score": 1.0,
         "score_sd": 0.1,
         "rank": 1,
+        "rank_scope": "run_state",
         "n_cells": 10,
         "n_patients": 1,
         "training_only": True,
@@ -86,6 +88,47 @@ def test_valid_missense_mapping_is_eligible() -> None:
     assert result["protein_mapping"][0]["protein_isoform"] == "1"
 
 
+def test_validator_payload_is_simplified_for_consumer() -> None:
+    result = build_validator_inputs([candidate()], [variant()], "1.0.0")[
+        0
+    ].to_validator_payload()
+    assert set(result["candidate"]) == {"gene", "state", "score", "rank", "seed"}
+    assert result["candidate"] == {
+        "gene": "EGFR",
+        "state": "MES",
+        "score": 1.0,
+        "rank": 1,
+        "seed": 17,
+    }
+    assert "checkpoint_hash" not in result["candidate"]
+    assert result["variants"][0]["variant_id"] == "var-1"
+
+
+def test_protein_evidence_is_joined_by_variant_id_and_returned() -> None:
+    evidence = {
+        "schema_version": CONTRACT_VERSION,
+        "evidence_id": "ev-1",
+        "variant_id": "var-1",
+        "gene": "EGFR",
+        "protein_accession": "NP_005219.2",
+        "evidence_status": "complete",
+        "alphafold_source": "AlphaFold DB",
+        "alphafold_version": "2024-01",
+        "plddt_score": 92.0,
+        "esm1b_source": "ESM1b",
+        "esm1b_version": "1.0",
+        "esm1b_score": -2.1,
+        "stability_source": "precomputed",
+        "stability_version": "1.0",
+        "delta_delta_g": 1.7,
+    }
+    joined = build_validator_inputs(
+        [candidate()], [variant()], "1.0.0", protein_evidence=[evidence]
+    )[0]
+    assert joined.to_dict()["protein_evidence"][0]["evidence_id"] == "ev-1"
+    assert joined.to_validator_payload()["protein_evidence"][0]["variant_id"] == "var-1"
+
+
 def test_non_missense_events_remain_and_abstain() -> None:
     amplification = variant(
         variant_id="var-amp",
@@ -103,7 +146,10 @@ def test_non_missense_events_remain_and_abstain() -> None:
     )
     inputs = build_validator_inputs([candidate()], [amplification], "1.0.0")
     assert inputs[0].to_dict()["validator_eligibility"] == "abstain_non_missense"
-    assert inputs[0].to_dict()["variant_provenance"][0]["alteration_type"] == "amplification"
+    assert (
+        inputs[0].to_dict()["variant_provenance"][0]["alteration_type"]
+        == "amplification"
+    )
 
 
 def test_silencing_and_missing_protein_are_preserved() -> None:
@@ -134,7 +180,9 @@ def test_multiple_transcripts_are_not_collapsed() -> None:
         protein_isoform="2",
         protein_change="p.L858R",
     )
-    result = build_validator_inputs([candidate()], [variant(), second], "1.0.0")[0].to_dict()
+    result = build_validator_inputs([candidate()], [variant(), second], "1.0.0")[
+        0
+    ].to_dict()
     assert result["join_cardinality"] == "multiple"
     assert len(result["variant_provenance"]) == 2
     assert result["validator_eligibility"] == "abstain_ambiguous"
@@ -144,12 +192,14 @@ def test_unknown_alias_fails_closed() -> None:
     with pytest.raises(ContractError, match="Unknown or undocumented"):
         normalize_gene_symbol("EGFR_ALIAS")
     with pytest.raises(ContractError):
-        validate_candidate_gene(candidate(gene_symbol="egfr_alias"))
+        validate_candidate_gene(candidate(gene="egfr_alias"))
 
 
 def test_validation_patient_candidate_is_rejected() -> None:
     with pytest.raises(ContractError, match="forbidden"):
-        build_validator_inputs([candidate()], [variant()], "1.0.0", forbidden_patient_ids=["P001"])
+        build_validator_inputs(
+            [candidate()], [variant()], "1.0.0", forbidden_patient_ids=["P001"]
+        )
 
 
 def test_checkpoint_omission_is_rejected() -> None:

@@ -41,12 +41,20 @@ class CellData:
         if self.X.ndim != 2:
             raise BaselineError("X must be a two-dimensional cell-by-gene matrix")
         n_cells = self.X.shape[0]
-        arrays = {"patient_id": self.patient_id, "cell_id": self.cell_id, "state": self.state}
+        arrays = {
+            "patient_id": self.patient_id,
+            "cell_id": self.cell_id,
+            "state": self.state,
+        }
         if any(array.ndim != 1 or len(array) != n_cells for array in arrays.values()):
-            raise BaselineError("patient_id, cell_id, and state must map one value to every cell")
+            raise BaselineError(
+                "patient_id, cell_id, and state must map one value to every cell"
+            )
         if self.X.shape[1] != len(self.gene_ids):
             raise BaselineError("X columns must equal the number of gene_ids")
-        if self.batch is not None and (self.batch.ndim != 1 or len(self.batch) != n_cells):
+        if self.batch is not None and (
+            self.batch.ndim != 1 or len(self.batch) != n_cells
+        ):
             raise BaselineError("batch must map one value to every cell")
         if not np.isfinite(self.X).all():
             raise BaselineError("X contains NaN or infinite values")
@@ -103,7 +111,9 @@ def load_patient_splits(path: Path, fold: int) -> PatientSplits:
             raise BaselineError(f"Requested fold {fold} is not present in {path}")
         payload = raw["folds"][fold]
     if not isinstance(payload, dict) or set(payload) != {"train", "validation", "test"}:
-        raise BaselineError("Split must contain exactly train, validation, and test patient lists")
+        raise BaselineError(
+            "Split must contain exactly train, validation, and test patient lists"
+        )
     sets: dict[str, frozenset[str]] = {}
     for name in ("train", "validation", "test"):
         values = payload[name]
@@ -117,7 +127,9 @@ def load_patient_splits(path: Path, fold: int) -> PatientSplits:
             raise BaselineError(f"Split {name} contains duplicate patient IDs")
         sets[name] = frozenset(values)
     assert_zero_patient_overlap(sets)
-    return PatientSplits(sets["train"], sets["validation"], sets["test"], sha256_file(path), fold)
+    return PatientSplits(
+        sets["train"], sets["validation"], sets["test"], sha256_file(path), fold
+    )
 
 
 def assert_zero_patient_overlap(splits: dict[str, frozenset[str]]) -> None:
@@ -141,7 +153,8 @@ def assign_cells(data: CellData, splits: PatientSplits) -> dict[str, NDArray[Any
         raise BaselineError(f"Cells contain patients absent from split: {missing}")
     assignments: dict[str, NDArray[Any]] = {}
     masks = {
-        name: np.isin(patient_values, list(values)) for name, values in splits.as_dict().items()
+        name: np.isin(patient_values, list(values))
+        for name, values in splits.as_dict().items()
     }
     combined = sum(mask.astype(np.int8) for mask in masks.values())
     if not np.all(combined == 1):
@@ -237,7 +250,12 @@ def evaluate_predictions(
                 "split": split,
                 "n_cells": len(patient_cells),
                 "accuracy": float(
-                    np.mean([row["true_state"] == row["predicted_state"] for row in patient_cells])
+                    np.mean(
+                        [
+                            row["true_state"] == row["predicted_state"]
+                            for row in patient_cells
+                        ]
+                    )
                 ),
             }
         )
@@ -252,4 +270,8 @@ def runtime_metadata() -> dict[str, str]:
         ).stdout.strip()
     except (OSError, subprocess.CalledProcessError):
         commit = "unknown"
-    return {"python": sys.version, "platform": platform.platform(), "git_commit": commit}
+    return {
+        "python": sys.version,
+        "platform": platform.platform(),
+        "git_commit": commit,
+    }

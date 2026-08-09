@@ -17,9 +17,18 @@ The four state labels are fixed as `AC`, `MES`, `NPC`, `OPC`, and every probabil
 
 `pca_logreg` fits `StandardScaler`, PCA, and multinomial logistic regression on training patients only. It does not perform HVG selection. The selected frozen gene list must exactly match the configured preprocessing gene list. The runner selects `C` from the configured candidates using validation-cell accuracy only, then refits the selected model on training patients and records the selection.
 
-`scvi_probe` is a typed arm for a future real AnnData/scVI run. It requires non-negative integer-like raw counts, records count-layer/latent/epoch/batch settings, and uses a separate logistic probe rather than the scVI classifier. Without scvi-tools and an explicit AnnData/model loader, it produces a structured non-applicability record.
+`scvi_probe` trains scVI on training cells only, obtains a latent representation,
+and fits the shared logistic probe on that latent space. Query cells use
+scVI's query-data pathway and never participate in training. It requires
+non-negative integer-like raw counts and records count-layer/latent/epoch/batch
+settings. Missing scvi-tools or invalid data produces a structured
+non-applicability record.
 
-`harmony_knn` is currently classified as non-applicable. The selected Harmony API does not provide a valid transform for unseen validation/test cells in this contract. Fitting Harmony on all cells would leak information, so the implementation stops and records the scientific reason instead of silently running a transductive analysis.
+`harmony_knn` fits Harmony on training cells only, then learns a frozen Ridge
+projection from training PCA/batch features to the Harmony embedding. That
+projection transforms validation/test cells before kNN. This is explicitly
+recorded as `harmony_train_only_frozen_query_projection_knn`; fitting Harmony
+on all cells remains prohibited because it would leak information.
 
 ## Run
 
@@ -36,4 +45,4 @@ PYTHONPATH=src python scripts/run_baseline.py \
 
 Successful PCA runs write `predictions.jsonl`, `patient_summary.json`, and `run_metadata.json`. Every cell row contains the requested run/method/fold/seed/patient/cell/true/predicted/probability/split/hash fields. Failed and non-applicable methods write `run_error.json` with status, method, fold, seed, reason, config hash, runtime, and Git metadata. No method is declared scientifically successful merely because the process exits cleanly.
 
-This repository has no real Neftel dataset or split file, so no baseline result is reported here. The installed host also lacks scVI/Harmony dependencies. The first reproducible run must use the Data Lead's actual files and preserve their hashes.
+This repository has no real Neftel dataset or split file, so no baseline result is reported here. The first reproducible run must use the Data Lead's actual files and preserve their hashes. Harmony also requires `batch_key: batch` (or another explicitly populated covariate) in the configuration; a missing prespecified covariate is a deliberate failure.

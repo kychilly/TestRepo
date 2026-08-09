@@ -31,4 +31,6 @@ def assert_patient_split(
     allowed = set(splits[split])
     unexpected = set(patient_ids) - allowed
     if unexpected:
-        raise LeakageError(f"Observations contain patients outside {split}: {sorted(unexpected)}")
+        raise LeakageError(
+            f"Observations contain patients outside {split}: {sorted(unexpected)}"
+        )

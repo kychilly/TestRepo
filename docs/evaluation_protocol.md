@@ -12,7 +12,7 @@ The evaluator rejects duplicate keys, unknown states/tasks, probabilities outsid
 
 For `metric_units: cell_state`, the evaluator reports macro-F1, balanced accuracy, per-state precision/recall/F1, confusion matrix, multiclass log loss, and multiclass Brier score in fixed `AC`, `MES`, `NPC`, `OPC` order.
 
-For `metric_units: patient_binary`, it reports AUROC, AUPRC, balanced accuracy, sensitivity, specificity, Brier score, and calibration slope/intercept when the configured minimum sample size and both classes are available.
+For `metric_units: patient_binary`, it reports patient-level IDH/TP53 AUROC and related metrics.
 
 Non-estimable metrics are structured objects with `status: non_estimable`, a reason, and the metric name. They are never replaced with zero or unexplained NaN.
 
@@ -21,6 +21,26 @@ Non-estimable metrics are structured objects with `status: non_estimable`, a rea
 Every bootstrap replicate samples patient IDs with replacement and includes all rows for each sampled patient. Cells are never sampled independently. The distribution records the sampled patient IDs, sampled cell count, whether every required class was represented, validity, and the replicate estimate. Reports include the point estimate, bootstrap median, 2.5th and 97.5th percentiles, valid replicate count, and non-estimable replicate count.
 
 ## Run
+
+The combined top-level entry point accepts separate cell-state and patient-level
+IDH prediction files and writes one combined `metrics.json` source of truth:
+
+```sh
+PYTHONPATH=src python eval.py \
+  --cell-predictions results/baselines/pca_logreg/fold0_seed17/predictions.jsonl \
+  --idh-predictions results/idh/pca_logreg/fold0_seed17/predictions.jsonl \
+  --splits splits/patient_splits.json \
+  --config config/evaluation.yaml \
+  --idh-config config/evaluation_idh.yaml \
+  --output results/evaluation/pca_logreg/fold0_seed17
+```
+
+`--idh-predictions` is optional for a cell-state-only run, but IDH AUROC is not
+produced unless a separate patient-level file is supplied. IDH labels are never
+inferred from cell-state rows. Variant-effect validation remains a separate
+future discussion with Ishaan’s validator.
+
+The lower-level single-task command remains available:
 
 ```sh
 PYTHONPATH=src python scripts/run_evaluation.py \

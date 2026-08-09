@@ -59,7 +59,9 @@ def load_data(path: Path, config: dict[str, Any]) -> CellData:
                 batch,
             )
             if any("cgga" in value.lower() for value in data.patient_id.tolist()):
-                raise BaselineError("CGGA patients are prohibited for the Neftel baseline track")
+                raise BaselineError(
+                    "CGGA patients are prohibited for the Neftel baseline track"
+                )
             return data
     except OSError as exc:
         raise BaselineError(f"Cannot read data {path}: {exc}") from exc
@@ -145,7 +147,9 @@ def main(argv: list[str] | None = None) -> int:
             scored: list[tuple[float, float]] = []
             for candidate in candidates:
                 candidate_config = {**method_config, "C": float(candidate)}
-                candidate_model = build_baseline(args.method, candidate_config, args.seed)
+                candidate_model = build_baseline(
+                    args.method, candidate_config, args.seed
+                )
                 candidate_model.fit(train, train_metadata)
                 score = float(
                     np.mean(
@@ -179,7 +183,8 @@ def main(argv: list[str] | None = None) -> int:
         for row in predictions:
             row["fit_seconds"] = fit_seconds
         (args.output / "predictions.jsonl").write_text(
-            "".join(json.dumps(row, sort_keys=True) + "\n" for row in predictions), encoding="utf-8"
+            "".join(json.dumps(row, sort_keys=True) + "\n" for row in predictions),
+            encoding="utf-8",
         )
         (args.output / "patient_summary.json").write_text(
             json.dumps(patients, indent=2, sort_keys=True) + "\n", encoding="utf-8"

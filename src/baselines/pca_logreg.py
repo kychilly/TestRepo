@@ -70,7 +70,9 @@ class PCALogReg(Baseline):
 
     def _check(self, data: CellData) -> Pipeline:
         if self.pipeline is None or self.gene_ids != data.gene_ids:
-            raise BaselineError("Baseline is unfitted or input genes differ from training genes")
+            raise BaselineError(
+                "Baseline is unfitted or input genes differ from training genes"
+            )
         return self.pipeline
 
     def predict(self, data: CellData, metadata: dict[str, Any]) -> NDArray[Any]:

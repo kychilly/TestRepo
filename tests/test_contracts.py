@@ -8,12 +8,18 @@ from pathlib import Path
 import pytest
 
 from gbm_study.config import ConfigurationError, StudyConfig
-from gbm_study.leakage import LeakageError, assert_patient_split, assert_zero_patient_overlap
+from gbm_study.leakage import (
+    LeakageError,
+    assert_patient_split,
+    assert_zero_patient_overlap,
+)
 
 
 def test_patient_overlap_is_rejected() -> None:
     with pytest.raises(LeakageError, match="Patient overlap"):
-        assert_zero_patient_overlap({"train": ["p1"], "validation": ["p1"], "test": ["p2"]})
+        assert_zero_patient_overlap(
+            {"train": ["p1"], "validation": ["p1"], "test": ["p2"]}
+        )
 
 
 def test_observation_outside_declared_patient_split_is_rejected() -> None:

@@ -25,7 +25,9 @@ def binary_calibration(
         }
     if len(np.unique(true)) < 2:
         return {
-            "calibration_slope": non_estimable("calibration_slope", "only_one_class_present"),
+            "calibration_slope": non_estimable(
+                "calibration_slope", "only_one_class_present"
+            ),
             "calibration_intercept": non_estimable(
                 "calibration_intercept", "only_one_class_present"
             ),

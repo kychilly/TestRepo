@@ -1,0 +1,17 @@
+{
+  "TP53": {
+    "gene_namespace": "HGNC",
+    "ensembl_gene_id": "ENSG00000141510",
+    "gene_id_version": "Ensembl-110"
+  },
+  "EGFR": {
+    "gene_namespace": "HGNC",
+    "ensembl_gene_id": "ENSG00000146648",
+    "gene_id_version": "Ensembl-110"
+  },
+  "RPRM": {
+    "gene_namespace": "HGNC",
+    "ensembl_gene_id": "ENSG00000133250",
+    "gene_id_version": "Ensembl-110"
+  }
+}

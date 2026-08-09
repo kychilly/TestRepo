@@ -45,7 +45,9 @@ def _validate_split(config: StudyConfig) -> dict[str, Any]:
         if not isinstance(patients, list) or not all(
             isinstance(item, str) and item for item in patients
         ):
-            raise LeakageError(f"Split {name!r} must be a non-empty list of patient IDs")
+            raise LeakageError(
+                f"Split {name!r} must be a non-empty list of patient IDs"
+            )
         splits[name] = cast(list[str], patients)
     assert_zero_patient_overlap(splits)
     return {
@@ -87,7 +89,10 @@ def main(argv: list[str] | None = None) -> int:
     try:
         return _run(args.command, args.config)
     except (ConfigurationError, LeakageError, OSError) as exc:
-        print(json.dumps({"status": "failed", "error": str(exc)}, sort_keys=True), file=sys.stderr)
+        print(
+            json.dumps({"status": "failed", "error": str(exc)}, sort_keys=True),
+            file=sys.stderr,
+        )
         return 2
 
 

@@ -47,7 +47,8 @@ class PreparedInputs:
 class ModelProtocol(Protocol):
     """Minimum callable surface needed by the adapter."""
 
-    def __call__(self, **kwargs: Any) -> Any: ...
+    def __call__(self, **kwargs: Any) -> Any:
+        ...
 
 
 class ScGPTAdapter:
@@ -67,7 +68,9 @@ class ScGPTAdapter:
             not isinstance(key, str) or not isinstance(value, int)
             for key, value in vocabulary.items()
         ):
-            raise AdapterError("Vocabulary must map string gene identifiers to integer token IDs")
+            raise AdapterError(
+                "Vocabulary must map string gene identifiers to integer token IDs"
+            )
         self.model = model
         self.vocabulary = vocabulary
         self.checkpoint_path = checkpoint_path
@@ -83,7 +86,9 @@ class ScGPTAdapter:
                 digest.update(block)
         return digest.hexdigest()
 
-    def map_genes(self, gene_ids: list[str]) -> tuple[NDArray[np.int64], GeneMappingReport]:
+    def map_genes(
+        self, gene_ids: list[str]
+    ) -> tuple[NDArray[np.int64], GeneMappingReport]:
         """Map exact gene IDs, retaining first occurrences and reporting duplicates."""
         if not gene_ids:
             raise AdapterError("No input genes were supplied")
@@ -120,10 +125,14 @@ class ScGPTAdapter:
         ``gene_id_type`` is mandatory to prevent silent namespace selection.
         """
         if not gene_id_type:
-            raise AdapterError("gene_id_type is required; identifier namespaces are never inferred")
+            raise AdapterError(
+                "gene_id_type is required; identifier namespaces are never inferred"
+            )
         if isinstance(data, dict):
             if "X" not in data or "var_names" not in data:
-                raise AdapterError("Intermediate representation requires X and var_names")
+                raise AdapterError(
+                    "Intermediate representation requires X and var_names"
+                )
             matrix = np.asarray(data["X"])
             gene_ids = [str(value) for value in data["var_names"]]
         else:
@@ -131,18 +140,24 @@ class ScGPTAdapter:
                 matrix = np.asarray(data.X)
                 gene_ids = [str(value) for value in data.var_names]
             except AttributeError as exc:
-                raise AdapterError("Input must be AnnData-like or contain X and var_names") from exc
+                raise AdapterError(
+                    "Input must be AnnData-like or contain X and var_names"
+                ) from exc
         if matrix.ndim != 2 or matrix.shape[1] != len(gene_ids):
             raise AdapterError(
                 "Expression matrix columns must match the number of gene identifiers"
             )
         token_ids, report = self.map_genes(gene_ids)
         retained_indices = [
-            index for index, gene_id in enumerate(gene_ids) if gene_id in report.retained
+            index
+            for index, gene_id in enumerate(gene_ids)
+            if gene_id in report.retained
         ]
         values = matrix[:, retained_indices].astype(np.float32, copy=False)
         if not np.isfinite(values).all():
-            raise AdapterError("Input expression matrix contains NaN or infinite values")
+            raise AdapterError(
+                "Input expression matrix contains NaN or infinite values"
+            )
         return PreparedInputs(values=values, token_ids=token_ids, report=report)
 
     def infer(
@@ -162,7 +177,9 @@ class ScGPTAdapter:
             embedding = result.get("cell_emb") if isinstance(result, dict) else result
             array = np.asarray(cast(Any, embedding), dtype=np.float32)
             if array.shape[0] != values.shape[0]:
-                raise AdapterError("Model output first dimension does not match batch size")
+                raise AdapterError(
+                    "Model output first dimension does not match batch size"
+                )
             outputs.append(array)
         if not outputs:
             raise AdapterError("Cannot infer on zero cells")

@@ -88,12 +88,15 @@ def run_benchmark(config: dict[str, Any]) -> dict[str, Any]:
     ]
     if missing_paths:
         return _blocked(
-            config, "Configured benchmark asset does not exist: " + ", ".join(missing_paths)
+            config,
+            "Configured benchmark asset does not exist: " + ", ".join(missing_paths),
         )
     try:
         import anndata as ad  # type: ignore[import-not-found]
     except ImportError as exc:
-        return _blocked(config, f"anndata is required for the configured AnnData input: {exc}")
+        return _blocked(
+            config, f"anndata is required for the configured AnnData input: {exc}"
+        )
     try:
         split = load_patient_splits(split_path, int(config.get("fold", 0)))
     except BaselineError as exc:
@@ -102,12 +105,16 @@ def run_benchmark(config: dict[str, Any]) -> dict[str, Any]:
     patient_column = str(config["patient_id_column"])
     gene_column = str(config["gene_id_column"])
     if patient_column not in data.obs or gene_column not in data.var:
-        raise AdapterError("Configured patient or gene identifier column is absent from AnnData")
+        raise AdapterError(
+            "Configured patient or gene identifier column is absent from AnnData"
+        )
     train_patients = set(split.train)
     patient_values = np.asarray(data.obs[patient_column].astype(str))
     train_indices = np.flatnonzero(np.isin(patient_values, list(train_patients)))
     selected_relative = deterministic_indices(
-        len(train_indices), int(config.get("benchmark_cells", 1000)), int(config["seed"])
+        len(train_indices),
+        int(config.get("benchmark_cells", 1000)),
+        int(config["seed"]),
     )
     selected = train_indices[selected_relative]
     raise AdapterError(
@@ -117,7 +124,9 @@ def run_benchmark(config: dict[str, Any]) -> dict[str, Any]:
 
 
 def _unavailable_model() -> Any:
-    raise AdapterError("No model loader is available without a verified scGPT checkpoint contract")
+    raise AdapterError(
+        "No model loader is available without a verified scGPT checkpoint contract"
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -136,9 +145,12 @@ def main(argv: list[str] | None = None) -> int:
         str(config.get("output_path", "results/compute/week1_scgpt_benchmark.json"))
     )
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    output.write_text(
+        json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     print(
-        json.dumps(result, indent=2, sort_keys=True), file=sys.stderr if exit_code else sys.stdout
+        json.dumps(result, indent=2, sort_keys=True),
+        file=sys.stderr if exit_code else sys.stdout,
     )
     return exit_code
 

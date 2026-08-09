@@ -5,43 +5,107 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "schema_version", "variant_id", "patient_id", "cohort", "gene_symbol", "ensembl_gene_id",
-    "genome_build", "chromosome", "position", "reference_allele", "alternate_allele",
-    "alteration_type", "transcript_id", "transcript_version", "protein_accession",
-    "protein_isoform", "protein_change", "variant_source", "variant_source_version",
-    "mapping_status", "mapping_notes"
+    "schema_version",
+    "variant_id",
+    "patient_id",
+    "cohort",
+    "gene_symbol",
+    "ensembl_gene_id",
+    "genome_build",
+    "chromosome",
+    "position",
+    "reference_allele",
+    "alternate_allele",
+    "alteration_type",
+    "transcript_id",
+    "transcript_version",
+    "protein_accession",
+    "protein_isoform",
+    "protein_change",
+    "variant_source",
+    "variant_source_version",
+    "mapping_status",
+    "mapping_notes"
   ],
   "properties": {
-    "schema_version": {"const": "1.0.0"},
-    "variant_id": {"type": "string", "minLength": 1},
-    "patient_id": {"type": "string", "minLength": 1},
-    "cohort": {"type": "string", "minLength": 1},
-    "gene_symbol": {"type": "string", "pattern": "^[A-Z][A-Z0-9-]*$"},
-    "ensembl_gene_id": {"type": "string", "pattern": "^ENSG[0-9]+$"},
-    "genome_build": {"enum": ["GRCh37", "GRCh38"]},
-    "chromosome": {"type": "string", "pattern": "^(chr)?([1-9]|1[0-9]|2[0-2]|X|Y|M|MT)$"},
-    "position": {"type": "integer", "minimum": 1},
-    "reference_allele": {"type": "string", "pattern": "^[ACGTN]+$"},
-    "alternate_allele": {"type": "string", "pattern": "^[ACGTN]+$"},
-    "alteration_type": {"enum": ["missense", "nonsense", "frameshift", "splice", "amplification", "deletion", "silencing", "other"]},
-    "transcript_id": {"type": ["string", "null"]},
-    "transcript_version": {"type": ["string", "null"]},
-    "protein_accession": {"type": ["string", "null"]},
-    "protein_isoform": {"type": ["string", "null"]},
-    "protein_change": {"type": ["string", "null"]},
-    "variant_source": {"type": "string", "minLength": 1},
-    "variant_source_version": {"type": "string", "minLength": 1},
-    "mapping_status": {"enum": ["resolved", "ambiguous", "failed", "non_protein_resolved", "missing_evidence"]},
-    "mapping_notes": {"type": "string"}
+    "schema_version": { "const": "1.0.0" },
+    "variant_id": { "type": "string", "minLength": 1 },
+    "patient_id": { "type": "string", "minLength": 1 },
+    "cohort": { "type": "string", "minLength": 1 },
+    "gene_symbol": { "type": "string", "pattern": "^[A-Z][A-Z0-9-]*$" },
+    "ensembl_gene_id": { "type": "string", "pattern": "^ENSG[0-9]+$" },
+    "genome_build": { "enum": ["GRCh37", "GRCh38"] },
+    "chromosome": {
+      "type": "string",
+      "pattern": "^(chr)?([1-9]|1[0-9]|2[0-2]|X|Y|M|MT)$"
+    },
+    "position": { "type": "integer", "minimum": 1 },
+    "reference_allele": { "type": "string", "pattern": "^[ACGTN]+$" },
+    "alternate_allele": { "type": "string", "pattern": "^[ACGTN]+$" },
+    "alteration_type": {
+      "enum": [
+        "missense",
+        "nonsense",
+        "frameshift",
+        "splice",
+        "amplification",
+        "deletion",
+        "silencing",
+        "other"
+      ]
+    },
+    "transcript_id": { "type": ["string", "null"] },
+    "transcript_version": { "type": ["string", "null"] },
+    "protein_accession": { "type": ["string", "null"] },
+    "protein_isoform": { "type": ["string", "null"] },
+    "protein_change": { "type": ["string", "null"] },
+    "variant_source": { "type": "string", "minLength": 1 },
+    "variant_source_version": { "type": "string", "minLength": 1 },
+    "mapping_status": {
+      "enum": [
+        "resolved",
+        "ambiguous",
+        "failed",
+        "non_protein_resolved",
+        "missing_evidence"
+      ]
+    },
+    "mapping_notes": { "type": "string" }
   },
   "allOf": [
     {
-      "if": {"properties": {"mapping_status": {"const": "resolved"}}},
-      "then": {"required": ["transcript_id", "transcript_version", "protein_accession", "protein_isoform", "protein_change"], "properties": {"transcript_id": {"type": "string", "minLength": 1}, "transcript_version": {"type": "string", "minLength": 1}, "protein_accession": {"type": "string", "minLength": 1}, "protein_isoform": {"type": "string", "minLength": 1}, "protein_change": {"type": "string", "minLength": 1}}}
+      "if": { "properties": { "mapping_status": { "const": "resolved" } } },
+      "then": {
+        "required": [
+          "transcript_id",
+          "transcript_version",
+          "protein_accession",
+          "protein_isoform",
+          "protein_change"
+        ],
+        "properties": {
+          "transcript_id": { "type": "string", "minLength": 1 },
+          "transcript_version": { "type": "string", "minLength": 1 },
+          "protein_accession": { "type": "string", "minLength": 1 },
+          "protein_isoform": { "type": "string", "minLength": 1 },
+          "protein_change": { "type": "string", "minLength": 1 }
+        }
+      }
     },
     {
-      "if": {"properties": {"mapping_status": {"enum": ["ambiguous", "failed", "non_protein_resolved", "missing_evidence"]}}},
-      "then": {"properties": {"mapping_notes": {"minLength": 1}}}
+      "if": {
+        "properties": {
+          "mapping_status": {
+            "enum": [
+              "ambiguous",
+              "failed",
+              "non_protein_resolved",
+              "missing_evidence"
+            ]
+          }
+        }
+      },
+      "then": { "properties": { "mapping_notes": { "minLength": 1 } } }
     }
   ]
 }

@@ -5,39 +5,117 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "schema_version", "input_id", "candidate_provenance", "variant_provenance", "join_key",
-    "join_cardinality", "ambiguity_status", "protein_mapping", "validator_config_version",
+    "schema_version",
+    "input_id",
+    "candidate_provenance",
+    "variant_provenance",
+    "join_key",
+    "join_cardinality",
+    "ambiguity_status",
+    "protein_mapping",
+    "protein_evidence",
+    "validator_config_version",
     "validator_eligibility"
   ],
   "properties": {
-    "schema_version": {"const": "1.0.0"},
-    "input_id": {"type": "string", "minLength": 1},
-    "candidate_provenance": {"$ref": "candidate_gene.schema.json"},
-    "variant_provenance": {"type": "array", "items": {"$ref": "variant_record.schema.json"}},
-    "join_key": {"type": "string", "minLength": 1},
-    "join_cardinality": {"enum": ["zero", "one", "multiple"]},
-    "ambiguity_status": {"enum": ["none", "transcript_ambiguous", "isoform_ambiguous", "multiple_variants", "gene_alias_unresolved", "mapping_failed"]},
+    "schema_version": { "const": "1.0.0" },
+    "input_id": { "type": "string", "minLength": 1 },
+    "candidate_provenance": { "$ref": "candidate_gene.schema.json" },
+    "variant_provenance": {
+      "type": "array",
+      "items": { "$ref": "variant_record.schema.json" }
+    },
+    "join_key": { "type": "string", "minLength": 1 },
+    "join_cardinality": { "enum": ["zero", "one", "multiple"] },
+    "ambiguity_status": {
+      "enum": [
+        "none",
+        "transcript_ambiguous",
+        "isoform_ambiguous",
+        "multiple_variants",
+        "gene_alias_unresolved",
+        "mapping_failed"
+      ]
+    },
     "protein_mapping": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["variant_id", "mapping_status", "protein_accession", "protein_isoform", "protein_change"],
+        "required": [
+          "variant_id",
+          "mapping_status",
+          "protein_accession",
+          "protein_isoform",
+          "protein_change"
+        ],
         "properties": {
-          "variant_id": {"type": "string", "minLength": 1},
-          "mapping_status": {"enum": ["resolved", "ambiguous", "failed", "non_protein_resolved", "missing_evidence"]},
-          "protein_accession": {"type": ["string", "null"]},
-          "protein_isoform": {"type": ["string", "null"]},
-          "protein_change": {"type": ["string", "null"]}
+          "variant_id": { "type": "string", "minLength": 1 },
+          "mapping_status": {
+            "enum": [
+              "resolved",
+              "ambiguous",
+              "failed",
+              "non_protein_resolved",
+              "missing_evidence"
+            ]
+          },
+          "protein_accession": { "type": ["string", "null"] },
+          "protein_isoform": { "type": ["string", "null"] },
+          "protein_change": { "type": ["string", "null"] }
         }
       }
     },
-    "validator_config_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
-    "validator_eligibility": {"enum": ["eligible_missense", "abstain_non_missense", "abstain_missing_evidence", "abstain_ambiguous", "abstain_mapping_failed"]}
+    "protein_evidence": {
+      "type": "array",
+      "items": { "$ref": "protein_evidence.schema.json" }
+    },
+    "validator_config_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "validator_eligibility": {
+      "enum": [
+        "eligible_missense",
+        "abstain_non_missense",
+        "abstain_missing_evidence",
+        "abstain_ambiguous",
+        "abstain_mapping_failed"
+      ]
+    }
   },
   "allOf": [
-    {"if": {"properties": {"join_cardinality": {"const": "zero"}}}, "then": {"properties": {"variant_provenance": {"maxItems": 0}, "protein_mapping": {"maxItems": 0}, "ambiguity_status": {"enum": ["none", "gene_alias_unresolved", "mapping_failed"]}, "validator_eligibility": {"const": "abstain_missing_evidence"}}}},
-    {"if": {"properties": {"join_cardinality": {"const": "one"}}}, "then": {"properties": {"variant_provenance": {"minItems": 1, "maxItems": 1}, "protein_mapping": {"minItems": 1, "maxItems": 1}}}},
-    {"if": {"properties": {"join_cardinality": {"const": "multiple"}}}, "then": {"properties": {"variant_provenance": {"minItems": 2}, "protein_mapping": {"minItems": 2}, "ambiguity_status": {"const": "multiple_variants"}}}}
+    {
+      "if": { "properties": { "join_cardinality": { "const": "zero" } } },
+      "then": {
+        "properties": {
+          "variant_provenance": { "maxItems": 0 },
+          "protein_mapping": { "maxItems": 0 },
+          "ambiguity_status": {
+            "enum": ["none", "gene_alias_unresolved", "mapping_failed"]
+          },
+          "validator_eligibility": { "const": "abstain_missing_evidence" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "join_cardinality": { "const": "one" } } },
+      "then": {
+        "properties": {
+          "variant_provenance": { "minItems": 1, "maxItems": 1 },
+          "protein_mapping": { "minItems": 1, "maxItems": 1 }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "join_cardinality": { "const": "multiple" } } },
+      "then": {
+        "properties": {
+          "variant_provenance": { "minItems": 2 },
+          "protein_mapping": { "minItems": 2 },
+          "ambiguity_status": { "const": "multiple_variants" }
+        }
+      }
+    }
   ]
 }

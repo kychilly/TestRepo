@@ -26,6 +26,13 @@ PYTHONPATH=src python -m gbm_study.cli validate-split --config path/to/week1.jso
 python -m pytest
 ```
 
+The top-level entry points are also available as `python baselines.py` and
+`python eval.py`. `baselines.py` selects one of `pca_logreg`, `scvi_probe`, or
+`harmony_knn`, or uses `--method all` to run each arm into a separate
+subdirectory; every invocation receives the same patient split file.
+`eval.py` writes the validated JSON/manifest outputs described in
+`docs/evaluation_protocol.md`.
+
 Successful validation writes a machine-readable JSON result under the configured output directory. Results include the Git commit (or `null` for this initial uncommitted repository), configuration/data/split/vocabulary hashes, random seeds, and runtime information. Writes are atomic.
 
 ## Current limitations
