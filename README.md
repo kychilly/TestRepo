@@ -40,3 +40,22 @@ Successful validation writes a machine-readable JSON result under the configured
 No real data, split, labels, checkpoint, environment lock, GPU, or trained model exists in this repository. The evaluation pathway and transcriptomic-to-protein contract are implemented and tested, but no scientific metric, model ranking, or checkpoint inference result is reported until the Data Lead supplies those assets.
 
 The contract proposal in `docs/interfaces.md` requires Validator Lead sign-off before production records are emitted.
+
+
+# Data Registration Log
+
+**Access Date:** 2026-08-09
+
+## Cohort Overview & Sample Counts
+
+| Cohort | Accession / Source | Sample / Patient Count | Local Directory |
+| :--- | :--- | :--- | :--- |
+| **Neftel et al. (2019)** | SCP393 / GSE131928 | 28 Patients (7,930 cells) | data/raw/neftel/ |
+| **TCGA-GBM** | cBioPortal | 528 Patients (592 samples) | data/raw/tcga/ |
+| **CGGA (325)** | CGGA Portal (mRNAseq_325) | 325 Patients | data/raw/cgga/ |
+| **CGGA (693)** | CGGA Portal (mRNAseq_693) | 693 Patients | data/raw/cgga/ |
+
+## File Inventory & SHA-256 Hashes
+
+| Relative File Path | Size (MB) | SHA-256 Checksum |
+| :--- | :--- | :--- |
