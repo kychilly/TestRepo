@@ -1,8 +1,8 @@
 state_labels: [AC, MES, NPC, OPC]
-patient_id_key: patient_id
-cell_id_key: cell_id
-state_key: state
-gene_id_key: gene_ids
+patient_id_key: Sample
+cell_id_key: null
+state_key: null
+gene_id_key: GENE
 batch_key: null
 frozen_genes: null
 pca_logreg:

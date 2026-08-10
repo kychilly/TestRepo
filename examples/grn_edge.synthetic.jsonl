@@ -1,0 +1,4 @@
+{"schema_version":"1.0.0","source_gene":"TP53","target_gene":"EGFR","source_database":"synthetic","confidence":0.95,"edge_list_sha256":"sha256:synthetic-grn","access_date":"2026-08-09"}
+{"schema_version":"1.0.0","source_gene":"TP53","target_gene":"RPRM","source_database":"synthetic","confidence":0.80,"edge_list_sha256":"sha256:synthetic-grn","access_date":"2026-08-09"}
+{"schema_version":"1.0.0","source_gene":"EGFR","target_gene":"RPRM","source_database":"synthetic","confidence":0.70,"edge_list_sha256":"sha256:synthetic-grn","access_date":"2026-08-09"}
+{"schema_version":"1.0.0","source_gene":"IDH1","target_gene":"TP53","source_database":"synthetic","confidence":0.60,"edge_list_sha256":"sha256:synthetic-grn","access_date":"2026-08-09"}

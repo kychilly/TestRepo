@@ -16,6 +16,7 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
 COMPUTE = RESULTS / "compute"
+NEFTEL = ROOT / "data/raw/neftel/neftel_qc.h5ad"
 
 
 def package_version(name: str) -> str | None:
@@ -47,6 +48,7 @@ def command_status(command: list[str]) -> dict[str, Any]:
 def main() -> int:
     benchmark = read_json(COMPUTE / "week1_scgpt_benchmark.json")
     environment = read_json(COMPUTE / "week1_environment_check.json")
+    donor_audit = read_json(RESULTS / "week1_data_audit/donor_batch_audit.json")
     baseline_tests = command_status(
         [sys.executable, "-m", "pytest", "tests/test_baselines.py"]
     )
@@ -109,8 +111,8 @@ def main() -> int:
         },
         "checks": {
             "shared_patient_split_contract": {
-                "status": "passed",
-                "evidence": "baseline loader and scGPT benchmark use baselines.base.load_patient_splits",
+                "status": "passed_on_disk_contract",
+                "evidence": "canonical train/validation/test split keys and baselines.base.load_patient_splits",
             },
             "independent_zero_patient_overlap": {
                 "status": "passed",
@@ -137,6 +139,11 @@ def main() -> int:
                 "status": "blocked",
                 "reason": benchmark.get("reason", "benchmark did not complete"),
             },
+            "neftel_data_registration": {
+                "status": "completed" if NEFTEL.is_file() else "blocked",
+                "evidence": "data/README.md records the downloaded file hash and observed cohort fields",
+            },
+            "donor_batch_audit": donor_audit,
             "checkpoint_vocabulary_hashes": {
                 "status": "blocked",
                 "reason": "real assets absent; fields are null in blocked benchmark",
@@ -172,7 +179,7 @@ def main() -> int:
         },
         "week1_complete": False,
         "completion_blockers": [
-            "No real scGPT checkpoint, vocabulary, AnnData dataset, or patient split is available.",
+            "No real scGPT checkpoint or vocabulary is available; TCGA/CGGA and canonical four-state labels are also absent from the supplied data.",
             "The current runtime has no CUDA GPU and scGPT/AnnData/scVI/Harmony are unavailable.",
             "Validator Lead sign-off on the versioned contract is still required.",
         ],

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Mapping, cast
@@ -32,6 +33,7 @@ def _validate(document: Mapping[str, Any], schema_name: str) -> None:
         "validator_input.schema.json": _load_schema("validator_input.schema.json"),
         "protein_evidence.schema.json": _load_schema("protein_evidence.schema.json"),
         "validator_payload.schema.json": _load_schema("validator_payload.schema.json"),
+        "grn_edge.schema.json": _load_schema("grn_edge.schema.json"),
     }
     schema = schemas[schema_name]
     resolver = RefResolver.from_schema(
@@ -296,7 +298,7 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
 
 def write_jsonl(path: Path, records: Iterable[Mapping[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        "".join(json.dumps(dict(record), sort_keys=True) + "\n" for record in records),
-        encoding="utf-8",
-    )
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as stream:
+        stream.write("".join(json.dumps(dict(record), sort_keys=True) + "\n" for record in records))
+        temporary = Path(stream.name)
+    temporary.replace(path)

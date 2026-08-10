@@ -1,10 +1,10 @@
 python: "3.11"
 modality: neftel
-cell_data_path: null
-patient_id_column: null
-gene_id_column: null
-gene_id_type: null
-split_file: null
+cell_data_path: data/raw/neftel/neftel_qc.h5ad
+patient_id_column: Sample
+gene_id_column: GENE
+gene_id_type: HGNC
+split_file: splits/patient_splits.json
 fold: 0
 checkpoint_path: null
 vocabulary_path: null
@@ -20,3 +20,5 @@ required_special_tokens:
   - <pad>
   - <cls>
   - <eoc>
+grn_edge_list_path: null
+mc_dropout_passes: 20

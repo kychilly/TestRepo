@@ -52,16 +52,24 @@ def load_data(path: Path, config: dict[str, Any], method: str | None = None) -> 
                 raise BaselineError("H5AD input requires anndata") from exc
             adata = ad.read_h5ad(path)
             patient_key = str(config.get("patient_id_key", "patient_id"))
-            cell_key = str(config.get("cell_id_key", "cell_id"))
-            state_key = str(config.get("state_key", "state"))
+            cell_config = config.get("cell_id_key", "cell_id")
+            cell_key = None if cell_config is None else str(cell_config)
+            state_config = config.get("state_key", "state")
+            if state_config is None:
+                raise BaselineError(
+                    "H5AD has no configured AC/MES/NPC/OPC state column; "
+                    "CellAssignment is a different label contract"
+                )
+            state_key = str(state_config)
             gene_key = str(config.get("gene_id_key", "gene_ids"))
-            for key in (patient_key, state_key):
-                if key not in adata.obs:
-                    raise BaselineError(f"H5AD obs is missing configured column {key!r}")
+            if patient_key not in adata.obs:
+                raise BaselineError(f"H5AD obs is missing configured column {patient_key!r}")
+            if state_key not in adata.obs:
+                raise BaselineError(f"H5AD obs is missing configured state column {state_key!r}")
             patient_id = adata.obs[patient_key].astype(str).to_numpy()
             cell_id = (
                 adata.obs[cell_key].astype(str).to_numpy()
-                if cell_key in adata.obs
+                if cell_key is not None and cell_key in adata.obs
                 else np.asarray(adata.obs_names).astype(str)
             )
             gene_ids = (

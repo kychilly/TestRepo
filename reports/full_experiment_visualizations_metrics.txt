@@ -1,0 +1,156 @@
+FULL EXPERIMENT — VISUALIZATION AND METRIC TRACKING PLAN
+Date: 2026-08-10
+
+This document defines what must be tracked when the complete data, labels,
+checkpoint, cohorts, and validator evidence are available. Every number must
+carry run_id, config_hash, split_hash, model/checkpoint hash, vocabulary hash
+where applicable, seed, cohort, backbone, fold, and contributing patient IDs.
+
+A. DATA AND QUALITY VISUALIZATIONS
+
+1. Cohort registration dashboard
+   - One panel per cohort: patient count, sample count, cell count, file size,
+     SHA-256, access date, and missingness.
+   - Keep TCGA and CGGA patient-level counts separate from Neftel cell counts.
+
+2. QC distributions by cohort and donor
+   - n_genes_by_counts, total_counts, mitochondrial percentage, detected genes.
+   - Show threshold lines from config/qc.yaml, never retuned per cohort.
+   - Report cells removed by each threshold and genes removed by min-cells.
+
+3. PCA/UMAP colored separately by donor, cohort, batch, and canonical cell
+   state.
+   - Never use a single plot colored by both donor and state.
+   - Record PCA variance explained per component.
+
+4. Batch-risk panel
+   - Donor silhouette, batch silhouette, and state silhouette in the same frozen
+     embedding.
+   - Report whether donor/batch separation exceeds state separation.
+   - If it does, flag the run as batch-risk and report the mitigation used.
+
+5. HVG and preprocessing audit
+   - Number of retained genes, number of HVGs, overlap of HVGs across cohorts,
+     and a heatmap of top HVGs.
+   - Record whether each model used raw counts, normalized values, or log1p X.
+
+B. SPLIT AND LEAKAGE METRICS
+
+1. Patient counts in train, validation, and test for every fold.
+2. Pairwise overlap count: must be exactly zero.
+3. Cell counts per split, with patient contribution distribution.
+4. Cohort composition per split; CGGA must remain external/held out for the
+   specified study design.
+5. Number of patients absent from the loaded data but present in the split;
+   this must be zero before a real evaluation.
+
+C. BASELINE AND CELL-STATE METRICS
+
+For PCA/logistic, scVI, Harmony/kNN, and each future backbone:
+
+- Macro-F1 for AC/MES/NPC/OPC.
+- Per-state precision, recall, F1, and support.
+- Balanced accuracy.
+- Confusion matrix with fixed AC/MES/NPC/OPC order.
+- Multiclass log loss and Brier score.
+- Calibration curves and expected calibration error if approved.
+- Patient-clustered bootstrap confidence intervals, not cell bootstrap.
+- Per-donor and per-cohort performance summaries.
+- Training time, inference time, peak memory, and model hash.
+
+Validation use:
+- Validation data may select hyperparameters only.
+- Test data must remain untouched until the final locked run.
+- Every fold must use the same patient-level split contract.
+
+D. PATIENT-LEVEL CLINICAL METRICS
+
+For IDH and TP53 patient tasks:
+
+- AUROC with patient-level bootstrap confidence interval.
+- AUPRC, balanced accuracy, sensitivity, specificity, and Brier score.
+- Calibration slope/intercept when sample size permits.
+- Number of positive and negative patients.
+- Explicit non-estimable status when a class is absent.
+- No labels inferred from cell majority vote.
+
+E. scGPT AND UNCERTAINTY METRICS
+
+For each backbone x cohort x fold:
+
+- Checkpoint SHA-256 and vocabulary SHA-256.
+- Number of cells, genes before/after vocabulary mapping, dropped and
+  duplicated genes.
+- Batch size, precision, token length, device, and CUDA synchronization mode.
+- Single-pass wall time and GPU time for 1,000 cells.
+- MC-dropout pass count, total time, single-pass time, and multiplier.
+- Per-gene/per-cell predictive mean, variance, and score standard deviation.
+- Distribution of uncertainty by cohort, donor, cell state, and rank.
+- Fraction of candidates whose ranking changes across MC passes.
+- Top-k rank stability and pairwise rank correlation across seeds.
+- Do not extrapolate GPU-seconds from CPU or synthetic runs.
+
+Compute budget equation:
+  total_cost = 3 backbones x 3 cohorts x folds x MC_passes x measured_pass_cost
+
+F. CANDIDATE-GENE AND GRN METRICS
+
+Candidate list:
+
+- Per-state rank, score, score_sd, and patient contribution count.
+- Suspect interpretation label on every output.
+- Rank stability across seeds and cohorts.
+- Overlap of top-k genes across backbones.
+- No causal-driver wording.
+
+GRN branch:
+
+- Held-out known-edge AUROC.
+- Number of positive held-out edges and deterministic negative edges.
+- Edge-list SHA-256, source database, confidence definition, and access date.
+- Exact held-out seed and fraction.
+- Count of held-out edges rejected for transitive-path leakage.
+- AUROC stratified by edge confidence/database where sample size supports it.
+
+G. VALIDATOR AND STAGE 5 METRICS
+
+For every candidate entering Stage 5:
+
+- Validator outcome: destabilizing_driver, functional_driver, abstain,
+  unconfirmed, or data_deficient.
+- Evidence availability and exact source/version for AlphaFold, ESM1b, and
+  delta-delta-G.
+- Threshold configuration hash and threshold-change log.
+- Number and fraction of genes masked by validator on/off.
+- Final prediction metric difference between validator off and validator on.
+- Identity and version/hash of the outcome-source implementation.
+- Never allow the test stub in a manuscript run.
+
+H. REQUIRED MANUSCRIPT TABLES AND FIGURES
+
+1. Cohort/data-flow diagram with patient counts and exclusions.
+2. QC threshold figure with frozen cutoff lines.
+3. Donor/batch/state embedding figure.
+4. Split/leakage audit table.
+5. Baseline performance table with patient-bootstrap intervals.
+6. Cell-state confusion matrices and calibration panels.
+7. IDH/TP53 ROC and calibration panels.
+8. scGPT compute and MC-dropout cost table.
+9. Candidate rank stability and suspect-overlap figure.
+10. GRN held-out AUROC table with leakage exclusions.
+11. Validator outcome flow diagram and Stage 5 ablation table.
+12. Provenance appendix listing every input and model hash.
+
+I. STOP CONDITIONS
+
+Stop and emit a structured blocked/non-estimable artifact if:
+
+- a required cohort, label column, checkpoint, vocabulary, GPU, raw-count
+  layer, or validator evidence source is absent;
+- any patient appears in more than one split;
+- test patients influence preprocessing, tuning, ranking, or bootstrap fitting;
+- a metric has only one class or insufficient estimable observations;
+- an evidence value is estimated but represented as measured;
+- a CPU/synthetic timing is presented as a real GPU budget;
+- donor/batch separation dominates state separation without a documented
+  mitigation.

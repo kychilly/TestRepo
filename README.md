@@ -4,9 +4,12 @@ This repository contains validation-first Week 1 infrastructure for a leakage-re
 
 ## Scope
 
-Week 1 supports environment/provenance validation, patient-aware split validation, conventional-model integration points, and a future scGPT checkpoint smoke test. It does not access CGGA, produce manuscript metrics, or claim model-ranked genes are causal drivers.
+Week 1 and Week 2 support environment/provenance validation, patient-aware split validation, conventional-model integration points, pilot scGPT candidate serialization, a pluggable GRN recovery branch, MC-dropout uncertainty plumbing, and a validator masking seam. They do not access CGGA, produce manuscript metrics from real assets, or claim model-ranked genes are causal drivers.
 
-The repository currently has no study data. The Data Lead must provide the real manifest, patient split, vocabulary, and checkpoint values. The example configuration intentionally leaves these values `null`.
+The repository now contains the downloaded Neftel preprocessed H5AD under
+`data/raw/neftel/`. TCGA/GBM and both CGGA cohorts, the canonical four-state
+label column, the scGPT checkpoint, vocabulary, and CUDA runtime are still not
+present. The exact data hash and observed fields are recorded in `data/README.md`.
 
 ## Data contracts
 
@@ -37,9 +40,22 @@ Successful validation writes a machine-readable JSON result under the configured
 
 ## Current limitations
 
-No real data, split, labels, checkpoint, environment lock, GPU, or trained model exists in this repository. The evaluation pathway and transcriptomic-to-protein contract are implemented and tested, but no scientific metric, model ranking, or checkpoint inference result is reported until the Data Lead supplies those assets.
+The Neftel artifact is real but is already log-normalized and has no raw
+`counts` layer, so scVI cannot run from it. It contains `CellAssignment`, not
+the agreed `AC/MES/NPC/OPC` state field. TCGA/CGGA are absent, so the combined
+train/validation/CGGA-test run and scientific metrics remain blocked.
 
 The contract proposal in `docs/interfaces.md` requires Validator Lead sign-off before production records are emitted.
+
+Ishaan's validator decision tree and runnable four-gene gate are now present.
+The software classifications match the requested outcomes, but the authoritative
+publication gate is blocked because exact source/version metadata is incomplete
+and the IDH1 ΔΔG value is explicitly estimated.
+
+Week 2 additions are software-tested only on synthetic fixtures. The pilot remains
+blocked by missing real cell data, checkpoint, vocabulary, and CUDA; the GRN branch
+remains blocked until the Data Lead supplies an edge list; and Stage 5 remains
+blocked from scientific use until the validator decision tree is signed off.
 
 
 # Data Registration Log

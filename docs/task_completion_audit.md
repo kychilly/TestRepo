@@ -1,7 +1,7 @@
 # Task completion audit
 
 This is an evidence report, not a completion claim. It records the current
-state after the implementation audit on 2026-08-08.
+state after the Week 1 data integration and Week 2 implementation audit on 2026-08-10.
 
 ## Evidence commands
 
@@ -62,11 +62,21 @@ The authoritative machine-readable evidence is in
 | Candidate scoring, schema producer, and handoff | SCORING/SERIALIZATION CODE COMPLETE, REAL scGPT RUN BLOCKED, VALIDATOR CONSUMER HELD | `src/models/candidate_scoring.py` and `scripts/generate_candidates.py` convert patient-aware mask-logit rows into ranked candidates; the TP53 synthetic flow writes candidate, rich join, and simplified payload artifacts. A real checkpoint has not produced the score rows. Ishaan’s decision-tree consumer remains held. |
 | AlphaFold evidence                              | SYNTHETIC TEST ONLY                                                                  | `tests/test_alphafold_evidence_fixture.py` checks shape/provenance only; no evidence was downloaded or computed.                                                                                                                                                                                                             |
 | Jeffrey cohort tasks                            | NOT DONE BY THIS WORK                                                                | No cohort registration, preprocessing, split construction, or donor/batch audit was performed.                                                                                                                                                                                                                               |
+| Shared Neftel H5AD registration                 | CODE COMPLETE, PARTIAL DATA DELIVERY                                                | `data/README.md` records access date, SHA-256, 7,930 cells, 28 `Sample` donors, and observed metadata. TCGA and both CGGA artifacts were not present in the supplied folder. |
+| Frozen Neftel QC/HVG contract                   | DATA VALIDATED, REPROCESSING ENVIRONMENT MISSING                                    | H5AD contains QC metrics and exactly 2,000 HVGs matching `config/qc.yaml`; `preprocess.py` now validates existing H5AD input. `scanpy/anndata` are not installed in the current host. |
+| Canonical four-state labels                      | BLOCKED                                                                              | The downloaded H5AD contains `CellAssignment` (`Macrophage`, `Malignant`, `Oligodendrocyte`, `T-cell`), not `AC/MES/NPC/OPC`; no mapping is inferred. |
+| Patient split integration                        | NOT COMPLETE                                                                         | The split file is now canonicalized to `train/validation/test`, but it references TCGA/CGGA patients absent from the downloaded Neftel-only artifact; combined evaluation remains blocked until those cohorts arrive. |
+| Donor/batch visual audit                         | CODE COMPLETE, PROXY RESULT                                                          | `results/week1_data_audit/donor_batch_audit.json` and `donor_vs_cellassignment_pca.png` report donor silhouette `-0.0168` versus CellAssignment proxy `0.4323`; donor does not explain more separation in this proxy audit. |
+| Week 2 pilot scGPT embeddings and candidates   | CODE COMPLETE, REAL RUN BLOCKED                                                      | `scripts/run_pilot_scgpt.py` emits structured `status=blocked` output for missing data/checkpoint/vocabulary/CUDA; synthetic candidate construction is tested and carries the fixed suspect-ranking interpretation label. |
+| Week 2 GRN held-out edge recovery              | CODE COMPLETE, REAL RUN BLOCKED                                                      | `src/models/grn.py` validates hashed edge records, performs deterministic edge splitting, asserts against transitive training-prior leakage, and reuses evaluator AUROC; the CLI blocks when `grn_edge_list_path` is null. |
+| Week 2 MC dropout                              | CODE COMPLETE, REAL RUN BLOCKED                                                      | `src/models/mc_dropout.py` computes per-cell/per-dimension mean and variance and pass-count timing; blocked output leaves timings null and marks them non-representative until real CUDA assets exist. |
+| Week 2 Stage 5 masking                        | CODE COMPLETE, VALIDATOR CONSUMER HELD                                               | `src/gbm_study/stage5_masking.py` provides the outcome-source protocol, non-scientific stub, on/off masking, and provenance; real outcomes remain blocked pending Ishaan/Validator Lead sign-off. |
+| Ishaan validator decision tree and four-gene gate | CODE COMPLETE, CLASSIFICATION PASSED, PUBLICATION GATE BLOCKED                   | `gate.py` classifies TP53=`destabilizing_driver`, IDH1=`functional_driver`, EGFR=`abstain`, and RPRM=`abstain`; the authoritative gate is blocked until exact source/version metadata and a measured IDH1 ΔΔG replace the supplied note. |
 
 ## Correction to prior handoff
 
 The earlier statement that the requested work was “completed and verified” was
-too broad. The 52 passing tests prove software contracts and synthetic behavior;
+too broad. The passing tests prove software contracts and synthetic behavior;
 they do not prove GPU availability, checkpoint inference, real cohort results,
 or scientific baseline performance. Those claims remain unmade until the
 required assets and execution host exist.

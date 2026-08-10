@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "validator_gate_record.schema.json",
+  "title": "Four-gene validator gate input record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "gene", "mutation", "alteration_type", "evidence_provenance"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "gene": {"type": "string", "pattern": "^[A-Z][A-Z0-9-]*$"},
+    "mutation": {"type": "string", "minLength": 1},
+    "alteration_type": {"enum": ["missense", "amplification", "silencing", "other"]},
+    "plddt": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+    "esm1b": {"type": ["number", "null"]},
+    "ddg": {"type": ["number", "null"]},
+    "evidence_provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_url", "alphafold_source", "alphafold_version", "esm1b_source", "esm1b_version", "ddg_source", "ddg_version", "access_date"],
+      "properties": {
+        "source_url": {"type": "string", "format": "uri"},
+        "alphafold_source": {"type": "string", "minLength": 1},
+        "alphafold_version": {"type": "string", "minLength": 1},
+        "esm1b_source": {"type": "string", "minLength": 1},
+        "esm1b_version": {"type": "string", "minLength": 1},
+        "ddg_source": {"type": "string", "minLength": 1},
+        "ddg_version": {"type": "string", "minLength": 1},
+        "access_date": {"type": "string", "format": "date"},
+        "provenance_status": {"type": "string"}
+      }
+    }
+  }
+}

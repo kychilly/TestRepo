@@ -38,7 +38,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Optional
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 
 CONFIG_PATH = Path(__file__).parent / "config" / "validator.yaml"
 

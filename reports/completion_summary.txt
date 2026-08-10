@@ -1,0 +1,120 @@
+GBM ML RESEARCH — WEEK 1 / WEEK 2 COMPLETION SUMMARY
+Date: 2026-08-10
+Branch: adit-week2
+
+PURPOSE
+This file explains what was implemented, why it was changed, what was run,
+and which limitations are scientific/data limitations rather than missing code.
+
+WEEK 1 DATA AND PREPROCESSING
+
+1. The shared Drive artifact was downloaded to:
+   data/raw/neftel/neftel_qc.h5ad
+   Size: approximately 2.63 GB
+   SHA-256: 986a2b2bce093334f79232975c064cc2377994fb91316950b4b92e3197288b32
+
+2. The artifact was inspected as HDF5. It contains:
+   - 7,930 cells
+   - 22,197 genes
+   - 28 Sample/donor groups
+   - QC metrics: n_genes_by_counts, pct_counts_mito, total_counts
+   - 2,000 highly-variable genes
+   - CellAssignment values: Macrophage, Malignant, Oligodendrocyte, T-cell
+
+3. The artifact does not contain the agreed AC/MES/NPC/OPC state column. The
+   code does not infer or rename CellAssignment into those four states.
+
+4. TCGA-GBM, CGGA mRNAseq_325, and CGGA mRNAseq_693 were not present in the
+   supplied Drive folder. The split file is canonicalized to train,
+   validation, and test, but the combined split cannot be evaluated from the
+   Neftel-only file because it references absent TCGA/CGGA patients.
+
+5. preprocess.py now validates an existing preprocessed H5AD against the
+   frozen config/qc.yaml contract instead of blindly reprocessing it. The
+   donor/batch audit is implemented in scripts/donor_batch_audit.py and wrote:
+   results/week1_data_audit/donor_batch_audit.json
+   results/week1_data_audit/donor_vs_cellassignment_pca.png
+
+DONOR/BATCH AUDIT RESULT
+
+Donor silhouette: -0.0168222673
+CellAssignment proxy silhouette: 0.4323061705
+Interpretation: donor does not explain more separation than the available
+CellAssignment labels in this proxy audit. This is not a definitive test of
+AC/MES/NPC/OPC separation because those labels are absent.
+
+WEEK 1 MODELING CODE
+
+- PCA/logistic regression, scVI probe, Harmony/kNN, evaluator, patient-level
+  bootstrap, schemas, and provenance machinery are present.
+- Baseline loading now uses the real H5AD field names (Sample and GENE) and
+  fails explicitly when an AC/MES/NPC/OPC state column is not configured.
+- The current host has no anndata/scanpy/scVI/Harmony runtime and no CUDA GPU.
+- No scientific baseline metric is claimed from the current host.
+
+ISHaan VALIDATOR IMPLEMENTATION
+
+Added:
+- config/validator.yaml
+- schemas/validator_gate_record.schema.json
+- examples/validator_gate_input.jsonl
+- gate.py
+- tests/test_validator.py
+
+The decision tree in validator.py implements:
+- destabilizing_driver
+- functional_driver
+- abstain
+- unconfirmed
+- data_deficient
+
+Frozen initial thresholds:
+- pLDDT floor: 70.0
+- ESM1b cutoff: -10.0
+- delta-delta-G cutoff: 1.0
+
+These were initial values because Ishaan's merge did not contain a prior
+validator.yaml. No threshold was moved after observing the gate output.
+
+GATE RESULT
+
+The runnable gate is results/validator_gate.json. The software classification
+matches the requested outcomes, but the publication gate now correctly returns
+status=blocked until complete precomputed provenance is supplied:
+
+Gate execution timestamp: 2026-08-10T21:15:20.672531+00:00 (UTC)
+
+- TP53 R175H: destabilizing_driver
+- IDH1 R132H: functional_driver
+- EGFR amplification: abstain
+- RPRM silencing: abstain
+
+The result carries provenance warnings. The supplied evidence note does not
+state exact AlphaFold, ESM1b, or delta-delta-G versions, and the IDH1 delta-
+delta-G value of 0.4 is explicitly described as an estimate. Therefore the
+classification is software-complete, but the authoritative publication gate is
+blocked rather than reported as passed.
+
+WEEK 2 ADIT IMPLEMENTATION
+
+- Pilot scGPT runner with blocked prerequisite artifacts and suspect-gene
+  interpretation label.
+- GRN edge schema, deterministic held-out edge split, transitive-leakage
+  assertion, AUROC branch, synthetic fixture, and blocked CLI.
+- Monte Carlo dropout wrapper with active dropout, configurable 20-50 passes,
+  per-cell/per-dimension mean and variance, and timing multiplier.
+- Stage 5 masking with --validator on/off, outcome-source seam, provenance,
+  and support for destabilizing_driver/functional_driver buckets.
+
+VERIFICATION
+
+Command:
+  PYTHONPATH=src python -m pytest --disable-warnings -ra
+Result:
+  66 passed, 1 skipped. The skipped test requires anndata.
+
+Targeted Ruff and mypy checks for validator.py, gate.py, Stage 5, and validator
+tests pass. compileall and git diff --check pass for the current changes.
+
+The repository-wide make test still stops at pre-existing Ruff-format failures
+in older untouched files before reaching the test step.

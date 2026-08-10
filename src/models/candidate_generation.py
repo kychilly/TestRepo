@@ -48,15 +48,17 @@ def build_candidate_records(
             raise ContractError("Each scored gene requires gene and score")
         gene = normalize_gene_symbol(str(row["gene"]), aliases)
         score = float(row["score"])
-        score_sd = float(row.get("score_sd", 0.0))
+        score_sd = float(
+            row["score_sd"]
+            if "score_sd" in row
+            else math.sqrt(float(row.get("score_variance", 0.0)))
+        )
         if not math.isfinite(score) or not math.isfinite(score_sd) or score_sd < 0:
             raise ContractError(f"Invalid finite score/score_sd for {gene}")
         if gene not in gene_metadata:
             raise ContractError(f"Missing canonical metadata for {gene}")
         metadata = gene_metadata[gene]
-        prepared.append(
-            {"gene": gene, "score": score, "score_sd": score_sd, "metadata": metadata}
-        )
+        prepared.append({"gene": gene, "score": score, "score_sd": score_sd, "metadata": metadata})
     prepared.sort(key=lambda row: (-row["score"], row["gene"]))
     records: list[CandidateGene] = []
     for rank, row in enumerate(prepared, start=1):

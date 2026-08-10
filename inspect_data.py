@@ -1,21 +1,24 @@
-import scanpy as sc
-import matplotlib.pyplot as plt
+#!/usr/bin/env python3
+"""Compatibility entry point for the Week 1 donor/batch data audit."""
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+from scripts.donor_batch_audit import run_audit
 
 
-# Generate Visual plots/graphics, might not be needed but just in case
-adata = sc.read_h5ad("data/processed/neftel_qc.h5ad")
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--adata", type=Path, default=Path("data/raw/neftel/neftel_qc.h5ad"))
+    parser.add_argument("--output", type=Path, default=Path("results/week1_data_audit"))
+    args = parser.parse_args()
+    result = run_audit(args.adata, args.output)
+    print(json.dumps(result, indent=2, sort_keys=True))
+    return 0 if result["status"] == "completed" else 2
 
-sc.settings.figdir = "docs/figures"
-sc.settings.set_figure_params(dpi=150, facecolor="white")
 
-print("Computing PCA and UMAP projections...")
-sc.tl.pca(adata, svd_solver="arpack")
-sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
-sc.tl.umap(adata)
-
-sc.pl.highly_variable_genes(adata, save="_hvgs.png", show=False)
-
-# Plot UMAP colored by QC metrics (e.g. total counts and gene counts)
-sc.pl.umap(adata, color=["n_genes_by_counts", "total_counts"], save="_qc_umap.png", show=False)
-
-print("Plots successfully saved to docs/figures/")
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,6 +1,7 @@
 import os
+import shutil
+from pathlib import Path
 import yaml
-import numpy as np
 import pandas as pd
 import scanpy as sc
 import anndata as ad
@@ -16,16 +17,61 @@ def load_qc_config(config_path="config/qc.yaml"):
     return config
 
 
+def validate_preprocessed_h5ad(input_path, config_path="config/qc.yaml"):
+    """Validate Jeffrey's preprocessed H5AD without silently reprocessing it.
+
+    The shared artifact is already CP10K/log1p/HVG processed. This function
+    checks the frozen QC contract and reports missing study labels explicitly;
+    it never invents an AC/MES/NPC/OPC mapping from ``CellAssignment``.
+    """
+    try:
+        import anndata as ad
+    except ImportError as exc:
+        raise RuntimeError("H5AD validation requires anndata") from exc
+    qc_cfg = load_qc_config(config_path)
+    adata = ad.read_h5ad(input_path, backed="r")
+    required_obs = {"Sample", "CellAssignment", "n_genes_by_counts", "pct_counts_mito"}
+    missing_obs = sorted(required_obs - set(adata.obs.columns))
+    if missing_obs:
+        raise ValueError(f"Preprocessed H5AD is missing required obs fields: {missing_obs}")
+    if "highly_variable" not in adata.var:
+        raise ValueError("Preprocessed H5AD is missing var/highly_variable")
+    expected_hvg = int(qc_cfg["hvg_selection"]["n_top_genes"])
+    actual_hvg = int(adata.var["highly_variable"].sum())
+    if actual_hvg != expected_hvg:
+        raise ValueError(f"HVG count {actual_hvg} does not match frozen config {expected_hvg}")
+    state_warning = "state column absent; CellAssignment is not AC/MES/NPC/OPC"
+    return {
+        "status": "validated",
+        "cells": int(adata.n_obs),
+        "genes": int(adata.n_vars),
+        "hvg_count": actual_hvg,
+        "sample_count": int(adata.obs["Sample"].nunique()),
+        "state_warning": state_warning,
+        "counts_layer_present": "counts" in adata.layers,
+    }
+
+
 def preprocess_neftel(
-        data_dir="data/raw/neftel",
-        output_dir="data/processed",
-        config_path="config/qc.yaml"
+    data_dir="data/raw/neftel", output_dir="data/processed", config_path="config/qc.yaml"
 ):
     """
     Executes cell QC, gene QC, CP10K + log1p normalization, and HVG selection
     on Neftel et al. single-cell expression data based on frozen config/qc.yaml parameters.
     """
     qc_cfg = load_qc_config(config_path)
+
+    h5ad_files = sorted(Path(data_dir).glob("*.h5ad"))
+    if h5ad_files:
+        input_path = h5ad_files[0]
+        report = validate_preprocessed_h5ad(input_path, config_path)
+        os.makedirs(output_dir, exist_ok=True)
+        output_path = Path(output_dir) / "neftel_qc.h5ad"
+        if input_path.resolve() != output_path.resolve():
+            shutil.copyfile(input_path, output_path)
+        report["output_path"] = str(output_path)
+        print(f"[Validated] Existing preprocessed H5AD copied to {output_path}")
+        return report
 
     # 1. Locate expression and metadata files
     expr_file = None
@@ -53,7 +99,11 @@ def preprocess_neftel(
         print("[Format] Transposing expression matrix (cells -> rows, genes -> columns)...")
         df_expr = df_expr.T
 
-    adata = ad.AnnData(X=df_expr.values, obs=pd.DataFrame(index=df_expr.index), var=pd.DataFrame(index=df_expr.columns))
+    adata = ad.AnnData(
+        X=df_expr.values,
+        obs=pd.DataFrame(index=df_expr.index),
+        var=pd.DataFrame(index=df_expr.columns),
+    )
     print(f"[Initial shape] Cells: {adata.n_obs}, Genes: {adata.n_vars}")
 
     # Attach metadata if present
@@ -66,15 +116,15 @@ def preprocess_neftel(
     # Identify mitochondrial genes starting with MT- or mt-
     adata.var["mito"] = adata.var_names.str.startswith(("MT-", "mt-"))
 
-    sc.pp.calculate_qc_metrics(
-        adata, qc_vars=["mito"], percent_top=None, log1p=False, inplace=True
-    )
+    sc.pp.calculate_qc_metrics(adata, qc_vars=["mito"], percent_top=None, log1p=False, inplace=True)
 
     # 3. Cell QC Filtering
     min_genes = qc_cfg["cell_qc"]["min_genes_per_cell"]
     max_mito = qc_cfg["cell_qc"]["max_pct_mito"]
 
-    print(f"[Filtering Cells] Keeping cells with >= {min_genes} genes & <= {max_mito}% mito content...")
+    print(
+        f"[Filtering Cells] Keeping cells with >= {min_genes} genes & <= {max_mito}% mito content..."
+    )
     initial_cells = adata.n_obs
 
     sc.pp.filter_cells(adata, min_genes=min_genes)
@@ -88,7 +138,9 @@ def preprocess_neftel(
     print(f"[Filtering Genes] Keeping genes expressed in >= {min_cells} cells...")
     initial_genes = adata.n_vars
     sc.pp.filter_genes(adata, min_cells=min_cells)
-    print(f"[Genes Filtered] {initial_genes - adata.n_vars} genes removed ({adata.n_vars} retained).")
+    print(
+        f"[Genes Filtered] {initial_genes - adata.n_vars} genes removed ({adata.n_vars} retained)."
+    )
 
     # 5. Normalization: CP10K + log1p
     target_sum = qc_cfg["normalization"]["target_sum"]
@@ -105,7 +157,9 @@ def preprocess_neftel(
     # 6. HVG Selection
     n_top_genes = qc_cfg["hvg_selection"]["n_top_genes"]
     flavor = qc_cfg["hvg_selection"]["flavor"]
-    print(f"[HVG Selection] Identifying top {n_top_genes} highly variable genes (flavor='{flavor}')...")
+    print(
+        f"[HVG Selection] Identifying top {n_top_genes} highly variable genes (flavor='{flavor}')..."
+    )
     sc.pp.highly_variable_genes(adata, n_top_genes=n_top_genes, flavor=flavor)
 
     # 7. Save Cleaned AnnData Object

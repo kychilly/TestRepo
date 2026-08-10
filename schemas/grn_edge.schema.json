@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "grn_edge.schema.json",
+  "title": "Gene regulatory network edge",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source_gene", "target_gene", "source_database", "confidence", "edge_list_sha256", "access_date"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "source_gene": {"type": "string", "pattern": "^[A-Z][A-Z0-9-]*$"},
+    "target_gene": {"type": "string", "pattern": "^[A-Z][A-Z0-9-]*$"},
+    "source_database": {"type": "string", "minLength": 1},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "edge_list_sha256": {"type": "string", "minLength": 1},
+    "access_date": {"type": "string", "format": "date"}
+  }
+}

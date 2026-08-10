@@ -1,0 +1,62 @@
+TEAM REPORT — WEEK 1 GATE AND INTEGRATION STATUS
+Date: 2026-08-10
+
+HEADLINE
+
+The validator software gate is now runnable and passes the requested four-gene
+classification without post-hoc threshold tuning:
+
+TP53 R175H       -> destabilizing_driver
+IDH1 R132H       -> functional_driver
+EGFR amplification -> abstain
+RPRM silencing   -> abstain
+
+The machine-readable result is results/validator_gate.json.
+Software classification timestamp: 2026-08-10T21:15:20.672531+00:00 (UTC).
+Publication gate status: BLOCKED until evidence provenance is complete.
+
+WHAT WAS CHANGED
+
+- Added a frozen validator configuration with pLDDT, ESM1b, and delta-delta-G
+  thresholds.
+- Added a schema-validated four-gene gate input fixture.
+- Added gate.py with atomic JSON output, expected-outcome checking, threshold
+  change logging, and evidence provenance warnings.
+- Added unit tests covering all five decision-tree outcomes and the complete
+  four-gene gate.
+- Updated Stage 5 masking to recognize the validator's final outcome names.
+- Added data registration, H5AD validation, donor/batch PCA audit, and plain-
+  text experiment tracking documentation.
+
+WHAT THE TEAM SHOULD REPORT
+
+1. Software classification gate: PASSED.
+2. Publication evidence gate: BLOCKED.
+3. Threshold movement after observing the result: NONE.
+4. Evidence quality: WARNING. Exact source/version metadata is missing from
+   the supplied evidence note, and IDH1 delta-delta-G=0.4 is an estimate.
+5. Therefore the four-gene classification is reproducible software output, not yet a
+   publication-grade protein-evidence claim.
+6. EGFR and RPRM were evaluated as the requested non-missense gate events
+   (amplification and silencing), not as the missense examples also listed in
+   the evidence note.
+
+DATA STATUS
+
+- Neftel H5AD downloaded, hashed, and inspected: 7,930 cells, 22,197 genes,
+  28 donors.
+- TCGA-GBM and CGGA 325/693 were not in the supplied Drive folder.
+- The H5AD has CellAssignment labels, not AC/MES/NPC/OPC labels.
+- The H5AD is log-normalized and has no counts layer; scVI cannot run from it.
+- No CUDA GPU, scGPT checkpoint, or scGPT vocabulary is installed on this host.
+
+REQUIRED TEAM FOLLOW-UPS
+
+- Supply exact source/version metadata for each precomputed protein score.
+- Replace the estimated IDH1 delta-delta-G value with an actual precomputed
+  value or explicitly approve the estimate as non-publication evidence.
+- Supply structured TCGA and CGGA artifacts plus clinical labels.
+- Supply or confirm the canonical AC/MES/NPC/OPC labels for Neftel.
+- Supply the verified scGPT checkpoint/vocabulary and CUDA execution host.
+- Do not describe the gate as biological validation until evidence provenance
+  and the missing cohort/label contracts are resolved.

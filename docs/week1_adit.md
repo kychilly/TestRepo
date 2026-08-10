@@ -2,7 +2,7 @@
 
 ## Status
 
-Week 1 infrastructure is complete and reproducible on the current CPU/macOS environment. The scientific Week 1 run is **not complete**: the verified scGPT forward pass is blocked because the repository has no real training-cell dataset, patient split, checkpoint, vocabulary, AnnData/scGPT runtime, or CUDA GPU. No performance metric is fabricated.
+Week 1 infrastructure is complete and reproducible on the current CPU/macOS environment. The scientific Week 1 run is **not complete**: a real Neftel H5AD is now registered and hashed, but the verified scGPT forward pass is blocked by the missing checkpoint, vocabulary, AnnData/scGPT runtime, and CUDA GPU. TCGA/CGGA and the canonical four-state label column are absent from the supplied data. No performance metric is fabricated.
 
 The audit is generated at `results/week1_audit.json`; the top-level reproduction record is `results/week1_manifest.json`.
 
@@ -12,7 +12,7 @@ The current runtime is Python 3.11 on macOS arm64. The installed scientific stac
 
 ## GPU and checkpoint identity
 
-No GPU is available in the current runtime. No checkpoint or vocabulary file is present. Consequently, checkpoint and vocabulary SHA-256 fields are null in the blocked benchmark artifact. A real run must retain both hashes in its environment and benchmark outputs.
+No GPU is available in the current runtime. No checkpoint or vocabulary file is present. Consequently, checkpoint and vocabulary SHA-256 fields are null in the blocked benchmark artifact. The Neftel file hash is recorded in `data/README.md`; a real run must retain all asset hashes in its environment and benchmark outputs.
 
 ## Benchmark result
 
