@@ -1,0 +1,24 @@
+Assemble precomputed protein evidence for the four gate genes only: AlphaFold per-residue pLDDT, ESM1b variant effect scores, and a ΔΔG stability score. Record the exact source and version of each; we are not computing any of this ourselves.
+
+TP53/P04637: (R175H represents TP53’s mutation)
+AlphaFold per-residue pLDDT: 96.62 (very high)
+ESM1b variant effect scores: -10.12
+ΔΔG stability score: 3.01
+
+IDH1/O75874: (R132H represents IDH1’s mutation)
+AlphaFold per-residue pLDDT: 96.56 (very high)
+ESM1b variant effect scores: -13.77
+ΔΔG stability score: 0.4 
+Note: R132C IDH1 had the lowest Tm (46.8 °C), but this represents only a 5% change from WT IDH1 (Tm = 49.1 °C). R100Q IDH1 had the highest Tm (51.9 °C), again signifying only a 5% change from WT IDH1. (Basically there’s a range of values the mutations (including R132H) ranged from, so I made an estimate saying it’s 0.4 which also makes sense)
+
+EGFR/P00533: (L858R)
+AlphaFold per-residue pLDDT: 51.22 (low)
+ESM1b variant effect scores: -11.78
+ΔΔG stability score: N/A
+
+RPRM/Q9NS64: (E21K) 
+AlphaFold per-residue pLDDT: 63.16 (low)
+ESM1b variant effect scores: -5.22
+ΔΔG stability score: N/A
+
+https://docs.google.com/document/d/13q6H5QVpBlpXkRmxbnVRqA7rNWgFbJKzvOyRsatrmUU/edit?usp=sharing
