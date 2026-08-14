@@ -1,4 +1,10 @@
-"""Stage 5 candidate masking seam; validator thresholds intentionally absent."""
+"""Stage 5 candidate masking seam; validator thresholds intentionally absent.
+
+Only the two confirmed driver buckets are allowed into the final prediction.
+The older ``eligible_missense`` value remains part of the input contract for
+audit compatibility, but it is deliberately not a prediction-eligible
+outcome.
+"""
 
 from __future__ import annotations
 
@@ -8,7 +14,7 @@ import inspect
 from pathlib import Path
 from typing import Any, Mapping, Protocol, Sequence, cast
 
-SUPPORTED_OUTCOMES = frozenset({"destabilizing_driver", "functional_driver", "eligible_missense"})
+SUPPORTED_OUTCOMES = frozenset({"destabilizing_driver", "functional_driver"})
 OUTCOMES = frozenset(
     {
         "destabilizing_driver",

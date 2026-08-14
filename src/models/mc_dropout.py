@@ -18,11 +18,29 @@ class MCDropoutResult:
     variance: NDArray[np.float32]
     pass_times: tuple[float, ...]
     single_pass_seconds: float
+    gene_names: tuple[str, ...] | None = None
 
     @property
     def compute_multiplier(self) -> float:
         total = sum(self.pass_times)
         return total / self.single_pass_seconds if self.single_pass_seconds else float("nan")
+
+    def per_gene(self) -> dict[str, dict[str, float]]:
+        """Return mean/variance keyed by gene for gene-level model outputs."""
+        if self.gene_names is None:
+            raise ValueError("gene_names are required for per-gene output")
+        if self.mean.ndim == 1:
+            gene_mean, gene_variance = self.mean, self.variance
+        elif self.mean.ndim == 2:
+            gene_mean, gene_variance = self.mean.mean(axis=0), self.variance.mean(axis=0)
+        else:
+            raise ValueError("model output must be one- or two-dimensional")
+        if len(self.gene_names) != gene_mean.shape[0]:
+            raise ValueError("gene_names must match the model-output gene dimension")
+        return {
+            gene: {"mean": float(mean), "variance": float(variance)}
+            for gene, mean, variance in zip(self.gene_names, gene_mean, gene_variance)
+        }
 
 
 def _dropout_modules(model: Any) -> list[tuple[Any, bool]]:
@@ -45,6 +63,7 @@ def infer_mc_dropout(
     n_passes: int = 20,
     batch_size: int = 32,
     precision: str = "float32",
+    gene_names: tuple[str, ...] | None = None,
 ) -> MCDropoutResult:
     if n_passes < 2:
         raise ValueError("n_passes must be at least 2")
@@ -67,11 +86,15 @@ def infer_mc_dropout(
             single = duration
     stacked = np.stack(outputs, axis=0)
     assert single is not None
+    if gene_names is not None:
+        if stacked.ndim not in {2, 3} or len(gene_names) != stacked.shape[-1]:
+            raise ValueError("gene_names must match the final model-output dimension")
     return MCDropoutResult(
         mean=np.asarray(stacked.mean(axis=0), dtype=np.float32),
         variance=np.asarray(stacked.var(axis=0), dtype=np.float32),
         pass_times=tuple(timings),
         single_pass_seconds=single,
+        gene_names=gene_names,
     )
 
 

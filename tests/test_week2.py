@@ -82,10 +82,27 @@ def test_mc_dropout_mean_variance_and_multiplier(tmp_path: Path) -> None:
     )
 
 
+def test_mc_dropout_can_emit_gene_keyed_summary(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "checkpoint"
+    vocabulary = tmp_path / "vocab"
+    checkpoint.write_text("checkpoint")
+    vocabulary.write_text("vocab")
+    adapter = ScGPTAdapter(StochasticModel(), {"TP53": 1}, checkpoint, vocabulary)
+    prepared = PreparedInputs(
+        np.ones((1, 1), dtype=np.float32), np.array([1], dtype=np.int64),
+        __import__("models.scgpt_adapter", fromlist=["GeneMappingReport"]).GeneMappingReport(
+            ("TP53",), (), (), ()
+        ),
+    )
+    result = infer_mc_dropout(adapter, prepared, n_passes=3, gene_names=("GENE1", "GENE2"))
+    assert set(result.per_gene()) == {"GENE1", "GENE2"}
+    assert set(result.per_gene()["GENE1"]) == {"mean", "variance"}
+
+
 def test_stage5_validator_on_masks_and_off_is_noop() -> None:
     candidates = [{"candidate_id": "a", "gene": "TP53"}, {"candidate_id": "b", "gene": "EGFR"}]
     payloads = {
-        "a": {"input_id": "a", "validator_eligibility": "eligible_missense"},
+        "a": {"input_id": "a", "outcome": "destabilizing_driver"},
         "b": {"input_id": "b", "validator_eligibility": "abstain_ambiguous"},
     }
     source = PassthroughStubOutcomeSource()
@@ -99,6 +116,16 @@ def test_stage5_validator_on_masks_and_off_is_noop() -> None:
     assert unchanged == candidates
     assert on_provenance["outcome_source_version"] == "stub-1.0.0"
     assert off_provenance["masked"] == 0
+
+
+def test_stage5_withholds_legacy_eligible_missense_bucket() -> None:
+    candidates = [{"candidate_id": "a", "gene": "TP53"}]
+    payloads = {"a": {"input_id": "a", "validator_eligibility": "eligible_missense"}}
+    kept, provenance = mask_candidates(
+        candidates, payloads, validator="on", outcome_source=PassthroughStubOutcomeSource()
+    )
+    assert kept == []
+    assert provenance["masked"] == 1
 
 
 def test_pilot_blocker_names_missing_prerequisites() -> None:
