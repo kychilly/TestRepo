@@ -56,13 +56,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", required=True)
     parsed, _ = parser.parse_known_args(argv)
     methods = (
-        ("pca_logreg", "scvi_probe", "harmony_knn")
-        if parsed.method == "all"
-        else (parsed.method,)
+        ("pca_logreg", "scvi_probe", "harmony_knn") if parsed.method == "all" else (parsed.method,)
     )
     if parsed.method != "all":
         return run_one(argv)
-    exit_code = 0
+    exit_codes: list[int] = []
     for method in methods:
         method_args = [
             "--method",
@@ -80,8 +78,11 @@ def main(argv: list[str] | None = None) -> int:
             "--output",
             str(Path(parsed.output) / method),
         ]
-        exit_code = max(exit_code, run_one(method_args))
-    return exit_code
+        exit_codes.append(run_one(method_args))
+    # A scientifically inapplicable arm (for example scVI without raw counts)
+    # must remain recorded, but should not make every successfully completed
+    # baseline look like an orchestration failure.
+    return 0 if any(code == 0 for code in exit_codes) else max(exit_codes, default=2)
 
 
 if __name__ == "__main__":

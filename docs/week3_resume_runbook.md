@@ -6,6 +6,11 @@ before a result is allowed into the paper or group-chat compute estimate.
 
 ## Preconditions
 
+The shared GPU storage policy and Jeffrey delivery requirements are defined in
+`docs/shared_gpu_and_jeffrey_inputs.md`. The host must use Hugging Face
+streaming or an approved compact split; do not download full cohort archives or
+model zoos to the shared machine.
+
 The run host must have:
 
 1. A CUDA GPU and a CUDA-compatible PyTorch wheel for Python 3.11.

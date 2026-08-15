@@ -29,9 +29,7 @@ def non_estimable(metric: str, reason: str) -> dict[str, Any]:
     return {"status": "non_estimable", "reason": reason, "metric": metric}
 
 
-def _require_all_cell_labels(
-    true: np.ndarray[Any, Any], predicted: np.ndarray[Any, Any]
-) -> None:
+def _require_all_cell_labels(true: np.ndarray[Any, Any], predicted: np.ndarray[Any, Any]) -> None:
     observed = set(true.tolist()) | set(predicted.tolist())
     missing = sorted(set(CELL_LABELS) - observed)
     if missing:
@@ -46,12 +44,8 @@ def cell_metrics(
     """Calculate four-state metrics using fixed AC/MES/NPC/OPC ordering."""
     _require_all_cell_labels(true, predicted)
     matrix = confusion_matrix(true, predicted, labels=CELL_LABELS)
-    precision = precision_score(
-        true, predicted, labels=CELL_LABELS, average=None, zero_division=0
-    )
-    recall = recall_score(
-        true, predicted, labels=CELL_LABELS, average=None, zero_division=0
-    )
+    precision = precision_score(true, predicted, labels=CELL_LABELS, average=None, zero_division=0)
+    recall = recall_score(true, predicted, labels=CELL_LABELS, average=None, zero_division=0)
     f1 = f1_score(true, predicted, labels=CELL_LABELS, average=None, zero_division=0)
     result: dict[str, Any] = {
         "macro_f1": float(f1.mean()),
@@ -59,19 +53,21 @@ def cell_metrics(
         "per_state_precision": {
             label: float(value) for label, value in zip(CELL_LABELS, precision)
         },
-        "per_state_recall": {
-            label: float(value) for label, value in zip(CELL_LABELS, recall)
-        },
+        "per_state_recall": {label: float(value) for label, value in zip(CELL_LABELS, recall)},
         "per_state_f1": {label: float(value) for label, value in zip(CELL_LABELS, f1)},
         "confusion_matrix": {"labels": list(CELL_LABELS), "values": matrix.tolist()},
     }
     if probabilities is not None:
+        row_sums = probabilities.sum(axis=1, keepdims=True)
+        if not np.isfinite(row_sums).all() or np.any(row_sums <= 0):
+            raise EvaluationError("Probability rows must have a positive finite sum")
+        # sklearn >=1.5 requires exact normalization. Model probabilities can
+        # differ from one by a few floating-point ulps after JSON round-trips.
+        probabilities = probabilities / row_sums
         result["multiclass_log_loss"] = float(
             log_loss(true, probabilities, labels=list(CELL_LABELS))
         )
-        one_hot = np.eye(len(CELL_LABELS))[
-            np.asarray([CELL_LABELS.index(label) for label in true])
-        ]
+        one_hot = np.eye(len(CELL_LABELS))[np.asarray([CELL_LABELS.index(label) for label in true])]
         result["multiclass_brier_score"] = float(
             np.mean(np.sum((probabilities - one_hot) ** 2, axis=1))
         )
@@ -100,26 +96,18 @@ def binary_metrics(
         elif name == "balanced_accuracy":
             result[name] = float(balanced_accuracy_score(true, predicted))
         elif name == "sensitivity":
-            result[name] = float(
-                recall_score(true, predicted, pos_label=1, zero_division=0)
-            )
+            result[name] = float(recall_score(true, predicted, pos_label=1, zero_division=0))
         elif name == "specificity":
-            result[name] = float(
-                recall_score(true, predicted, pos_label=0, zero_division=0)
-            )
+            result[name] = float(recall_score(true, predicted, pos_label=0, zero_division=0))
         elif name == "brier_score":
             result[name] = float(np.mean((scores - true) ** 2))
         elif name in {"calibration_slope", "calibration_intercept"}:
             if len(true) < 10:
-                result[name] = non_estimable(
-                    name, "insufficient_sample_size_for_calibration"
-                )
+                result[name] = non_estimable(name, "insufficient_sample_size_for_calibration")
             else:
                 clipped = np.clip(scores, 1e-6, 1 - 1e-6)
                 design = np.log(clipped / (1 - clipped)).reshape(-1, 1)
-                calibration = LogisticRegression(C=1e6, solver="lbfgs").fit(
-                    design, true
-                )
+                calibration = LogisticRegression(C=1e6, solver="lbfgs").fit(design, true)
                 result["calibration_slope"] = float(calibration.coef_[0, 0])
                 result["calibration_intercept"] = float(calibration.intercept_[0])
         else:

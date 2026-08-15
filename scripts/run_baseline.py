@@ -264,6 +264,11 @@ def main(argv: list[str] | None = None) -> int:
             "".join(json.dumps(row, sort_keys=True) + "\n" for row in predictions),
             encoding="utf-8",
         )
+        test_predictions = [row for row in predictions if row["split"] == "test"]
+        (args.output / "test_predictions.jsonl").write_text(
+            "".join(json.dumps(row, sort_keys=True) + "\n" for row in test_predictions),
+            encoding="utf-8",
+        )
         (args.output / "patient_summary.json").write_text(
             json.dumps(patients, indent=2, sort_keys=True) + "\n", encoding="utf-8"
         )

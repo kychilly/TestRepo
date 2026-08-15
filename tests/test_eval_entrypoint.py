@@ -27,18 +27,13 @@ def test_combined_eval_writes_cell_and_idh_tasks(tmp_path: Path) -> None:
             "cell_id": f"{patient}-c",
             "true_state": state,
             "predicted_state": state,
-            "split": {"p1": "train", "p2": "validation", "p3": "test", "p4": "test"}[
-                patient
-            ],
+            "split": {"p1": "train", "p2": "validation", "p3": "test", "p4": "test"}[patient],
             "split_hash": split_hash,
             "config_hash": "config",
             "model_hash": "model",
         }
         row.update(
-            {
-                f"probability_{label}": float(label == state)
-                for label in ("AC", "MES", "NPC", "OPC")
-            }
+            {f"probability_{label}": float(label == state) for label in ("AC", "MES", "NPC", "OPC")}
         )
         cell_rows.append(row)
     cell_path = tmp_path / "cells.jsonl"
@@ -97,3 +92,5 @@ def test_combined_eval_writes_cell_and_idh_tasks(tmp_path: Path) -> None:
     result = json.loads((output / "metrics.json").read_text(encoding="utf-8"))
     assert result["tasks"]["cell_state"]["metrics"]["point_estimate"]["macro_f1"] == 1.0
     assert result["tasks"]["idh"]["metrics"]["point_estimate"]["auroc"] == 1.0
+    assert (output / "cell_state" / "bootstrap_distribution.parquet").is_file()
+    assert (output / "idh" / "per_patient_metrics.parquet").is_file()

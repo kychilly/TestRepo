@@ -1,4 +1,4 @@
-.PHONY: environment-check scgpt-smoke baselines-smoke evaluate-smoke gpu-plan chat-report synthetic-smoke test week1-audit week2-adit
+.PHONY: environment-check scgpt-smoke scgpt-shared-gpu baselines-smoke evaluate-smoke gpu-plan chat-report synthetic-smoke test week1-audit week2-adit
 
 PYTHON ?= python
 PYTHONPATH := src
@@ -11,6 +11,10 @@ environment-check:
 scgpt-smoke:
 	mkdir -p results/compute
 	PYTHONPATH=$(PYTHONPATH) $(PYTHON) scripts/benchmark_scgpt.py --config config/model.yaml --output results/compute/week1_scgpt_benchmark.json || test -f results/compute/week1_scgpt_benchmark.json
+
+scgpt-shared-gpu:
+	mkdir -p results/compute
+	PYTHONPATH=$(PYTHONPATH) $(PYTHON) scripts/benchmark_scgpt.py --config config/model_shared_gpu.yaml --output results/compute/shared_gpu_scgpt_benchmark.json
 
 baselines-smoke:
 	PYTHONPATH=$(PYTHONPATH) $(PYTHON) -m pytest tests/test_baselines.py

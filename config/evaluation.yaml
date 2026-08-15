@@ -1,4 +1,5 @@
 metric_units: cell_state
+evaluation_split: test
 fold: 0
 bootstrap_seed: 17
 bootstrap_replicates: 1000

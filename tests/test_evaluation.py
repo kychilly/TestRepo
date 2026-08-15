@@ -137,9 +137,7 @@ def test_patient_bootstrap_resamples_clusters() -> None:
         39,
         40,
     }
-    assert all(
-        len(json.loads(value)) == 4 for value in distribution["sampled_patients"]
-    )
+    assert all(len(json.loads(value)) == 4 for value in distribution["sampled_patients"])
 
 
 def test_class_missing_bootstrap_replicates_are_recorded() -> None:
@@ -265,3 +263,34 @@ def test_outputs_and_manifest_are_written(tmp_path: Path) -> None:
         "evaluation_manifest.json",
     ):
         assert (output / name).is_file()
+
+
+def test_configured_evaluation_split_excludes_training_rows(tmp_path: Path) -> None:
+    split, split_hash = split_file(tmp_path)
+    frame = cell_frame(split_hash)
+    # Put all four states in test so the fixed-label metric is estimable, while
+    # adding deliberately incorrect train rows that must not affect the result.
+    test = frame.copy()
+    test["patient_id"] = ["p3", "p4", "p3", "p4"]
+    test["cell_id"] = ["p3-a", "p4-m", "p3-n", "p4-o"]
+    test["split"] = "test"
+    test["true_state"] = ["AC", "MES", "NPC", "OPC"]
+    test["predicted_state"] = test["true_state"]
+    for index, state in enumerate(test["true_state"]):
+        for label in ("AC", "MES", "NPC", "OPC"):
+            test.loc[index, f"probability_{label}"] = float(label == state)
+    train = frame.iloc[[0]].copy()
+    train["predicted_state"] = "MES"
+    prediction = tmp_path / "predictions.jsonl"
+    pd.concat([train, test], ignore_index=True).to_json(prediction, orient="records", lines=True)
+    config = tmp_path / "evaluation.yaml"
+    config.write_text(
+        "metric_units: cell_state\nevaluation_split: test\n"
+        "bootstrap_replicates: 4\nbootstrap_seed: 2\nfold: 0\n",
+        encoding="utf-8",
+    )
+    output = tmp_path / "test-only"
+    manifest = run_evaluation(prediction, split, config, output)
+    metrics = json.loads((output / "metrics.json").read_text(encoding="utf-8"))
+    assert manifest["evaluation_split"] == "test"
+    assert metrics["point_estimate"]["macro_f1"] == 1.0

@@ -90,9 +90,7 @@ def _required_metadata(frame: pd.DataFrame, required: set[str]) -> None:
         raise EvaluationError("Prediction file is empty")
     for column in ("run_id", "method", "split_hash", "config_hash", "model_hash"):
         if frame[column].isna().any() or frame[column].astype(str).eq("").any():
-            raise EvaluationError(
-                f"Prediction metadata column {column!r} contains missing values"
-            )
+            raise EvaluationError(f"Prediction metadata column {column!r} contains missing values")
 
 
 def _validate_run_metadata(frame: pd.DataFrame, fold: int) -> None:
@@ -106,9 +104,7 @@ def _validate_run_metadata(frame: pd.DataFrame, fold: int) -> None:
         "model_hash",
     ):
         if frame[column].nunique(dropna=False) != 1:
-            raise EvaluationError(
-                f"Prediction metadata column {column!r} is inconsistent"
-            )
+            raise EvaluationError(f"Prediction metadata column {column!r} is inconsistent")
     if int(frame["fold"].iloc[0]) != fold:
         raise EvaluationError(f"Prediction fold does not match requested fold {fold}")
 
@@ -144,10 +140,7 @@ def validate_prediction_file(
             if split_sets[left] & split_sets[right]:
                 raise EvaluationError(f"Patient overlap between {left} and {right}")
     split_hash = sha256_file(split_path)
-    if (
-        frame["split_hash"].astype(str).nunique() != 1
-        or frame["split_hash"].iloc[0] != split_hash
-    ):
+    if frame["split_hash"].astype(str).nunique() != 1 or frame["split_hash"].iloc[0] != split_hash:
         raise EvaluationError("Prediction split-hash mismatch")
     if not frame["split"].isin(VALID_SPLITS).all():
         raise EvaluationError("Prediction rows contain an unknown split")
@@ -175,13 +168,8 @@ def _validate_cell(frame: pd.DataFrame) -> None:
         raise EvaluationError("Unknown four-state label")
     if frame.duplicated(["run_id", "patient_id", "cell_id"]).any():
         raise EvaluationError("Duplicate prediction key")
-    probabilities = frame[[f"probability_{label}" for label in CELL_LABELS]].to_numpy(
-        dtype=float
-    )
-    if (
-        not np.isfinite(probabilities).all()
-        or ((probabilities < 0) | (probabilities > 1)).any()
-    ):
+    probabilities = frame[[f"probability_{label}" for label in CELL_LABELS]].to_numpy(dtype=float)
+    if not np.isfinite(probabilities).all() or ((probabilities < 0) | (probabilities > 1)).any():
         raise EvaluationError("Probability columns must be finite and within [0, 1]")
     if not np.allclose(probabilities.sum(axis=1), 1.0, atol=1e-5):
         raise EvaluationError("Probability rows must sum to one")
@@ -252,22 +240,27 @@ def run_evaluation(
     if not isinstance(unit, str):
         raise EvaluationError("Configuration metric_units must be a string")
     fold = int(config.get("fold", 0))
-    frame, split_hash = validate_prediction_file(
-        prediction_path, split_path, unit, fold
-    )
+    frame, split_hash = validate_prediction_file(prediction_path, split_path, unit, fold)
+    evaluation_split = config.get("evaluation_split")
+    if evaluation_split is not None:
+        if evaluation_split not in VALID_SPLITS:
+            raise EvaluationError(f"evaluation_split must be one of {sorted(VALID_SPLITS)}")
+        frame = frame.loc[frame["split"] == evaluation_split].reset_index(drop=True)
+        if frame.empty:
+            raise EvaluationError(
+                f"No prediction rows are available for evaluation_split={evaluation_split!r}"
+            )
     metric_config_hash = canonical_hash(config)
     if unit == "cell_state":
-        probabilities = frame[
-            [f"probability_{label}" for label in CELL_LABELS]
-        ].to_numpy(dtype=float)
+        probabilities = frame[[f"probability_{label}" for label in CELL_LABELS]].to_numpy(
+            dtype=float
+        )
         point = cell_metrics(
             frame["true_state"].to_numpy(),
             frame["predicted_state"].to_numpy(),
             probabilities,
         )
-        metric_names = tuple(
-            config.get("bootstrap_metrics", ["macro_f1", "balanced_accuracy"])
-        )
+        metric_names = tuple(config.get("bootstrap_metrics", ["macro_f1", "balanced_accuracy"]))
         distribution = patient_bootstrap(
             frame.rename(
                 columns={
@@ -317,9 +310,7 @@ def run_evaluation(
         scores = frame["probability_positive"].to_numpy(dtype=float)
         point = binary_metrics(true, scores, metrics)
         point.update(
-            binary_calibration(
-                true, scores, int(config.get("calibration_min_samples", 10))
-            )
+            binary_calibration(true, scores, int(config.get("calibration_min_samples", 10)))
         )
         distribution = patient_bootstrap(
             frame,
@@ -351,6 +342,7 @@ def run_evaluation(
         "metric_config_hash": metric_config_hash,
         "bootstrap_seed": int(config.get("bootstrap_seed", 17)),
         "bootstrap_replicates": int(config.get("bootstrap_replicates", 1000)),
+        "evaluation_split": evaluation_split or "all",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "package_versions": package_versions(),
     }
@@ -358,15 +350,11 @@ def run_evaluation(
     return manifest
 
 
-def _bootstrap_with_points(
-    distribution: pd.DataFrame, point: dict[str, Any]
-) -> dict[str, Any]:
+def _bootstrap_with_points(distribution: pd.DataFrame, point: dict[str, Any]) -> dict[str, Any]:
     summaries = summarize_bootstrap(distribution)
     for metric, summary in summaries.items():
         value = point.get(metric)
-        summary["point_estimate"] = (
-            float(value) if isinstance(value, (float, int)) else None
-        )
+        summary["point_estimate"] = float(value) if isinstance(value, (float, int)) else None
     return summaries
 
 

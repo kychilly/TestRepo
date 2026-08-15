@@ -1,11 +1,13 @@
 cell_data_path: data/raw/neftel/neftel_qc.h5ad
 patient_id_column: Sample
-gene_id_column: GENE
+gene_id_column: var_names
 gene_id_type: HGNC
 split_file: splits/patient_splits.json
 checkpoint_path: null
 vocabulary_path: null
 requested_device: cuda
+mask_score_provider: null
+gene_metadata_path: null
 run_id: pilot-week2
 cohort: Neftel
 state: MES

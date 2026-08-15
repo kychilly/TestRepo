@@ -1,0 +1,27 @@
+{
+  "status": "completed",
+  "evidence_policy": "figures distinguish measured local artifacts from blocked or synthetic branches",
+  "figures": [
+    "01_readiness_status.png",
+    "02_data_and_asset_status.png",
+    "03_baseline_performance.png",
+    "04_confusion_matrices.png",
+    "05_batch_and_split_audit.png",
+    "06_grn_validator_status.png",
+    "07_compute_blockers.png"
+  ],
+  "measured": [
+    "pilot baseline test metrics",
+    "donor/batch audit",
+    "pilot split counts",
+    "GRN sanity edge counts",
+    "validator classification/publication gate flags"
+  ],
+  "blocked_or_missing": [
+    "TCGA/CGGA integrated evaluation",
+    "scGPT checkpoint/vocabulary/CUDA",
+    "raw counts for scVI",
+    "real candidate Stage 3-4 audit",
+    "complete protein-evidence provenance"
+  ]
+}

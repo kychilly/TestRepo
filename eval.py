@@ -5,8 +5,8 @@ from __future__ import annotations
 
 import argparse
 import json
-import tempfile
 from pathlib import Path
+from typing import Any
 
 from evaluation.reporting import run_evaluation
 
@@ -29,36 +29,24 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("provide --cell-predictions/--predictions or --idh-predictions")
     args.output.mkdir(parents=True, exist_ok=True)
     try:
-        with tempfile.TemporaryDirectory(
-            prefix="eval-staging-", dir=args.output
-        ) as staging:
-            root = Path(staging)
-            payload: dict[str, object] = {"status": "completed", "tasks": {}}
-            if cell_predictions is not None:
-                cell_dir = root / "cell_state"
-                cell_manifest = run_evaluation(
-                    cell_predictions, args.splits, args.config, cell_dir
-                )
-                cell_metrics = json.loads(
-                    (cell_dir / "metrics.json").read_text(encoding="utf-8")
-                )
-                payload["tasks"]["cell_state"] = {
-                    "metrics": cell_metrics,
-                    "manifest": cell_manifest,
-                }
-            if args.idh_predictions is not None:
-                idh_dir = root / "idh"
-                idh_config = args.idh_config or Path("config/evaluation_idh.yaml")
-                idh_manifest = run_evaluation(
-                    args.idh_predictions, args.splits, idh_config, idh_dir
-                )
-                idh_metrics = json.loads(
-                    (idh_dir / "metrics.json").read_text(encoding="utf-8")
-                )
-                payload["tasks"]["idh"] = {
-                    "metrics": idh_metrics,
-                    "manifest": idh_manifest,
-                }
+        payload: dict[str, Any] = {"status": "completed", "tasks": {}}
+        if cell_predictions is not None:
+            cell_dir = args.output / "cell_state"
+            cell_manifest = run_evaluation(cell_predictions, args.splits, args.config, cell_dir)
+            cell_metrics = json.loads((cell_dir / "metrics.json").read_text(encoding="utf-8"))
+            payload["tasks"]["cell_state"] = {
+                "metrics": cell_metrics,
+                "manifest": cell_manifest,
+            }
+        if args.idh_predictions is not None:
+            idh_dir = args.output / "idh"
+            idh_config = args.idh_config or Path("config/evaluation_idh.yaml")
+            idh_manifest = run_evaluation(args.idh_predictions, args.splits, idh_config, idh_dir)
+            idh_metrics = json.loads((idh_dir / "metrics.json").read_text(encoding="utf-8"))
+            payload["tasks"]["idh"] = {
+                "metrics": idh_metrics,
+                "manifest": idh_manifest,
+            }
         (args.output / "metrics.json").write_text(
             json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
         )
@@ -67,9 +55,7 @@ def main(argv: list[str] | None = None) -> int:
                 {
                     "status": "completed",
                     "tasks": sorted(payload["tasks"]),
-                    "cell_prediction_file": str(cell_predictions)
-                    if cell_predictions
-                    else None,
+                    "cell_prediction_file": str(cell_predictions) if cell_predictions else None,
                     "idh_prediction_file": str(args.idh_predictions)
                     if args.idh_predictions
                     else None,
@@ -80,11 +66,7 @@ def main(argv: list[str] | None = None) -> int:
             + "\n",
             encoding="utf-8",
         )
-        print(
-            json.dumps(
-                {"status": "completed", "output": str(args.output)}, sort_keys=True
-            )
-        )
+        print(json.dumps({"status": "completed", "output": str(args.output)}, sort_keys=True))
         return 0
     except (OSError, ValueError, TypeError, KeyError) as exc:
         error = {"status": "failed", "error": str(exc)}

@@ -9,6 +9,7 @@ structured blockers for missing model assets or hardware.
 from __future__ import annotations
 
 import argparse
+import importlib
 import json
 from pathlib import Path
 from typing import Any
@@ -44,7 +45,7 @@ def _grn(config: dict[str, Any], root: Path) -> dict[str, Any]:
         "train_prior_sha256": file_sha256(train_path),
         "held_out_sha256": file_sha256(held_path),
     }
-    return result
+    return dict(result)
 
 
 def _mc_dropout(config: dict[str, Any], root: Path) -> dict[str, Any]:
@@ -81,12 +82,33 @@ def _mc_dropout(config: dict[str, Any], root: Path) -> dict[str, Any]:
             batch_size=int(config.get("mc_dropout_batch_size", 32)),
             device=device,
         )
-    return blocked_result(
-        "Model loader is not configured; provide the verified scGPT adapter/model loader",
-        n_passes=int(config.get("mc_dropout_passes", 20)),
-        batch_size=int(config.get("mc_dropout_batch_size", 32)),
-        device=device,
-    )
+    runner_spec = config.get("mc_dropout_runner")
+    if not runner_spec:
+        return blocked_result(
+            "mc_dropout_runner is not configured for the checkpoint-specific model output",
+            n_passes=int(config.get("mc_dropout_passes", 20)),
+            batch_size=int(config.get("mc_dropout_batch_size", 32)),
+            device=device,
+        )
+    try:
+        module_name, function_name = str(runner_spec).split(":", 1)
+        runner = getattr(importlib.import_module(module_name), function_name)
+        result = runner(config)
+    except (ValueError, ImportError, AttributeError, RuntimeError) as exc:
+        return blocked_result(
+            f"MC-dropout runner failed: {exc}",
+            n_passes=int(config.get("mc_dropout_passes", 20)),
+            batch_size=int(config.get("mc_dropout_batch_size", 32)),
+            device=device,
+        )
+    if not isinstance(result, dict) or result.get("status") != "completed":
+        return blocked_result(
+            "MC-dropout runner did not return a completed measured artifact",
+            n_passes=int(config.get("mc_dropout_passes", 20)),
+            batch_size=int(config.get("mc_dropout_batch_size", 32)),
+            device=device,
+        )
+    return result
 
 
 def run(config_path: Path, output: Path) -> dict[str, Any]:

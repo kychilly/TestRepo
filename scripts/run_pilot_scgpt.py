@@ -4,12 +4,15 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import importlib
 import json
 import sys
 from pathlib import Path
 from typing import Any, Mapping
 
 from models.candidate_generation import build_candidate_records
+from models.candidate_scoring import aggregate_mask_delta_scores
 from models.scgpt_adapter import AdapterError
 
 INTERPRETATION_LABEL = "candidate/suspect gene ranking — not a confirmed driver"
@@ -71,13 +74,21 @@ def run_pilot(config: dict[str, Any]) -> dict[str, Any]:
         "checkpoint_path",
         "vocabulary_path",
         "gene_id_type",
+        "mask_score_provider",
+        "gene_metadata_path",
     )
     missing = [key for key in required if not config.get(key)]
     if missing:
         return _blocked(config, "Missing real pilot inputs: " + ", ".join(missing))
     paths = [
         Path(str(config[key]))
-        for key in ("cell_data_path", "split_file", "checkpoint_path", "vocabulary_path")
+        for key in (
+            "cell_data_path",
+            "split_file",
+            "checkpoint_path",
+            "vocabulary_path",
+            "gene_metadata_path",
+        )
     ]
     absent = [str(path) for path in paths if not path.is_file()]
     if absent:
@@ -90,7 +101,42 @@ def run_pilot(config: dict[str, Any]) -> dict[str, Any]:
         return _blocked(config, "PyTorch is required for the real pilot run")
     if not torch.cuda.is_available():
         return _blocked(config, "CUDA GPU is unavailable for the real pilot run")
-    return _blocked(config, "No verified scGPT checkpoint/model loader contract is configured")
+    provider_spec = str(config["mask_score_provider"])
+    try:
+        module_name, function_name = provider_spec.split(":", 1)
+        provider = getattr(importlib.import_module(module_name), function_name)
+    except (ValueError, ImportError, AttributeError) as exc:
+        return _blocked(config, f"Cannot load mask score provider {provider_spec!r}: {exc}")
+    scores = list(provider(config))
+    if not scores:
+        return _blocked(config, "Mask score provider returned no real score rows")
+    aggregated = aggregate_mask_delta_scores(scores, state=str(config["state"]))
+    metadata = json.loads(Path(str(config["gene_metadata_path"])).read_text(encoding="utf-8"))
+    if not isinstance(metadata, dict):
+        return _blocked(config, "Gene metadata must be a JSON object")
+    split_path = Path(str(config["split_file"]))
+    split_payload = json.loads(split_path.read_text(encoding="utf-8"))
+    training_patients = [str(value) for value in split_payload.get("train", [])]
+    if not training_patients:
+        return _blocked(config, "Split file has no training patients")
+
+    def digest(path: Path) -> str:
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+
+    completed_config = dict(config)
+    completed_config.update(
+        {
+            "checkpoint_hash": digest(Path(str(config["checkpoint_path"]))),
+            "vocabulary_hash": digest(Path(str(config["vocabulary_path"]))),
+            "split_hash": digest(split_path),
+            "config_hash": hashlib.sha256(
+                json.dumps(config, sort_keys=True, default=str).encode()
+            ).hexdigest(),
+            "training_patient_ids": training_patients,
+            "n_cells": len({(str(row["patient_id"]), str(row["cell_id"])) for row in scores}),
+        }
+    )
+    return build_from_scores(completed_config, aggregated, metadata)
 
 
 def main(argv: list[str] | None = None) -> int:
