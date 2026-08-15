@@ -1,4 +1,4 @@
-.PHONY: environment-check scgpt-smoke baselines-smoke evaluate-smoke gpu-plan chat-report synthetic-smoke test week1-audit
+.PHONY: environment-check scgpt-smoke baselines-smoke evaluate-smoke gpu-plan chat-report synthetic-smoke test week1-audit week2-adit
 
 PYTHON ?= python
 PYTHONPATH := src
@@ -37,3 +37,7 @@ test:
 
 week1-audit: environment-check scgpt-smoke baselines-smoke evaluate-smoke
 	PYTHONPATH=$(PYTHONPATH) $(PYTHON) scripts/week1_audit.py
+
+week2-adit:
+	mkdir -p results/week2_adit
+	PYTHONPATH=$(PYTHONPATH) $(PYTHON) scripts/run_adit_week2.py --config config/week2_adit.yaml --output results/week2_adit/report.json

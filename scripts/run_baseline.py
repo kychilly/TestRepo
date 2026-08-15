@@ -27,6 +27,13 @@ from baselines.harmony_knn import HarmonyKNN
 from baselines.pca_logreg import PCALogReg
 from baselines.scvi_probe import ScVIProbe
 
+PILOT_STATE_ALIASES = {
+    "AC-like": "AC",
+    "MES-like": "MES",
+    "NPC-like": "NPC",
+    "OPC-like": "OPC",
+}
+
 
 def load_yaml(path: Path) -> dict[str, Any]:
     try:
@@ -92,16 +99,31 @@ def load_data(path: Path, config: dict[str, Any], method: str | None = None) -> 
                 matrix_source = adata.layers["counts"]
             else:
                 matrix_source = adata.X
+            state = adata.obs[state_key].astype(str)
+            if bool(config.get("normalize_pilot_state_labels", False)):
+                state = state.replace(PILOT_STATE_ALIASES)
+            unknown_mask = ~state.isin(("AC", "MES", "NPC", "OPC"))
+            if bool(config.get("drop_unknown_states", False)):
+                keep = ~unknown_mask.to_numpy()
+                patient_id = patient_id[keep]
+                cell_id = cell_id[keep]
+                state_values = state.to_numpy()[keep]
+                if batch is not None:
+                    batch = batch[keep]
+            else:
+                state_values = state.to_numpy()
             matrix = (
                 matrix_source.toarray()
                 if hasattr(matrix_source, "toarray")
                 else np.asarray(matrix_source)
             )
+            if bool(config.get("drop_unknown_states", False)):
+                matrix = matrix[keep]
             return CellData(
                 np.asarray(matrix),
                 patient_id,
                 cell_id,
-                adata.obs[state_key].astype(str).to_numpy(),
+                state_values,
                 tuple(gene_ids),
                 batch,
             )
@@ -119,9 +141,7 @@ def load_data(path: Path, config: dict[str, Any], method: str | None = None) -> 
                 batch,
             )
             if any("cgga" in value.lower() for value in data.patient_id.tolist()):
-                raise BaselineError(
-                    "CGGA patients are prohibited for the Neftel baseline track"
-                )
+                raise BaselineError("CGGA patients are prohibited for the Neftel baseline track")
             return data
     except OSError as exc:
         raise BaselineError(f"Cannot read data {path}: {exc}") from exc
@@ -207,9 +227,7 @@ def main(argv: list[str] | None = None) -> int:
             scored: list[tuple[float, float]] = []
             for candidate in candidates:
                 candidate_config = {**method_config, "C": float(candidate)}
-                candidate_model = build_baseline(
-                    args.method, candidate_config, args.seed
-                )
+                candidate_model = build_baseline(args.method, candidate_config, args.seed)
                 candidate_model.fit(train, train_metadata)
                 score = float(
                     np.mean(

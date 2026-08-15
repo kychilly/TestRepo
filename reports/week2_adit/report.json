@@ -1,0 +1,46 @@
+{
+  "blockers": [
+    "mc_dropout: scGPT checkpoint is missing; real MC-dropout timing was not substituted"
+  ],
+  "components": {
+    "grn": {
+      "auroc": 1.0,
+      "held_out_edges": 1,
+      "negative_edges": 144,
+      "provenance": {
+        "held_out": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/TP53 Dataset(preprocessed)/prior/grn_pilot_adit_holdout_check.csv",
+        "held_out_sha256": "1e597a3d371c77d15159553a5434300e11cc0f3cd4b79bd0368eacf032348ec7",
+        "train_prior": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv",
+        "train_prior_sha256": "c734cbb6b0fb0c159b17beafa20947dd06f5f8c86a4a779955f1e713d08c3841"
+      },
+      "status": "completed"
+    },
+    "mc_dropout": {
+      "model": {
+        "batch_size": 32,
+        "device": "cuda",
+        "n_passes": 20
+      },
+      "reason": "scGPT checkpoint is missing; real MC-dropout timing was not substituted",
+      "status": "blocked",
+      "timing": {
+        "compute_multiplier": null,
+        "representative": false,
+        "single_pass_seconds": null,
+        "total_seconds": null
+      }
+    },
+    "stage5_masking": {
+      "confirmed_buckets": [
+        "destabilizing_driver",
+        "functional_driver"
+      ],
+      "implementation": "src/gbm_study/stage5_masking.py",
+      "status": "completed",
+      "validator_flag": "off"
+    }
+  },
+  "config": "config/week2_adit.yaml",
+  "owner": "Adit",
+  "status": "completed_with_blockers"
+}

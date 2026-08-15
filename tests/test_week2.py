@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from gbm_study.stage5_masking import PassthroughStubOutcomeSource, mask_candidates
-from models.grn import GRNEdge, held_out_edges, score_held_out_edges
+from models.grn import GRNEdge, held_out_edges, load_edges, score_held_out_edges
 from models.mc_dropout import blocked_result, infer_mc_dropout, multiplier_from_timings
 from models.scgpt_adapter import PreparedInputs, ScGPTAdapter
 from schemas.records import ContractError
@@ -23,6 +23,20 @@ def test_grn_edge_schema_fixture_and_auroc() -> None:
     )
     assert result["status"] == "completed"
     assert 0.0 <= result["auroc"] <= 1.0
+
+
+def test_grn_csv_loader_maps_confidence_and_deduplicates_evidence(tmp_path: Path) -> None:
+    path = tmp_path / "prior.csv"
+    path.write_text(
+        "source_tf,target_gene,mor,confidence,provenance_db,pubmed_id\n"
+        "TP53,RPRM,1,A,TRRUST,PMID:1\n"
+        "TP53,RPRM,1,A,DoRothEA,PMID:1\n"
+        "TP53,EGFR,-1,B,DoRothEA,PMID:2\n"
+    )
+    edges = load_edges(path)
+    assert len(edges) == 2
+    assert edges[0].data["confidence"] == 1.0
+    assert edges[1].data["confidence"] == 0.8
 
 
 def test_grn_rejects_transitive_training_prior_leakage() -> None:
@@ -89,7 +103,8 @@ def test_mc_dropout_can_emit_gene_keyed_summary(tmp_path: Path) -> None:
     vocabulary.write_text("vocab")
     adapter = ScGPTAdapter(StochasticModel(), {"TP53": 1}, checkpoint, vocabulary)
     prepared = PreparedInputs(
-        np.ones((1, 1), dtype=np.float32), np.array([1], dtype=np.int64),
+        np.ones((1, 1), dtype=np.float32),
+        np.array([1], dtype=np.int64),
         __import__("models.scgpt_adapter", fromlist=["GeneMappingReport"]).GeneMappingReport(
             ("TP53",), (), (), ()
         ),

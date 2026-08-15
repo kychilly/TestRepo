@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import csv
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -14,6 +15,7 @@ from schemas.records import ContractError, _validate
 
 Edge = tuple[str, str]
 ScoreFn = Callable[[Mapping[str, Any]], float]
+CONFIDENCE_MAP = {"A": 1.0, "B": 0.8, "C": 0.6, "D": 0.4, "E": 0.2}
 
 
 @dataclass(frozen=True)
@@ -38,10 +40,53 @@ def file_sha256(path: Path) -> str:
 
 
 def load_edges(path: Path) -> list[GRNEdge]:
+    if path.suffix.lower() == ".csv":
+        return _load_csv_edges(path)
     records: list[GRNEdge] = []
     for line in path.read_text(encoding="utf-8").splitlines():
         if line.strip():
             records.append(GRNEdge.from_dict(json.loads(line)))
+    if not records:
+        raise ContractError("GRN edge list is empty")
+    return records
+
+
+def _load_csv_edges(path: Path) -> list[GRNEdge]:
+    """Load Jeffrey's DoRothEA/TRRUST CSV export into the edge contract."""
+    records: list[GRNEdge] = []
+    seen: set[tuple[str, str]] = set()
+    with path.open(newline="", encoding="utf-8") as stream:
+        reader = csv.DictReader(stream)
+        required = {"source_tf", "target_gene", "confidence", "provenance_db"}
+        if not required.issubset(set(reader.fieldnames or ())):
+            raise ContractError(f"GRN CSV is missing required columns: {sorted(required)}")
+        for row in reader:
+            source = str(row["source_tf"]).strip().upper()
+            target = str(row["target_gene"]).strip().upper()
+            pair = (source, target)
+            if pair in seen:
+                continue
+            seen.add(pair)
+            raw_confidence = str(row["confidence"]).strip().upper()
+            try:
+                confidence = float(raw_confidence)
+            except ValueError:
+                if raw_confidence not in CONFIDENCE_MAP:
+                    raise ContractError(f"Unknown GRN confidence label: {raw_confidence}")
+                confidence = CONFIDENCE_MAP[raw_confidence]
+            records.append(
+                GRNEdge.from_dict(
+                    {
+                        "schema_version": "1.0.0",
+                        "source_gene": source,
+                        "target_gene": target,
+                        "source_database": str(row["provenance_db"]).strip(),
+                        "confidence": confidence,
+                        "edge_list_sha256": file_sha256(path),
+                        "access_date": __import__("datetime").date.today().isoformat(),
+                    }
+                )
+            )
     if not records:
         raise ContractError("GRN edge list is empty")
     return records

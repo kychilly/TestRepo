@@ -8,3 +8,4 @@ venv/
 .env
 results/
 data/
+TP53 Dataset(preprocessed)/cgga(raw data)/*.zip
