@@ -1,0 +1,80 @@
+{
+  "bootstrap": {
+    "balanced_accuracy": {
+      "bootstrap_median": 0.6119129803167613,
+      "ci_2_5": 0.5514905899532618,
+      "ci_97_5": 0.6648756943716,
+      "non_estimable_replicates": 0,
+      "point_estimate": 0.6180608606801676,
+      "valid_replicates": 1000
+    },
+    "macro_f1": {
+      "bootstrap_median": 0.6075419851112122,
+      "ci_2_5": 0.5432409698032564,
+      "ci_97_5": 0.6624108500156186,
+      "non_estimable_replicates": 0,
+      "point_estimate": 0.6162589793582279,
+      "valid_replicates": 1000
+    }
+  },
+  "metric_units": "cell_state",
+  "point_estimate": {
+    "balanced_accuracy": 0.6180608606801676,
+    "confusion_matrix": {
+      "labels": [
+        "AC",
+        "MES",
+        "NPC",
+        "OPC"
+      ],
+      "values": [
+        [
+          1147,
+          263,
+          7,
+          114
+        ],
+        [
+          454,
+          903,
+          5,
+          118
+        ],
+        [
+          70,
+          50,
+          1203,
+          584
+        ],
+        [
+          32,
+          38,
+          465,
+          498
+        ]
+      ]
+    },
+    "macro_f1": 0.6162589793582279,
+    "multiclass_brier_score": 0.4686409063873462,
+    "multiclass_log_loss": 0.7705357692950533,
+    "per_state_f1": {
+      "AC": 0.7093382807668523,
+      "MES": 0.6605705925384052,
+      "NPC": 0.6707555059938668,
+      "OPC": 0.42437153813378775
+    },
+    "per_state_precision": {
+      "AC": 0.6735173223722842,
+      "MES": 0.7200956937799043,
+      "NPC": 0.7160714285714286,
+      "OPC": 0.3789954337899543
+    },
+    "per_state_recall": {
+      "AC": 0.7491835401698237,
+      "MES": 0.6101351351351352,
+      "NPC": 0.6308337703198742,
+      "OPC": 0.48209099709583736
+    }
+  },
+  "status": "completed"
+}

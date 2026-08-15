@@ -1,0 +1,28 @@
+{
+  "baseline": {
+    "analysis_type": "harmony_train_only_frozen_query_projection_knn",
+    "applicability": "completed_train_only_with_frozen_query_projection",
+    "components": 2,
+    "harmony_covariate": "CrossSection",
+    "harmony_version": "0.0.10",
+    "method": "harmony_knn",
+    "n_neighbors": 15,
+    "seed": 17
+  },
+  "config_hash": "e3b6ba9602f1a5e2fbd32f8c9aee247a8817dc69d5bd642199c2e6a602221c68",
+  "fold": 0,
+  "method": "harmony_knn",
+  "model_hash": "6e9ceaf889f042809f1e5d028c51a554f5cb5dd00d9ff25582567d7c3ea4425a",
+  "run_id": "harmony_knn_fold0_seed17",
+  "runtime": {
+    "git_commit": "c86f63dfdc6026c6d798455151876afe25bc4ee5",
+    "platform": "macOS-26.2-arm64-arm-64bit",
+    "python": "3.11.9 (main, Jul 30 2025, 13:48:57) [Clang 17.0.0 (clang-1700.0.13.5)]"
+  },
+  "seed": 17,
+  "split_hash": "d88f2863d1ec18584b8fa8bb4d8e1f5c8fad32f85356bd5f96e2a043caa22ced",
+  "status": "completed",
+  "validation_selection": {
+    "rule": "not_applicable"
+  }
+}

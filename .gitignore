@@ -8,4 +8,8 @@ venv/
 .env
 results/
 data/
-TP53 Dataset(preprocessed)/cgga(raw data)/*.zip
+
+# Local/processed research datasets are never repository artifacts.
+# Ignore the full extracted dataset tree as well as downloaded archives.
+TP53 Dataset(preprocessed)/
+*.zip

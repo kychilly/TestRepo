@@ -1,0 +1,18 @@
+{
+  "bootstrap_replicates": 1000,
+  "bootstrap_seed": 17,
+  "evaluator_git_commit": "c86f63dfdc6026c6d798455151876afe25bc4ee5",
+  "input_file_sha256": "653652301e359be6cdd3bac05e8a317058dc11c1ade81dbc9e0cec5fba28d0b4",
+  "metric_config_hash": "2e5e912ddb42620b6aac63317963e2455a774b8a41c5712669821b4cecf29264",
+  "package_versions": {
+    "jsonschema": "4.25.0",
+    "numpy": "1.26.4",
+    "pandas": "2.1.3",
+    "pyarrow": "21.0.0",
+    "scikit-learn": "1.3.2",
+    "scipy": "1.16.1"
+  },
+  "split_file_sha256": "d88f2863d1ec18584b8fa8bb4d8e1f5c8fad32f85356bd5f96e2a043caa22ced",
+  "split_hash": "d88f2863d1ec18584b8fa8bb4d8e1f5c8fad32f85356bd5f96e2a043caa22ced",
+  "timestamp_utc": "2026-08-15T15:15:40.624589+00:00"
+}
