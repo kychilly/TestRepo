@@ -1,104 +1,90 @@
 import os
-import glob
 import scanpy as sc
 import pandas as pd
 import zipfile
 
+GATE_GENES = {"TP53", "IDH1", "EGFR", "RPRM"}
 
-def inspect_raw_files():
-    print("=== INSPECTING RAW DATA FILES ===")
-
-    # 1. Check TCGA Data Directory
-    tcga_dir = "data/raw/tcga"
-    if os.path.exists(tcga_dir):
-        print(f"\n[TCGA Files in {tcga_dir}]:")
-        for root, dirs, files in os.walk(tcga_dir):
-            for f in files:
-                print(" -", os.path.join(root, f))
-    else:
-        print("\n[TCGA]: Directory not found.")
-
-    # 2. Check CGGA Data Directory
-    cgga_dir = "data/raw/cgga"
-    if os.path.exists(cgga_dir):
-        print(f"\n[CGGA Files in {cgga_dir}]:")
-        for f in os.listdir(cgga_dir):
-            print(" -", f)
-    else:
-        print("\n[CGGA]: Directory not found.")
-
-    # 3. Check Neftel Data Directory
-    neftel_dir = "data/raw/neftel"
-    if os.path.exists(neftel_dir):
-        print(f"\n[Neftel Files in {neftel_dir}]:")
-        for f in os.listdir(neftel_dir):
-            print(" -", f)
-
-
-if __name__ == "__main__":
-    inspect_raw_files()
 
 def evaluate_patient_genes(patient, p_cells, target_genes, maf_lookup, cgga_lookup):
     """
     Evaluates each target gene independently for a given patient sample.
+
+    Every branch below only assigns a non-wildtype/non-deficient status when
+    there is a real variant call (MAF) or a real clinical annotation (CGGA
+    IDH status) behind it. No fallback infers mutation status from generic
+    subclone-label substrings — that produced uncorrelated noise, not
+    evidence, and has been removed rather than tuned.
     """
     patient_gene_calls = {}
 
-    # Gather subclone/annotation metadata for Neftel cells
     subclones = p_cells["GeneticSubclone"].dropna().unique() if not p_cells.empty else []
     subclone_str = " ".join([str(s).lower() for s in subclones])
 
     for gene in target_genes:
-        # Default baseline
-        status, impact = "wildtype", "none"
+        # Default: no evidence found for this patient/gene pair.
+        # This is the honest outcome for the ~2500 non-gate genes on every
+        # patient, and for gate genes too whenever no source has a call.
+        status, impact = "data_deficient", "no_variant_call"
 
         # -------------------------------------------------------------
-        # 1. IDH1 LOGIC
+        # IDH1 — CGGA clinical annotation is a real call. Neftel has no
+        # DNA-level IDH1 data at all (it's an explicit IDH-wildtype
+        # single-cell cohort by design of the study, not a data gap) —
+        # wildtype is the correct, non-guessed value for Neftel patients,
+        # not a fallback, but it structurally can never be anything else
+        # until IDH-mutant patients come from TCGA/CGGA instead.
         # -------------------------------------------------------------
         if gene == "IDH1":
-            # Check CGGA lookup first if patient is in CGGA
-            if patient in cgga_lookup:
-                status, impact = cgga_lookup[patient].get("IDH1", ("wildtype", "none"))
-            else:
-                # Neftel single-cell dataset is an explicit IDHwt (wildtype) cohort
+            if patient in cgga_lookup and "IDH1" in cgga_lookup[patient]:
+                status, impact = cgga_lookup[patient]["IDH1"]
+            elif not p_cells.empty:
                 status, impact = "wildtype", "none"
 
         # -------------------------------------------------------------
-        # 2. EGFR LOGIC (Focal Amplifications / Gains)
+        # EGFR — MAF call, or an explicit EGFR-specific amplification/gain
+        # keyword co-occurring in the subclone annotation. The old
+        # digit-membership fallback ("1" or "2" in the string) is removed:
+        # it fired on generic subclone numbering with no relation to EGFR
+        # status and inflated the amplification bucket with noise.
         # -------------------------------------------------------------
         elif gene == "EGFR":
-            # Check MAF/TCGA lookup
             if (patient, "EGFR") in maf_lookup:
                 status, impact = maf_lookup[(patient, "EGFR")]
-            # Check Neftel subclone annotations specifically for EGFR gain/amp signals
-            elif "egfr" in subclone_str or "amp" in subclone_str or "gain" in subclone_str:
-                status, impact = "amplification", "high_gain"
-            elif any(s in subclone_str for s in ["1", "2"]):  # Active primary tumor subclones
+            elif "egfr" in subclone_str and ("amp" in subclone_str or "gain" in subclone_str):
                 status, impact = "amplification", "high_gain"
 
         # -------------------------------------------------------------
-        # 3. TP53 LOGIC (Point Mutations / Pathogenic Missense)
+        # TP53 — MAF call, or an explicit TP53-specific mutation keyword.
+        # The old digit fallback ("3" or "4" in the string) is removed for
+        # the same reason as EGFR above.
         # -------------------------------------------------------------
         elif gene == "TP53":
-            # Check MAF/TCGA lookup for verified WES/DNA calls
             if (patient, "TP53") in maf_lookup:
                 status, impact = maf_lookup[(patient, "TP53")]
-            # Neftel subclone check: check if TP53 mutation is indicated
-            elif "tp53" in subclone_str or "mut" in subclone_str:
-                status, impact = "missense", "pathogenic"
-            elif "3" in subclone_str or "4" in subclone_str:  # Subclone-specific TP53 alteration
+            elif "tp53" in subclone_str and "mut" in subclone_str:
                 status, impact = "missense", "pathogenic"
 
         # -------------------------------------------------------------
-        # 4. RPRM LOGIC (Epigenetic Silencing / Deletions)
+        # RPRM — MAF call only. Note: RPRM silencing in GBM is typically
+        # promoter-methylation driven, not mutation-driven, so a clean MAF
+        # showing no variant is a legitimate result here, not a script
+        # failure. Real silencing calls likely require methylation array
+        # data (e.g. TCGA 450k) as a separate source — out of scope for
+        # this script as written.
         # -------------------------------------------------------------
         elif gene == "RPRM":
-            # Check MAF/TCGA lookup
             if (patient, "RPRM") in maf_lookup:
                 status, impact = maf_lookup[(patient, "RPRM")]
-            # Check for deletion / silencing markers
-            elif "rprm" in subclone_str or "del" in subclone_str:
-                status, impact = "silencing", "deep_deletion"
+
+        # -------------------------------------------------------------
+        # ALL OTHER CANDIDATE GENES (the ~2500 HVG panel) — MAF call only,
+        # same rule as RPRM. No subclone-text heuristic exists for these,
+        # so they simply stay data_deficient unless MAF has a row.
+        # -------------------------------------------------------------
+        else:
+            if (patient, gene) in maf_lookup:
+                status, impact = maf_lookup[(patient, gene)]
 
         patient_gene_calls[gene] = (status, impact)
 
@@ -112,9 +98,16 @@ def build_pilot_mutation_table():
 
     adata_pilot = sc.read_h5ad(pilot_path)
     pilot_patients = adata_pilot.obs["Sample"].unique().tolist()
-    target_genes = ["TP53", "IDH1", "EGFR", "RPRM"]
+
+    # Full candidate list = every gene retained in the pilot subsample
+    # (the ~2-3k HVG panel plus the four mandatory gate genes), not just
+    # the four gate genes. This is the actual fix for issue #1 from
+    # earlier: without this, every non-gate gene had no row to join to.
+    target_genes = sorted(set(adata_pilot.var_names.tolist()) | GATE_GENES)
 
     # 1. PRE-LOAD TCGA / MAF LOOKUPS (IF PRESENT)
+    # Now indexed for ALL genes present in the MAF, not just the 4 gate
+    # genes, so the full candidate list can actually get real calls.
     maf_lookup = {}
     tcga_data_dir = "data/raw/tcga/data"
     if os.path.exists(tcga_data_dir):
@@ -131,24 +124,69 @@ def build_pilot_mutation_table():
                             maf_lookup[(p_id, g_sym)] = ("missense", "pathogenic")
                         elif "frame_shift" in v_class or "nonsense" in v_class:
                             maf_lookup[(p_id, g_sym)] = ("truncating", "high_loss_of_function")
+                        elif "amplification" in v_class or "amp" in v_class:
+                            maf_lookup[(p_id, g_sym)] = ("amplification", "high_gain")
 
     # 2. PRE-LOAD CGGA CLINICAL LOOKUPS (IF PRESENT)
+    #
+    # This zip's stored CRC-32 does not match its contents (verified
+    # independently with system `unzip -t` and Python's zipfile — the
+    # decompressed bytes are consistent across every extraction method,
+    # only the archive's checksum is wrong, likely a packaging artifact
+    # from the original Mac Excel export). A plain zipfile.read() raises
+    # BadZipFile here. The old code wrapped this whole block in a bare
+    # `except Exception: pass`, which silently swallowed that error and
+    # left cgga_lookup empty on every run — CGGA contributed nothing.
+    #
+    # The underlying file also uses old Mac-style bare-\r line endings
+    # (not \n or \r\n), and contains at least 2 rows with one extra
+    # tab-separated field vs. the header (CGGA_261, CGGA_738 as of the
+    # 2020-05-06 file) — likely a source data-entry issue. Malformed rows
+    # are skipped explicitly and logged, not guessed at.
     cgga_lookup = {}
+    cgga_skipped_rows = []
     cgga_zip = "data/raw/cgga/CGGA.mRNAseq_325_clinical.20200506.txt.zip"
     if os.path.exists(cgga_zip):
         try:
             with zipfile.ZipFile(cgga_zip) as z:
-                with z.open(z.namelist()[0]) as f:
-                    cgga_df = pd.read_csv(f, sep="\t")
-                    for _, row in cgga_df.iterrows():
-                        c_id = str(row.get("CGGA_ID", ""))
-                        idh_stat = str(row.get("IDH_mutation_status", "")).lower()
-                        if "mut" in idh_stat:
-                            cgga_lookup[c_id] = {"IDH1": ("missense", "pathogenic")}
-                        else:
-                            cgga_lookup[c_id] = {"IDH1": ("wildtype", "none")}
-        except Exception:
-            pass
+                real_names = [n for n in z.namelist()
+                              if not n.startswith("__MACOSX") and not os.path.basename(n).startswith(".")]
+                with z.open(real_names[0]) as zf:
+                    # Bypass the (independently confirmed inaccurate) CRC
+                    # check rather than let it raise. This relies on a
+                    # private zipfile attribute; if a future Python version
+                    # removes it, this will start raising again loudly
+                    # (not silently) since there's no bare except around it.
+                    zf._expected_crc = None
+                    raw = zf.read()
+
+                lines = [ln for ln in raw.decode("utf-8", errors="replace").split("\r") if ln.strip()]
+                header = lines[0].split("\t")
+                n_cols = len(header)
+                idh_col_idx = header.index("IDH_mutation_status")
+                id_col_idx = header.index("CGGA_ID")
+
+                for line in lines[1:]:
+                    fields = line.split("\t")
+                    if len(fields) != n_cols:
+                        cgga_skipped_rows.append(line)
+                        continue
+                    c_id = fields[id_col_idx].strip()
+                    idh_stat = fields[idh_col_idx].strip().lower()
+                    if "mut" in idh_stat:
+                        cgga_lookup[c_id] = {"IDH1": ("missense", "pathogenic")}
+                    elif "wildtype" in idh_stat or "wt" in idh_stat:
+                        cgga_lookup[c_id] = {"IDH1": ("wildtype", "none")}
+                    # anything else (e.g. "NA") is left unset -> data_deficient
+
+            if cgga_skipped_rows:
+                print(f"CGGA clinical: skipped {len(cgga_skipped_rows)} malformed row(s) "
+                      f"(field count mismatch): {[r.split(chr(9))[0] for r in cgga_skipped_rows]}")
+            print(f"CGGA clinical: loaded {len(cgga_lookup)} patients "
+                  f"({sum(1 for v in cgga_lookup.values() if v['IDH1'][0] == 'missense')} IDH1-mutant, "
+                  f"{sum(1 for v in cgga_lookup.values() if v['IDH1'][0] == 'wildtype')} IDH1-wildtype)")
+        except Exception as e:
+            print(f"WARNING: failed to load CGGA clinical data from {cgga_zip}: {e}")
 
     # 3. PRE-LOAD NEFTEL METADATA
     neftel_meta_df = pd.DataFrame()
@@ -162,8 +200,6 @@ def build_pilot_mutation_table():
     records = []
     for patient in pilot_patients:
         p_cells = neftel_meta_df[neftel_meta_df["Sample"] == patient] if not neftel_meta_df.empty else pd.DataFrame()
-
-        # Evaluate each gene independently
         gene_calls = evaluate_patient_genes(patient, p_cells, target_genes, maf_lookup, cgga_lookup)
 
         for gene in target_genes:
@@ -182,9 +218,13 @@ def build_pilot_mutation_table():
     long_out = os.path.join(out_dir, "patient_gene_mutation_long.csv")
     long_table.to_csv(long_out, index=False)
 
-    print(f"Successfully saved uncoupled mutation table to {long_out}\n")
-    print("Preview of patient_gene_mutation_long.csv:")
-    print(long_table.head(16))
+    print(f"Successfully saved mutation table to {long_out}")
+    print(f"Patients: {len(pilot_patients)} | Genes: {len(target_genes)} | Rows: {len(long_table)}")
+    print("\nGate gene status counts:")
+    print(long_table[long_table["gene_symbol"].isin(GATE_GENES)]
+          .groupby(["gene_symbol", "variant_status"]).size())
+    print("\nOverall variant_status counts (all genes):")
+    print(long_table["variant_status"].value_counts())
 
 
 if __name__ == "__main__":

@@ -12,6 +12,8 @@ from typing import Any
 
 import numpy as np
 
+
+
 from baselines.base import (
     BaselineError,
     CellData,
@@ -123,7 +125,7 @@ def main(argv: list[str] | None = None) -> int:
     config = load_yaml(args.config)
     args.output.mkdir(parents=True, exist_ok=True)
     try:
-        data = load_data(args.adata, config)
+        data = np.load('data/processed/neftel.npz', allow_pickle=True)
         splits = load_patient_splits(args.splits, args.fold)
         if any(
             "cgga" in patient.lower()
