@@ -62,14 +62,27 @@ def load_data(path: Path, config: dict[str, Any]) -> CellData:
     if path_str.endswith(".h5ad"):
         try:
             adata = sc.read_h5ad(path)
-            req_cols = {"patient_id", "state"}
+
+            # Use dynamic config keys with fallbacks
+            patient_key = config.get("patient_id_key", "patient_id")
+            state_key = config.get("state_key", "state")
+            cell_key = config.get("cell_id_key")
+
+            req_cols = {patient_key, state_key}
             if not req_cols.issubset(set(adata.obs.columns)):
                 raise BaselineError(f"H5AD obs must contain columns: {sorted(req_cols)}")
 
             X = adata.X.toarray() if hasattr(adata.X, "toarray") else adata.X
-            patient_id = adata.obs["patient_id"].astype(str).to_numpy()
-            cell_id = adata.obs_names.astype(str).to_numpy()
-            state = adata.obs["state"].astype(str).to_numpy()
+
+            # Ensure clean string conversion from Categorical dtypes
+            patient_id = adata.obs[patient_key].to_numpy().astype(str)
+            state = adata.obs[state_key].to_numpy().astype(str)
+
+            if cell_key and cell_key in adata.obs.columns:
+                cell_id = adata.obs[cell_key].to_numpy().astype(str)
+            else:
+                cell_id = adata.obs_names.to_numpy().astype(str)
+
             gene_ids = tuple(adata.var_names.astype(str).tolist())
             batch = adata.obs["batch"].to_numpy() if "batch" in adata.obs.columns else None
 
@@ -160,7 +173,9 @@ def main(argv: list[str] | None = None) -> int:
     try:
         data = load_data(args.adata, config)
 
-        splits = load_patient_splits(args.splits, args.fold)
+        # Enforce Path object conversion to prevent AttributeError
+        splits_path = Path(args.splits)
+        splits = load_patient_splits(splits_path, args.fold)
         if any(
                 "cgga" in patient.lower()
                 for patients in splits.as_dict().values()

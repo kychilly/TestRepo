@@ -1,5 +1,5 @@
 {
-  "config_hash": "bbe536cf337f4e2b0f8a5a6dc6f04dc37bf67b62861270823fc72409ee5345a6",
+  "config_hash": "07efe3020230c09bd1a10ec7e291dea4db382d6d1e7c14fb487d938539751974",
   "fold": 0,
   "method": "pca_logreg",
   "reason": "Training data must contain at least two state classes",

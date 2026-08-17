@@ -3,7 +3,7 @@ patient_id_key: patient_id
 cell_id_key: cell_id
 state_key: state
 gene_id_key: gene_ids
-batch_key: null
+batch_key: patient_id
 frozen_genes: null
 pca_logreg:
   components: 2
@@ -15,8 +15,8 @@ scvi_probe:
   latent_size: 10
   epochs: 100
   early_stopping: true
-  batch_key: null
+  batch_key: patient_id
 harmony_knn:
   components: 2
   n_neighbors: 15
-  covariate: null
+  covariate: patient_id
