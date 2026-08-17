@@ -98,7 +98,7 @@ def build_patient_splits():
     splits = {
         "train": train_patients,
         "val": val_patients,
-        "test_cgga": test_patients
+        "test": test_patients
     }
 
     os.makedirs("splits", exist_ok=True)
