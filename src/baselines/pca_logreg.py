@@ -52,7 +52,7 @@ class PCALogReg(Baseline):
                 (
                     "classifier",
                     LogisticRegression(
-                        multi_class="multinomial",
+                        # multi_class="multinomial", Removed since scvi_probe and harmony dont touch this method, but might need to undo in the future
                         class_weight=self.class_weight,
                         max_iter=self.max_iter,
                         C=self.C,

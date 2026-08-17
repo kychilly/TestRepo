@@ -69,6 +69,16 @@ def generate_pilot_subsample():
         .tolist()
     )
 
+    with open("splits/patient_splits.json") as f:
+        split_data = json.load(f)["folds"][0]
+
+    sampled_patients = set(sampled_patients)
+    for split_name in ("train", "validation", "test"):
+        split_patients = [p for p in split_data[split_name] if p in valid_split_patients]
+        # ensure at least a few patients from this split make it into the pilot
+        sampled_patients.update(split_patients[:5])
+    sampled_patients = list(sampled_patients)
+
     adata_pilot = adata_valid[adata_valid.obs["patient_id"].isin(sampled_patients)].copy()
 
     print("[6/6] Subsetting highly variable & mandatory target genes...")
@@ -93,6 +103,7 @@ def generate_pilot_subsample():
     out_cgga = "data/pilot/cgga_pilot_subsample.h5ad"
     out_tcga = "data/pilot/tcga_pilot_subsample.h5ad"
 
+    adata_pilot.obs["batch"] = adata_pilot.obs["patient_id"]
     adata_pilot.write_h5ad(out_neftel)
     cgga_pilot.write_h5ad(out_cgga)
     tcga_pilot.write_h5ad(out_tcga)

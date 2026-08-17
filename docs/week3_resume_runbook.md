@@ -28,7 +28,7 @@ Before requesting hardware, a provider-neutral plan can be generated locally:
 ```sh
 PYTHONPATH=src python scripts/plan_gpu.py \
   --token-length TOKEN_LENGTH --cells 10000 --batch-size 32 \
-  --output results/compute/week3_gpu_plan.json
+  --output baseline_results/compute/week3_gpu_plan.json
 ```
 
 The planner inspects actual visible CUDA devices, current free memory, and
@@ -46,8 +46,8 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python scripts/check_environment.py \
   --config config/model.yaml \
-  --json-out results/compute/environment.json \
-  --environment-export results/compute/environment_export.json
+  --json-out baseline_results/compute/environment.json \
+  --environment-export baseline_results/compute/environment_export.json
 ```
 
 Populate `config/model.yaml` only with the Data Lead's paths and hashes. The
@@ -60,7 +60,7 @@ Then run the exact 1,000-cell training-only smoke benchmark:
 ```sh
 python scripts/benchmark_scgpt.py \
   --config config/model.yaml \
-  --output results/compute/week3_scgpt_benchmark.json
+  --output baseline_results/compute/week3_scgpt_benchmark.json
 ```
 
 The accepted benchmark evidence is `status: completed`, exactly 1,000 cells,
@@ -97,9 +97,9 @@ Evaluate the approved prediction file through `eval.py`:
 
 ```sh
 PYTHONPATH=src python eval.py \
-  --predictions results/baselines/pca_logreg/fold0_seed17/predictions.jsonl \
+  --predictions baseline_results/baselines/pca_logreg/fold0_seed17/predictions.jsonl \
   --splits SPLITS.json --config config/evaluation.yaml \
-  --output results/evaluation/pca_logreg/fold0_seed17
+  --output baseline_results/evaluation/pca_logreg/fold0_seed17
 ```
 
 The JSON under `results/evaluation/` is the only source for manuscript

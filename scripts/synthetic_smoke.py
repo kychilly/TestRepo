@@ -45,7 +45,7 @@ def synthetic_data() -> CellData:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--output", type=Path, default=Path("results/synthetic_smoke_report.json")
+        "--output", type=Path, default=Path("baseline_results/synthetic_smoke_report.json")
     )
     args = parser.parse_args(argv)
     data = synthetic_data()
@@ -54,13 +54,13 @@ def main(argv: list[str] | None = None) -> int:
     report: dict[str, Any] = {
         "synthetic": True,
         "scientific_use": "forbidden",
-        "results": {},
+        "baseline_results": {},
     }
 
     pca = PCALogReg(components=2, seed=17).fit(train, {"split": "train"})
     pca_pred = pca.predict(test, {"split": "test"})
     pca_prob = pca.predict_proba(test, {"split": "test"})
-    report["results"]["pca_logreg"] = {
+    report["baseline_results"]["pca_logreg"] = {
         "status": "completed",
         "macro_f1": cell_metrics(test.state, pca_pred, pca_prob)["macro_f1"],
     }
@@ -76,14 +76,14 @@ def main(argv: list[str] | None = None) -> int:
             model.fit(train, {"split": "train", "early_stopping": False})
             prediction = model.predict(test, {"split": "test"})
             probability = model.predict_proba(test, {"split": "test"})
-            report["results"][name] = {
+            report["baseline_results"][name] = {
                 "status": "completed",
                 "macro_f1": cell_metrics(test.state, prediction, probability)[
                     "macro_f1"
                 ],
             }
         except (MethodNotApplicable, ValueError, RuntimeError, ImportError) as exc:
-            report["results"][name] = {
+            report["baseline_results"][name] = {
                 "status": "blocked",
                 "metric": None,
                 "reason": str(exc),
@@ -91,24 +91,24 @@ def main(argv: list[str] | None = None) -> int:
 
     idh_true = np.array([0, 1, 0, 1])
     idh_scores = np.array([0.1, 0.9, 0.2, 0.8])
-    report["results"]["idh_evaluation"] = {
+    report["baseline_results"]["idh_evaluation"] = {
         "status": "completed",
         "metric_scope": "synthetic_patient_level_only",
         "auroc": binary_metrics(idh_true, idh_scores, ("auroc",))["auroc"],
     }
 
     try:
-        report["results"]["gpu_plan"] = plan_cuda_work(
+        report["baseline_results"]["gpu_plan"] = plan_cuda_work(
             cells=1000, token_length=2048, batch_size=32
         ).to_dict()
     except GPUPlanningError as exc:
-        report["results"]["gpu_plan"] = {
+        report["baseline_results"]["gpu_plan"] = {
             "status": "blocked",
             "metric": None,
             "reason": str(exc),
         }
 
-    report["results"]["candidate_schema"] = {
+    report["baseline_results"]["candidate_schema"] = {
         "status": "completed",
         "metric": None,
         "producer": "implemented_and_schema_validated",

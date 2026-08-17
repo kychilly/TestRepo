@@ -15,7 +15,7 @@ python3.11 -m venv .venv
 . .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-python scripts/check_environment.py --config config/model.yaml --environment-export results/compute/environment.json
+python scripts/check_environment.py --config config/model.yaml --environment-export baseline_results/compute/environment.json
 ```
 
 `requirements.txt` pins the Python packages, but it is not an exact reproducibility guarantee. The successful `environment.json` export, OS, Python executable, package index/wheel provenance, hardware, CUDA driver, and the checkpoint/vocabulary hashes are also required. On a CUDA host, install the compatible PyTorch CUDA wheel before the remaining requirements and record the exact command and export; do not replace the configured checkpoint.
@@ -29,8 +29,8 @@ The vocabulary must be a JSON mapping from the declared gene identifier namespac
 ## Checks and benchmark
 
 ```sh
-python scripts/check_environment.py --config config/model.yaml --json-out results/compute/environment.json --environment-export results/compute/environment_export.json
-python scripts/benchmark_scgpt.py --config config/model.yaml --output results/compute/week1_scgpt_benchmark.json
+python scripts/check_environment.py --config config/model.yaml --json-out baseline_results/compute/environment.json --environment-export baseline_results/compute/environment_export.json
+python scripts/benchmark_scgpt.py --config config/model.yaml --output baseline_results/compute/week1_scgpt_benchmark.json
 ```
 
 The benchmark requires a verified checkpoint-specific scGPT model loader. The generic adapter validates mapping, deterministic sampling, input/output shapes, finite embeddings, asset hashes, and timing primitives, but it does not guess the architecture or silently load another checkpoint. A successful implementation must add the loader for the exact configured checkpoint and then record warm-up count, batch size, token length, precision, CUDA synchronization policy, wall time, peak allocated/reserved memory, cells per second, GPU-seconds per 1,000 cells, and projected GPU-seconds per 10,000 cells.
