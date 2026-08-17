@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import scanpy as sc
 
 from baselines.base import (
     BaselineError,
@@ -47,104 +48,63 @@ def load_yaml(path: Path) -> dict[str, Any]:
     return payload
 
 
-def load_data(path: Path, config: dict[str, Any], method: str | None = None) -> CellData:
-    """Load Jeffrey's processed H5AD or the existing intermediate NPZ format."""
+def subset_cell_data(data: CellData, mask: np.ndarray) -> CellData:
+    """Helper to slice a CellData instance using a boolean mask."""
+    return CellData(
+        X=data.X[mask],
+        patient_id=data.patient_id[mask],
+        cell_id=data.cell_id[mask],
+        state=data.state[mask],
+        gene_ids=data.gene_ids,
+        batch=data.batch[mask] if data.batch is not None else None,
+    )
+
+
+def load_data(path: Path, config: dict[str, Any]) -> CellData:
+    """Load data from .h5ad or .npz format into a CellData instance."""
     if "cgga" in str(path).lower():
         raise BaselineError("CGGA data are prohibited for the Neftel baseline track")
-    try:
-        if path.suffix.lower() == ".h5ad":
-            try:
-                import anndata as ad  # type: ignore[import-untyped]
-            except ImportError as exc:
-                raise BaselineError("H5AD input requires anndata") from exc
-            adata = ad.read_h5ad(path)
-            patient_key = str(config.get("patient_id_key", "patient_id"))
-            cell_config = config.get("cell_id_key", "cell_id")
-            cell_key = None if cell_config is None else str(cell_config)
-            state_config = config.get("state_key", "state")
-            if state_config is None:
-                raise BaselineError(
-                    "H5AD has no configured AC/MES/NPC/OPC state column; "
-                    "CellAssignment is a different label contract"
+
+    path_str = str(path).lower()
+    if path_str.endswith(".h5ad"):
+        try:
+            adata = sc.read_h5ad(path)
+            req_cols = {"patient_id", "state"}
+            if not req_cols.issubset(set(adata.obs.columns)):
+                raise BaselineError(f"H5AD obs must contain columns: {sorted(req_cols)}")
+
+            X = adata.X.toarray() if hasattr(adata.X, "toarray") else adata.X
+            patient_id = adata.obs["patient_id"].astype(str).to_numpy()
+            cell_id = adata.obs_names.astype(str).to_numpy()
+            state = adata.obs["state"].astype(str).to_numpy()
+            gene_ids = tuple(adata.var_names.astype(str).tolist())
+            batch = adata.obs["batch"].to_numpy() if "batch" in adata.obs.columns else None
+
+            data = CellData(X, patient_id, cell_id, state, gene_ids, batch)
+        except OSError as exc:
+            raise BaselineError(f"Cannot read h5ad file {path}: {exc}") from exc
+    else:
+        try:
+            with np.load(path, allow_pickle=False) as archive:
+                required = {"X", "patient_id", "cell_id", "state", "gene_ids"}
+                if set(archive.files) < required:
+                    raise BaselineError(f"NPZ data must contain {sorted(required)}")
+                batch = archive["batch"] if "batch" in archive.files else None
+                data = CellData(
+                    archive["X"],
+                    archive["patient_id"].astype(str),
+                    archive["cell_id"].astype(str),
+                    archive["state"].astype(str),
+                    tuple(archive["gene_ids"].astype(str).tolist()),
+                    batch,
                 )
-            state_key = str(state_config)
-            gene_key = str(config.get("gene_id_key", "gene_ids"))
-            if patient_key not in adata.obs:
-                raise BaselineError(f"H5AD obs is missing configured column {patient_key!r}")
-            if state_key not in adata.obs:
-                raise BaselineError(f"H5AD obs is missing configured state column {state_key!r}")
-            patient_id = adata.obs[patient_key].astype(str).to_numpy()
-            cell_id = (
-                adata.obs[cell_key].astype(str).to_numpy()
-                if cell_key is not None and cell_key in adata.obs
-                else np.asarray(adata.obs_names).astype(str)
-            )
-            gene_ids = (
-                adata.var[gene_key].astype(str).tolist()
-                if gene_key in adata.var
-                else [str(value) for value in adata.var_names]
-            )
-            batch_key = config.get("batch_key")
-            batch = (
-                adata.obs[str(batch_key)].astype(str).to_numpy()
-                if batch_key and str(batch_key) in adata.obs
-                else None
-            )
-            if method == "scvi_probe":
-                if "counts" not in adata.layers:
-                    raise BaselineError(
-                        "scVI requires raw integer counts in H5AD layer 'counts'; "
-                        "Jeffrey's QC output contains log-normalized X and cannot be used for scVI"
-                    )
-                matrix_source = adata.layers["counts"]
-            else:
-                matrix_source = adata.X
-            state = adata.obs[state_key].astype(str)
-            if bool(config.get("normalize_pilot_state_labels", False)):
-                state = state.replace(PILOT_STATE_ALIASES)
-            unknown_mask = ~state.isin(("AC", "MES", "NPC", "OPC"))
-            if bool(config.get("drop_unknown_states", False)):
-                keep = ~unknown_mask.to_numpy()
-                patient_id = patient_id[keep]
-                cell_id = cell_id[keep]
-                state_values = state.to_numpy()[keep]
-                if batch is not None:
-                    batch = batch[keep]
-            else:
-                state_values = state.to_numpy()
-            matrix = (
-                matrix_source.toarray()
-                if hasattr(matrix_source, "toarray")
-                else np.asarray(matrix_source)
-            )
-            if bool(config.get("drop_unknown_states", False)):
-                matrix = matrix[keep]
-            return CellData(
-                np.asarray(matrix),
-                patient_id,
-                cell_id,
-                state_values,
-                tuple(gene_ids),
-                batch,
-            )
-        with np.load(path, allow_pickle=False) as archive:
-            required = {"X", "patient_id", "cell_id", "state", "gene_ids"}
-            if set(archive.files) < required:
-                raise BaselineError(f"NPZ data must contain {sorted(required)}")
-            batch = archive["batch"] if "batch" in archive.files else None
-            data = CellData(
-                archive["X"],
-                archive["patient_id"].astype(str),
-                archive["cell_id"].astype(str),
-                archive["state"].astype(str),
-                tuple(archive["gene_ids"].astype(str).tolist()),
-                batch,
-            )
-            if any("cgga" in value.lower() for value in data.patient_id.tolist()):
-                raise BaselineError("CGGA patients are prohibited for the Neftel baseline track")
-            return data
-    except OSError as exc:
-        raise BaselineError(f"Cannot read data {path}: {exc}") from exc
+        except OSError as exc:
+            raise BaselineError(f"Cannot read npz data {path}: {exc}") from exc
+
+    if any("cgga" in str(value).lower() for value in data.patient_id.tolist()):
+        raise BaselineError("CGGA patients are prohibited for the Neftel baseline track")
+
+    return data
 
 
 def build_baseline(method: str, settings: dict[str, Any], seed: int) -> Any:
@@ -175,7 +135,7 @@ def build_baseline(method: str, settings: dict[str, Any], seed: int) -> Any:
 
 
 def failure_record(
-    method: str, fold: int, seed: int, reason: str, config: dict[str, Any]
+        method: str, fold: int, seed: int, reason: str, config: dict[str, Any]
 ) -> dict[str, Any]:
     return {
         "status": "not_applicable",
@@ -200,17 +160,21 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
+
     config = load_yaml(args.config)
     args.output.mkdir(parents=True, exist_ok=True)
+
     try:
-        data = load_data(args.adata, config, args.method)
+        data = load_data(args.adata, config)
+
         splits = load_patient_splits(args.splits, args.fold)
         if any(
-            "cgga" in patient.lower()
-            for patients in splits.as_dict().values()
-            for patient in patients
+                "cgga" in patient.lower()
+                for patients in splits.as_dict().values()
+                for patient in patients
         ):
             raise BaselineError("CGGA patients are prohibited in the patient split")
+
         assignments = assign_cells(data, splits)
         method_config = dict(config.get(args.method, {}))
         frozen_genes = config.get("frozen_genes")
@@ -218,10 +182,19 @@ def main(argv: list[str] | None = None) -> int:
             raise BaselineError(
                 "Input genes do not exactly match the frozen preprocessing gene list"
             )
-        train = data.subset(assignments["train"])
+
+        # Slice CellData using the helper function
+        train_mask = np.isin(data.patient_id, assignments["train"])
+        val_mask = np.isin(data.patient_id, assignments["validation"])
+        test_mask = np.isin(data.patient_id, assignments["test"])
+
+        train = subset_cell_data(data, train_mask)
+        validation = subset_cell_data(data, val_mask)
+        test = subset_cell_data(data, test_mask)
+
         train_metadata = {"split": "train", "batch": train.batch}
-        validation = data.subset(assignments["validation"])
         validation_selection: dict[str, Any] = {"rule": "not_applicable"}
+
         candidates = method_config.get("C_candidates", [method_config.get("C", 1.0)])
         if args.method == "pca_logreg" and isinstance(candidates, list) and candidates:
             scored: list[tuple[float, float]] = []
@@ -244,10 +217,12 @@ def main(argv: list[str] | None = None) -> int:
                 "selected_C": best_c,
                 "selected_validation_accuracy": best_score,
             }
+
         baseline = build_baseline(args.method, method_config, args.seed)
         started = time.perf_counter()
         baseline.fit(train, train_metadata)
         fit_seconds = time.perf_counter() - started
+
         run = {
             "run_id": f"{args.method}_fold{args.fold}_seed{args.seed}",
             "method": args.method,
@@ -257,9 +232,11 @@ def main(argv: list[str] | None = None) -> int:
             "config_hash": config_hash(config),
             "model_hash": model_hash(baseline.get_run_metadata()),
         }
+
         predictions, patients = evaluate_predictions(baseline, data, assignments, run)
         for row in predictions:
             row["fit_seconds"] = fit_seconds
+
         (args.output / "predictions.jsonl").write_text(
             "".join(json.dumps(row, sort_keys=True) + "\n" for row in predictions),
             encoding="utf-8",
@@ -288,6 +265,7 @@ def main(argv: list[str] | None = None) -> int:
             encoding="utf-8",
         )
         return 0
+
     except (BaselineError, MethodNotApplicable, OSError, ValueError) as exc:
         record = failure_record(args.method, args.fold, args.seed, str(exc), config)
         (args.output / "run_error.json").write_text(

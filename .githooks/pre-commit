@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Defense in depth: .gitignore can be bypassed with `git add -f`. Reject
+# staged dataset/model artifacts and unexpectedly large blobs as well.
+max_blob_bytes=$((50 * 1024 * 1024))
+blocked=0
+
+while IFS= read -r -d '' path; do
+  lower_path=$(printf '%s' "$path" | tr '[:upper:]' '[:lower:]')
+  case "$lower_path" in
+    data/*|*"tp53 dataset(preprocessed)"*|*.h5ad|*.h5|*.loom|*.zarr/*|*.zip|*.tar|*.tar.gz|*.tgz|*.pt|*.pth|*.ckpt|*.safetensors)
+      printf 'BLOCKED dataset/model artifact: %s\n' "$path" >&2
+      blocked=1
+      continue
+      ;;
+  esac
+
+  size=$(git cat-file -s ":$path" 2>/dev/null || printf '0')
+  if [[ "$size" =~ ^[0-9]+$ ]] && (( size > max_blob_bytes )); then
+    printf 'BLOCKED staged blob over 50 MiB (%s bytes): %s\n' "$size" "$path" >&2
+    blocked=1
+  fi
+done < <(git diff --cached --name-only --diff-filter=ACMR -z)
+
+if (( blocked )); then
+  printf '%s\n' 'Datasets and model weights must remain outside Git. Store only immutable IDs, revisions, paths, and SHA-256 hashes.' >&2
+  exit 1
+fi

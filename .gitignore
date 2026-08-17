@@ -1,4 +1,5 @@
 __pycache__/
+.DS_Store
 *.py[cod]
 .pytest_cache/
 .mypy_cache/
@@ -11,5 +12,18 @@ data/
 
 # Local/processed research datasets are never repository artifacts.
 # Ignore the full extracted dataset tree as well as downloaded archives.
-TP53 Dataset(preprocessed)/
+TP53 Dataset(preprocessed)*/
+*.h5ad
+*.h5
+*.loom
+*.zarr/
 *.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# Model weights are provisioned on the run host and identified by hashes.
+*.pt
+*.pth
+*.ckpt
+*.safetensors

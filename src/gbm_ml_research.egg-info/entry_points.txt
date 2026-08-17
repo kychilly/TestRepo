@@ -1,0 +1,2 @@
+[console_scripts]
+gbm-study = gbm_study.cli:main

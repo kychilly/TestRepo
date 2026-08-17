@@ -1,4 +1,4 @@
-.PHONY: environment-check scgpt-smoke scgpt-shared-gpu baselines-smoke evaluate-smoke gpu-plan chat-report synthetic-smoke test week1-audit week2-adit
+.PHONY: environment-check scgpt-smoke scgpt-shared-gpu baselines-smoke evaluate-smoke gpu-plan chat-report synthetic-smoke test week1-audit week2-adit repo-safety a100-preflight a100-run
 
 PYTHON ?= python
 PYTHONPATH := src
@@ -45,3 +45,16 @@ week1-audit: environment-check scgpt-smoke baselines-smoke evaluate-smoke
 week2-adit:
 	mkdir -p results/week2_adit
 	PYTHONPATH=$(PYTHONPATH) $(PYTHON) scripts/run_adit_week2.py --config config/week2_adit.yaml --output results/week2_adit/report.json
+
+repo-safety:
+	$(PYTHON) scripts/install_repo_safety.py
+
+a100-preflight:
+	test -n "$(A100_CONFIG)"
+	test -n "$(GBM_A100_SCRATCH)"
+	PYTHONPATH=$(PYTHONPATH) $(PYTHON) scripts/a100_preflight.py --config "$(A100_CONFIG)" --scratch "$(GBM_A100_SCRATCH)" --output "$(GBM_A100_SCRATCH)/preflight.json"
+
+a100-run:
+	test -n "$(A100_CONFIG)"
+	test -n "$(GBM_A100_SCRATCH)"
+	PYTHONPATH=$(PYTHONPATH) $(PYTHON) scripts/run_a100_week3.py --config "$(A100_CONFIG)" --scratch "$(GBM_A100_SCRATCH)"

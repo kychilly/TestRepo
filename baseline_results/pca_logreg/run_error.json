@@ -1,0 +1,13 @@
+{
+  "config_hash": "bbe536cf337f4e2b0f8a5a6dc6f04dc37bf67b62861270823fc72409ee5345a6",
+  "fold": 0,
+  "method": "pca_logreg",
+  "reason": "Training data must contain at least two state classes",
+  "runtime": {
+    "git_commit": "707f87292fb09bd7e4754d1d772dd9f26f3cd777",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "seed": 42,
+  "status": "not_applicable"
+}
