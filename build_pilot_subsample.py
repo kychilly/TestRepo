@@ -2,15 +2,17 @@ import numpy as np
 import pandas as pd
 import scanpy as sc
 from load_cgga_cohort import load_cgga_cohort
-
+from load_tcga_cohort import load_tcga_cohort
 
 def generate_pilot_subsample():
-    print("[1/5] Loading Neftel single-cell dataset...")
+    print("[1/6] Loading Neftel single-cell dataset...")
     adata = sc.read_h5ad("data/processed/neftel_qc.h5ad")
 
-    print("[2/5] Loading CGGA bulk dataset...")
+    print("[2/6] Loading bulk cohorts (CGGA & TCGA)...")
     cgga_adata = load_cgga_cohort()
+    tcga_adata = load_tcga_cohort()
     print(f"      Loaded CGGA cohort: {cgga_adata.n_obs} samples x {cgga_adata.n_vars} genes.")
+    print(f"      Loaded TCGA cohort: {tcga_adata.n_obs} samples x {tcga_adata.n_vars} genes.")
 
     state_cols = ["MESlike1", "MESlike2", "AClike", "OPClike", "NPClike1", "NPClike2"]
     state_map = {
@@ -19,7 +21,7 @@ def generate_pilot_subsample():
         "NPClike1": "NPC-like", "NPClike2": "NPC-like"
     }
 
-    print("[3/5] Deriving cellular states from Neftel module scores...")
+    print("[3/6] Deriving cellular states from Neftel module scores...")
     state_scores = adata.obs[state_cols].apply(pd.to_numeric, errors="coerce")
 
     has_valid_state = state_scores.notna().any(axis=1)
@@ -32,7 +34,7 @@ def generate_pilot_subsample():
     adata_valid = adata[adata.obs["derived_state"] != "Unknown"].copy()
     print(f"      Retained {adata_valid.n_obs}/{adata.n_obs} Neftel cells with valid states.")
 
-    print("[4/5] Subsampling Neftel patients across derived states and GBMType...")
+    print("[4/6] Subsampling Neftel patients across derived states and GBMType...")
     sampled_patients = (
         adata_valid.obs.groupby(["derived_state", "GBMType"], group_keys=False)
         .apply(lambda x: x["Sample"].drop_duplicates().sample(
@@ -43,7 +45,7 @@ def generate_pilot_subsample():
 
     adata_pilot = adata_valid[adata_valid.obs["Sample"].isin(sampled_patients)].copy()
 
-    print("[5/5] Subsetting highly variable & mandatory target genes...")
+    print("[5/6] Subsetting highly variable & mandatory target genes...")
     sc.pp.highly_variable_genes(adata_pilot, n_top_genes=2500)
     hvg_list = set(adata_pilot.var_names[adata_pilot.var["highly_variable"]])
 
@@ -53,19 +55,27 @@ def generate_pilot_subsample():
     # Subset features on Neftel
     adata_pilot = adata_pilot[:, final_genes].copy()
 
-    # Align CGGA features to match the pilot gene set
+    # Align CGGA & TCGA features to match the pilot gene set
     cgga_shared_genes = [g for g in final_genes if g in cgga_adata.var_names]
     cgga_pilot = cgga_adata[:, cgga_shared_genes].copy()
 
-    # Save both pilot objects
+    tcga_shared_genes = [g for g in final_genes if g in tcga_adata.var_names]
+    tcga_pilot = tcga_adata[:, tcga_shared_genes].copy()
+
+    # [6/6] Save all pilot objects
     out_neftel = "data/pilot/pilot_subsample.h5ad"
     out_cgga = "data/pilot/cgga_pilot_subsample.h5ad"
+    out_tcga = "data/pilot/tcga_pilot_subsample.h5ad"
+
+    adata_pilot.obs["patient_id"] = adata_pilot.obs["Sample"]
 
     adata_pilot.write_h5ad(out_neftel)
     cgga_pilot.write_h5ad(out_cgga)
+    tcga_pilot.write_h5ad(out_tcga)
 
     print(f"\n[PASS] Neftel pilot saved to: {out_neftel} ({adata_pilot.n_obs} cells x {adata_pilot.n_vars} genes)")
     print(f"[PASS] CGGA pilot saved to:   {out_cgga} ({cgga_pilot.n_obs} samples x {cgga_pilot.n_vars} genes)")
+    print(f"[PASS] TCGA pilot saved to:   {out_tcga} ({tcga_pilot.n_obs} samples x {tcga_pilot.n_vars} genes)")
 
 
 if __name__ == "__main__":

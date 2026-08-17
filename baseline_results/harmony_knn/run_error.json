@@ -1,0 +1,13 @@
+{
+  "config_hash": "c47fa08ec0b4debefd1033339b65aa64dd1269018a5d23c4796e7800727f06f7",
+  "fold": 0,
+  "method": "harmony_knn",
+  "reason": "Cannot read split file splits\\paitent_splits.json: [Errno 2] No such file or directory: 'splits\\\\paitent_splits.json'",
+  "runtime": {
+    "git_commit": "8ee38eb31cdd2ccc3bf35dab553a9aae5c8c4d04",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "seed": 42,
+  "status": "not_applicable"
+}
