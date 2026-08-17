@@ -1,12 +1,12 @@
 {
-  "config_hash": "bbe536cf337f4e2b0f8a5a6dc6f04dc37bf67b62861270823fc72409ee5345a6",
+  "config_hash": "e3b6ba9602f1a5e2fbd32f8c9aee247a8817dc69d5bd642199c2e6a602221c68",
   "fold": 0,
   "method": "scvi_probe",
-  "reason": "scvi-tools is not installed",
+  "reason": "scVI count layer 'counts' is not present in the H5AD",
   "runtime": {
-    "git_commit": "707f87292fb09bd7e4754d1d772dd9f26f3cd777",
-    "platform": "Windows-11-10.0.26200-SP0",
-    "python": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]"
+    "git_commit": "101d7dd979ff72c3d4ea5f19e0e05a5e25ceda6e",
+    "platform": "macOS-26.2-arm64-arm-64bit",
+    "python": "3.11.9 (main, Jul 30 2025, 13:48:57) [Clang 17.0.0 (clang-1700.0.13.5)]"
   },
   "seed": 42,
   "status": "not_applicable"

@@ -1,0 +1,8 @@
+validator_config: config/validator.yaml
+confirmable_minimum: 15
+confirmable_preferred: 20
+pooling_cancer_types:
+  - lower_grade_glioma
+  - melanoma
+  - lung_adenocarcinoma
+

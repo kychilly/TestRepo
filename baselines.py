@@ -18,6 +18,11 @@ import argparse
 from pathlib import Path
 
 _PACKAGE_DIR = Path(__file__).resolve().parent / "src" / "baselines"
+_SRC_DIR = _PACKAGE_DIR.parent
+# Make the repository's src-layout packages importable when this public
+# wrapper is invoked directly (for example, ``python baselines.py``).
+if str(_SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(_SRC_DIR))
 __path__ = [str(_PACKAGE_DIR)]
 
 

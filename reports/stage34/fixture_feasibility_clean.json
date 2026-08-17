@@ -1,0 +1,113 @@
+{
+  "assignments": [
+    {
+      "candidate_id": "run17-MES-TP53-rank001",
+      "gene": "TP53",
+      "mutation": "R175H",
+      "real_outcome": "destabilizing_driver",
+      "real_reason": "pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold",
+      "real_stage5_kept": true,
+      "shuffled_outcome": "destabilizing_driver",
+      "shuffled_stage5_kept": true
+    },
+    {
+      "candidate_id": "run17-MES-EGFR-rank002",
+      "gene": "EGFR",
+      "mutation": "amplification",
+      "real_outcome": "abstain",
+      "real_reason": "alteration_type='amplification', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess",
+      "real_stage5_kept": false,
+      "shuffled_outcome": "abstain",
+      "shuffled_stage5_kept": false
+    },
+    {
+      "candidate_id": "run17-MES-RPRM-rank003",
+      "gene": "RPRM",
+      "mutation": "silencing",
+      "real_outcome": "abstain",
+      "real_reason": "alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess",
+      "real_stage5_kept": false,
+      "shuffled_outcome": "abstain",
+      "shuffled_stage5_kept": false
+    }
+  ],
+  "bucket_counts": {
+    "abstain": 2,
+    "data_deficient": 0,
+    "destabilizing_driver": 1,
+    "functional_driver": 0,
+    "unconfirmed": 0
+  },
+  "candidate_alignment": {
+    "pooled": {
+      "ambiguous_evidence_candidate_ids": [],
+      "missing_evidence_candidate_ids": [],
+      "unused_evidence_genes": []
+    },
+    "primary": {
+      "ambiguous_evidence_candidate_ids": [],
+      "missing_evidence_candidate_ids": [],
+      "unused_evidence_genes": [
+        "IDH1"
+      ]
+    },
+    "records_are_candidate_aligned": true
+  },
+  "candidate_count": 3,
+  "comparison": {
+    "extra_gold_candidate_ids": [],
+    "gold_path": "examples/validator_gold.synthetic.jsonl",
+    "gold_sha256": "b2d9b6a4a85d6868fb153355f2c4c8aab8e9ca02bf4c90e04e51241d337469d5",
+    "real_beats_shuffled": false,
+    "real_confirmed_binary_accuracy": 1.0,
+    "real_outcome_accuracy": 1.0,
+    "result_call": "no_result",
+    "shuffled_confirmed_binary_accuracy": 1.0,
+    "shuffled_outcome_accuracy": 1.0,
+    "status": "completed"
+  },
+  "confirmable_count_primary": 1,
+  "confirmable_definition": "missense and pLDDT >= configured floor",
+  "feasibility": {
+    "branch": "pool_additional_cancer_types",
+    "decision_count": 1,
+    "minimum_required": 15,
+    "pool_candidate_files": [],
+    "preferred_count": 20,
+    "requested_cancer_types": [
+      "lower_grade_glioma",
+      "melanoma",
+      "lung_adenocarcinoma"
+    ],
+    "status": "blocked_missing_pool_candidates",
+    "triggered": true
+  },
+  "pooled_candidate_count": 0,
+  "primary_candidate_count": 3,
+  "provenance": {
+    "candidates_path": "results/contracts/tp53/scgpt_candidate_output.jsonl",
+    "candidates_sha256": "8cf3f7b029f16a403ad461a36fb265531e3ae8da2af4ac17cedc5d71cb399787",
+    "config_path": "config/stage34.yaml",
+    "config_sha256": "4a914c76a004c208eca21560985df4f38e64c87667dd9d0fe2cb641850d2afe9",
+    "records_path": "examples/validator_gate_input.jsonl",
+    "records_sha256": "c16de16a8b46744f46bb1000c265d9ba3982d5357a25b7638ceda682e8affcfd"
+  },
+  "scientifically_complete": false,
+  "scope": "synthetic_fixture",
+  "seed": 17,
+  "shuffled_control": {
+    "api": "classify_many(records, thresholds, reference_verdicts=..., seed=...)",
+    "bucket_counts": {
+      "abstain": 2,
+      "data_deficient": 0,
+      "destabilizing_driver": 1,
+      "functional_driver": 0,
+      "unconfirmed": 0
+    },
+    "module": "shuffled_validator.py",
+    "proportions_preserved_exactly": true,
+    "seed": 17,
+    "status": "completed"
+  },
+  "status": "completed_with_blockers"
+}

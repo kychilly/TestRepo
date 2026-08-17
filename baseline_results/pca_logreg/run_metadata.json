@@ -1,0 +1,36 @@
+{
+  "baseline": {
+    "C": 1.0,
+    "class_weight": "balanced",
+    "coefficient_norm": 0.7740635123730846,
+    "components": 2,
+    "convergence_status": true,
+    "max_iter": 1000,
+    "method": "pca_logreg",
+    "model_hash": "c21adcb901fbeaa764abe44a396128ce3558c4f96ce436fbdd9927300f22f86b",
+    "seed": 42
+  },
+  "config_hash": "e3b6ba9602f1a5e2fbd32f8c9aee247a8817dc69d5bd642199c2e6a602221c68",
+  "fold": 0,
+  "method": "pca_logreg",
+  "model_hash": "368aa3663faaebd264b3f9623099320056ab7a172fe4bf7e047d9d0a851bf3e1",
+  "run_id": "pca_logreg_fold0_seed42",
+  "runtime": {
+    "git_commit": "101d7dd979ff72c3d4ea5f19e0e05a5e25ceda6e",
+    "platform": "macOS-26.2-arm64-arm-64bit",
+    "python": "3.11.9 (main, Jul 30 2025, 13:48:57) [Clang 17.0.0 (clang-1700.0.13.5)]"
+  },
+  "seed": 42,
+  "split_hash": "c8a1d531b55332bedce56c141b19de8675b38653a81f27eb2f58c332b7ac4b0b",
+  "status": "completed",
+  "validation_selection": {
+    "candidates": [
+      0.1,
+      1.0,
+      10.0
+    ],
+    "rule": "validation_cell_accuracy_max",
+    "selected_C": 1.0,
+    "selected_validation_accuracy": 0.6279683377308707
+  }
+}

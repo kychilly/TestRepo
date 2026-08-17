@@ -36,7 +36,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Sequence
 
 import yaml  # type: ignore[import-untyped]
 
@@ -234,3 +234,19 @@ def classify(record: GeneRecord, thresholds: Thresholds) -> Verdict:
             "functional-driver threshold was cleared"
         ),
     )
+
+
+def classify_many(
+    records: Sequence[GeneRecord],
+    thresholds: Thresholds,
+    *,
+    reference_verdicts: Sequence[Verdict] | None = None,
+    seed: int = 17,
+) -> list[Verdict]:
+    """Batch API shared with the shuffled drop-in validator.
+
+    ``reference_verdicts`` and ``seed`` are accepted for interface parity and
+    intentionally ignored by the real deterministic decision tree.
+    """
+    del reference_verdicts, seed
+    return [classify(record, thresholds) for record in records]

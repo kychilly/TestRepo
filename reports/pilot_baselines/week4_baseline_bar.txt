@@ -1,0 +1,25 @@
+Week 4 pilot baseline bar
+=========================
+
+Dataset: data/TP53 Dataset(preprocessed) 2/pilot/pilot_subsample.h5ad
+Split: splits/neftel_pilot_patient_splits.json
+Fold: 0
+Seed: 42
+Evaluation split: test
+Bootstrap replicates: 1000
+
+PCA + LogReg: COMPLETED
+  macro_f1: 0.4950201732186287
+  balanced_accuracy: 0.5280250064280361
+  multiclass_log_loss: 0.8012484139897774
+  multiclass_brier_score: 0.5060174029392726
+
+scVI + probe: NOT APPLICABLE
+  reason: scVI count layer 'counts' is not present in the H5AD
+
+Harmony + kNN: NOT APPLICABLE
+  reason: Harmony requires at least two training batches
+
+Baseline artifacts: baseline_results/
+Evaluation artifacts: reports/pilot_baselines/pca_pilot_eval_seed42/
+Full-system Week 4 target: beat macro_f1 0.4950201732186287

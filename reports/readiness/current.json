@@ -1,0 +1,111 @@
+{
+  "blockers": [
+    "Pilot has no explicit IDH-status column; derived cell states are not a substitute for both IDH statuses",
+    "Pilot has no layers['counts']; scVI baseline is not applicable",
+    "Mutation table lacks provenance/mapping field: transcript_id",
+    "Mutation table lacks provenance/mapping field: protein_change",
+    "Mutation table lacks provenance/mapping field: genome_build",
+    "Mutation table lacks provenance/mapping field: source_file",
+    "Mutation table has no silencing calls; add methylation/CNV-derived silencing evidence or mark unavailable"
+  ],
+  "checks": {
+    "expression": {
+      "cross_section_values": [
+        "none"
+      ],
+      "layers": [],
+      "obs_columns": [
+        "AClike",
+        "CellAssignment",
+        "CrossSection",
+        "G1S",
+        "G2M",
+        "GBMType",
+        "GenesExpressed",
+        "GeneticSubclone",
+        "MESlike1",
+        "MESlike2",
+        "NPClike1",
+        "NPClike2",
+        "OPClike",
+        "Sample",
+        "derived_state",
+        "n_genes",
+        "n_genes_by_counts",
+        "patient_id",
+        "pct_counts_mito",
+        "total_counts",
+        "total_counts_mito"
+      ],
+      "required_genes_missing": [],
+      "required_genes_present": [
+        "EGFR",
+        "IDH1",
+        "RPRM",
+        "TP53"
+      ],
+      "shape": [
+        4982,
+        2503
+      ]
+    },
+    "grn": {
+      "heldout_exists": true,
+      "heldout_rows": 2,
+      "train_exists": true
+    },
+    "grn_holdout": {
+      "exists": true,
+      "path": "data/TP53 Dataset(preprocessed) 2/prior/grn_pilot_adit_holdout_check.csv"
+    },
+    "grn_train": {
+      "exists": true,
+      "path": "data/TP53 Dataset(preprocessed) 2/prior/grn_pilot_train_prior.csv"
+    },
+    "mutation_table": {
+      "exists": true,
+      "path": "data/TP53 Dataset(preprocessed) 2/pilot/patient_gene_mutation_long.csv"
+    },
+    "mutations": {
+      "columns": [
+        "patient_id",
+        "gene_symbol",
+        "variant_status",
+        "impact"
+      ],
+      "rows": 52563,
+      "status_counts": {
+        "amplification": 7,
+        "missense": 381,
+        "truncating": 389,
+        "wildtype": 51786
+      }
+    },
+    "pilot_h5ad": {
+      "exists": true,
+      "path": "data/TP53 Dataset(preprocessed) 2/pilot/pilot_subsample.h5ad"
+    },
+    "split": {
+      "exists": true,
+      "path": "splits/neftel_pilot_patient_splits.json"
+    },
+    "split_counts": {
+      "test": 4,
+      "train": 13,
+      "validation": 4
+    }
+  },
+  "next_actions": [
+    "Provide a counts layer or explicitly record scVI as not applicable.",
+    "Add both IDH statuses and retain patient-level split provenance.",
+    "Replace the mutation table with transcript/protein/genome-build/source-aware calls.",
+    "Provide a real checkpoint, vocabulary, gene metadata, and model-specific mask_score_provider on CUDA.",
+    "Run scripts/run_pilot_scgpt.py, then scripts/run_stage34_validation.py with its real candidate output."
+  ],
+  "scientific_scope": "real_pilot_assets",
+  "status": "blocked",
+  "warnings": [
+    "Pilot has fewer than two CrossSection batches; Harmony baseline is not applicable",
+    "GRN held-out set is very small; AUROC is a sanity check, not a powered result"
+  ]
+}
