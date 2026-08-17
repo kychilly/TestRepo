@@ -8,7 +8,7 @@ split_file: null
 fold: 0
 checkpoint_path: null
 vocabulary_path: null
-output_path: results/compute/week1_scgpt_benchmark.json
+output_path: baseline_results/compute/week1_scgpt_benchmark.json
 seed: 20260802
 batch_size: 32
 token_length: null

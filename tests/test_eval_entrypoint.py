@@ -73,7 +73,7 @@ def test_combined_eval_writes_cell_and_idh_tasks(tmp_path: Path) -> None:
         "metric_units: patient_binary\nbootstrap_replicates: 5\nbootstrap_seed: 1\nmetrics: [auroc]\n",
         encoding="utf-8",
     )
-    output = tmp_path / "results"
+    output = tmp_path / "baseline_results"
 
     assert (
         main(

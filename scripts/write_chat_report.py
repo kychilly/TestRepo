@@ -11,7 +11,7 @@ from pathlib import Path
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--output", type=Path, default=Path("results/compute/week3_chat_report.txt")
+        "--output", type=Path, default=Path("baseline_results/compute/week3_chat_report.txt")
     )
     parser.add_argument("--status", choices=("blocked", "ready"), default="blocked")
     args = parser.parse_args(argv)

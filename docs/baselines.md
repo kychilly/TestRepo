@@ -40,7 +40,7 @@ PYTHONPATH=src python scripts/run_baseline.py \
   --fold 0 \
   --seed 17 \
   --config config/baselines.yaml \
-  --output results/baselines/pca_logreg/fold0_seed17
+  --output baseline_results/baselines/pca_logreg/fold0_seed17
 ```
 
 Successful PCA runs write `predictions.jsonl`, `patient_summary.json`, and `run_metadata.json`. Every cell row contains the requested run/method/fold/seed/patient/cell/true/predicted/probability/split/hash fields. Failed and non-applicable methods write `run_error.json` with status, method, fold, seed, reason, config hash, runtime, and Git metadata. No method is declared scientifically successful merely because the process exits cleanly.

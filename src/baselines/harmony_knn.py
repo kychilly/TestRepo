@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, cast
 
 import numpy as np
+import pandas as pd
 from numpy.typing import NDArray
 from sklearn.decomposition import PCA  # type: ignore[import-untyped]
 from sklearn.linear_model import Ridge  # type: ignore[import-untyped]
@@ -71,7 +72,7 @@ class HarmonyKNN(Baseline):
             train_data.X
         )
         raw = self.pca.transform(train_data.X)
-        metadata = {self.harmony_covariate: batches[:, 0]}
+        metadata = pd.DataFrame({self.harmony_covariate: batches[:, 0]})
         try:
             harmony = harmonypy.run_harmony(
                 raw, metadata, [self.harmony_covariate], random_state=self.seed

@@ -192,13 +192,9 @@ def main(argv: list[str] | None = None) -> int:
             )
 
         # Slice CellData using the helper function
-        train_mask = np.isin(data.patient_id, assignments["train"])
-        val_mask = np.isin(data.patient_id, assignments["validation"])
-        test_mask = np.isin(data.patient_id, assignments["test"])
-
-        train = subset_cell_data(data, train_mask)
-        validation = subset_cell_data(data, val_mask)
-        test = subset_cell_data(data, test_mask)
+        train = subset_cell_data(data, assignments["train"])
+        validation = subset_cell_data(data, assignments["validation"])
+        test = subset_cell_data(data, assignments["test"])
 
         train_metadata = {"split": "train", "batch": train.batch}
         validation_selection: dict[str, Any] = {"rule": "not_applicable"}

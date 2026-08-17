@@ -22,7 +22,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--device-ids", type=int, nargs="*")
     parser.add_argument(
-        "--output", type=Path, default=Path("results/compute/gpu_plan.json")
+        "--output", type=Path, default=Path("baseline_results/compute/gpu_plan.json")
     )
     args = parser.parse_args(argv)
     try:

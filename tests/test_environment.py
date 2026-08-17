@@ -86,7 +86,7 @@ def test_stable_output_shape_and_finite_embeddings(tmp_path: Path) -> None:
 
 def test_benchmark_json_schema() -> None:
     payload = json.loads(
-        Path("results/compute/week1_scgpt_benchmark.json").read_text(encoding="utf-8")
+        Path("baseline_results/compute/week1_scgpt_benchmark.json").read_text(encoding="utf-8")
     )
     assert payload["status"] in {"blocked", "completed"}
     assert payload["benchmark_cells"] == 1000

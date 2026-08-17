@@ -142,7 +142,7 @@ def main(argv: list[str] | None = None) -> int:
         result = _blocked(config, str(exc))
         exit_code = 2
     output = args.output or Path(
-        str(config.get("output_path", "results/compute/week1_scgpt_benchmark.json"))
+        str(config.get("output_path", "baseline_results/compute/week1_scgpt_benchmark.json"))
     )
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(

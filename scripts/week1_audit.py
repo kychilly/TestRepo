@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, cast
 
 ROOT = Path(__file__).resolve().parents[1]
-RESULTS = ROOT / "results"
+RESULTS = ROOT / "baseline_results"
 COMPUTE = RESULTS / "compute"
 
 
@@ -81,7 +81,7 @@ def main() -> int:
             "numpy": package_version("numpy"),
             "pandas": package_version("pandas"),
             "scikit-learn": package_version("scikit-learn"),
-            "pip_freeze_export": "results/compute/week1_pip_freeze.txt",
+            "pip_freeze_export": "baseline_results/compute/week1_pip_freeze.txt",
         },
         "gpu_and_checkpoint": {
             "environment_report": environment,
@@ -186,7 +186,7 @@ def main() -> int:
             {
                 "week": 1,
                 "status": "infrastructure_complete_scientific_run_blocked",
-                "audit": "results/week1_audit.json",
+                "audit": "baseline_results/week1_audit.json",
                 "report": "docs/week1_adit.md",
                 "reproduction": [
                     "make environment-check",
