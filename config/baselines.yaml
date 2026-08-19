@@ -11,7 +11,7 @@ pca_logreg:
   max_iter: 1000
   C_candidates: [0.1, 1.0, 10.0]
 scvi_probe:
-  count_layer: X
+  count_layer: counts
   latent_size: 10
   epochs: 100
   early_stopping: true

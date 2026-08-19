@@ -38,6 +38,7 @@ class CellData:
     state: NDArray[Any]
     gene_ids: tuple[str, ...]
     batch: NDArray[Any] | None = None
+    raw_counts: NDArray[Any] | None = None # Please work bro
 
     def __post_init__(self) -> None:
         if self.X.ndim != 2:
@@ -58,6 +59,8 @@ class CellData:
             self.batch.ndim != 1 or len(self.batch) != n_cells
         ):
             raise BaselineError("batch must map one value to every cell")
+        if self.raw_counts is not None and self.raw_counts.shape != self.X.shape:
+            raise BaselineError("raw_counts must match the shape of X")
         if not np.isfinite(self.X).all():
             raise BaselineError("X contains NaN or infinite values")
         if len(set(self.cell_id.tolist())) != n_cells:
@@ -75,6 +78,7 @@ class CellData:
             self.state[indices],
             self.gene_ids,
             None if self.batch is None else self.batch[indices],
+            None if self.raw_counts is None else self.raw_counts[indices], # Please work bro pt 2
         )
 
 

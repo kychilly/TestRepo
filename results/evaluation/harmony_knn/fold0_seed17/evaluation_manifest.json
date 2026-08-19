@@ -1,8 +1,0 @@
-{
-  "cell_prediction_file": "baseline_results\\baselines\\harmony_knn\\fold0_seed17\\predictions.jsonl",
-  "idh_prediction_file": null,
-  "status": "completed",
-  "tasks": [
-    "cell_state"
-  ]
-}

@@ -1,0 +1,11 @@
+level,outcome,count,total,fraction
+gene_patient_instance,destabilizing_driver,13,1307,0.0099
+gene_patient_instance,functional_driver,12,1307,0.0092
+gene_patient_instance,abstain,107,1307,0.0819
+gene_patient_instance,unconfirmed,0,1307,0.0
+gene_patient_instance,data_deficient,1175,1307,0.899
+unique_gene,destabilizing_driver,1,1222,0.0008
+unique_gene,functional_driver,1,1222,0.0008
+unique_gene,abstain,84,1222,0.0687
+unique_gene,unconfirmed,0,1222,0.0
+unique_gene,data_deficient,1136,1222,0.9296

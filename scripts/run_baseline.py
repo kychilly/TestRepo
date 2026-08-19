@@ -11,10 +11,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-try:
-    import scanpy as sc
-except ImportError:  # pragma: no cover - exercised in the lightweight pilot env
-    import anndata as sc  # type: ignore[no-redef]
+import scanpy as sc
 
 from baselines.base import (
     BaselineError,
@@ -30,13 +27,6 @@ from baselines.base import (
 from baselines.harmony_knn import HarmonyKNN
 from baselines.pca_logreg import PCALogReg
 from baselines.scvi_probe import ScVIProbe
-
-PILOT_STATE_ALIASES = {
-    "AC-like": "AC",
-    "MES-like": "MES",
-    "NPC-like": "NPC",
-    "OPC-like": "OPC",
-}
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
@@ -60,12 +50,11 @@ def subset_cell_data(data: CellData, mask: np.ndarray) -> CellData:
         state=data.state[mask],
         gene_ids=data.gene_ids,
         batch=data.batch[mask] if data.batch is not None else None,
+        raw_counts=data.raw_counts[mask] if data.raw_counts is not None else None,
     )
 
 
-def load_data(
-    path: Path, config: dict[str, Any], method: str | None = None
-) -> CellData:
+def load_data(path: Path, config: dict[str, Any]) -> CellData:
     """Load data from .h5ad or .npz format into a CellData instance."""
     if "cgga" in str(path).lower():
         raise BaselineError("CGGA data are prohibited for the Neftel baseline track")
@@ -96,9 +85,16 @@ def load_data(
                 cell_id = adata.obs_names.to_numpy().astype(str)
 
             gene_ids = tuple(adata.var_names.astype(str).tolist())
-            batch = adata.obs["batch"].to_numpy() if "batch" in adata.obs.columns else None
+            batch_col = config.get("batch_key", "batch")
+            batch = adata.obs[batch_col].to_numpy() if batch_col in adata.obs.columns else None
 
-            data = CellData(X, patient_id, cell_id, state, gene_ids, batch)
+            raw_counts = None
+            count_layer = config.get("scvi_probe", {}).get("count_layer")
+            if count_layer and count_layer != "X" and count_layer in adata.layers:
+                layer = adata.layers[count_layer]
+                raw_counts = layer.toarray() if hasattr(layer, "toarray") else np.asarray(layer)
+
+            data = CellData(X, patient_id, cell_id, state, gene_ids, batch, raw_counts)
         except OSError as exc:
             raise BaselineError(f"Cannot read h5ad file {path}: {exc}") from exc
     else:
@@ -181,11 +177,9 @@ def main(argv: list[str] | None = None) -> int:
 
     config = load_yaml(args.config)
     args.output.mkdir(parents=True, exist_ok=True)
-    # Do not leave a prior failed-run marker beside a newly completed run.
-    (args.output / "run_error.json").unlink(missing_ok=True)
 
     try:
-        data = load_data(args.adata, config, args.method)
+        data = load_data(args.adata, config)
 
         # Enforce Path object conversion to prevent AttributeError
         splits_path = Path(args.splits)
@@ -218,7 +212,9 @@ def main(argv: list[str] | None = None) -> int:
             scored: list[tuple[float, float]] = []
             for candidate in candidates:
                 candidate_config = {**method_config, "C": float(candidate)}
-                candidate_model = build_baseline(args.method, candidate_config, args.seed)
+                candidate_model = build_baseline(
+                    args.method, candidate_config, args.seed
+                )
                 candidate_model.fit(train, train_metadata)
                 score = float(
                     np.mean(
@@ -257,11 +253,6 @@ def main(argv: list[str] | None = None) -> int:
 
         (args.output / "predictions.jsonl").write_text(
             "".join(json.dumps(row, sort_keys=True) + "\n" for row in predictions),
-            encoding="utf-8",
-        )
-        test_predictions = [row for row in predictions if row["split"] == "test"]
-        (args.output / "test_predictions.jsonl").write_text(
-            "".join(json.dumps(row, sort_keys=True) + "\n" for row in test_predictions),
             encoding="utf-8",
         )
         (args.output / "patient_summary.json").write_text(
