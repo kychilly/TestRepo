@@ -1,117 +1,151 @@
-import json
-import numpy as np
-import pandas as pd
+import os
 import scanpy as sc
-from load_cgga_cohort import load_cgga_cohort
-from load_tcga_cohort import load_tcga_cohort
+import pandas as pd
 
 
-def generate_pilot_subsample():
-    print("[1/6] Loading Neftel single-cell dataset...")
-    adata = sc.read_h5ad("data/processed/neftel_qc.h5ad")
+def clean_id(pid: str) -> str:
+    """Standardizes patient IDs to match across WES and single-cell metadata."""
+    if not isinstance(pid, str) or pid == "nan" or not pid:
+        return ""
+    pid = pid.strip()
 
-    print("[2/6] Loading split definitions...")
-    with open("splits/patient_splits.json", "r") as f:
-        splits_data = json.load(f)
+    if pid.startswith("TCGA"):
+        return pid[:12]
 
-    # Collect all valid patient IDs across all folds (train, validation, test)
-    valid_split_patients = set()
-    for fold in splits_data.get("folds", []):
-        for split_type in ["train", "validation", "test"]:
-            valid_split_patients.update(fold.get(split_type, []))
+    if "CGGA" in pid:
+        num_part = pid.replace("CGGA_", "").replace("CGGA-", "").replace("CGGA", "").strip()
+        return num_part
 
-    print(f"      Found {len(valid_split_patients)} total valid patient IDs in splits.")
+    if "_" in pid and not pid.startswith(("CGGA", "TCGA")):
+        base = pid.split("_")[0]
+        if base.startswith(("MGH", "BT", "CSC")):
+            return base
 
-    print("[3/6] Loading bulk cohorts (CGGA & TCGA)...")
-    cgga_adata = load_cgga_cohort()
-    tcga_adata = load_tcga_cohort()
-    print(f"      Loaded CGGA cohort: {cgga_adata.n_obs} samples x {cgga_adata.n_vars} genes.")
-    print(f"      Loaded TCGA cohort: {tcga_adata.n_obs} samples x {tcga_adata.n_vars} genes.")
+    return pid
 
-    # Standard clean state labels (no trailing hyphens)
-    state_cols = ["MESlike1", "MESlike2", "AClike", "OPClike", "NPClike1", "NPClike2"]
-    state_map = {
-        "MESlike1": "MES", "MESlike2": "MES",
-        "AClike": "AC", "OPClike": "OPC",
-        "NPClike1": "NPC", "NPClike2": "NPC"
-    }
 
-    print("[4/6] Deriving cellular states and mapping patient metadata...")
-    state_scores = adata.obs[state_cols].apply(pd.to_numeric, errors="coerce")
+def get_idh1_mutant_patient_ids(cgga_dir):
+    """Parses CGGA WES to extract patient IDs carrying IDH1 R132H / missense mutations."""
+    wes_path = os.path.join(cgga_dir, "CGGA.WEseq_286.20200506.txt")
+    if not os.path.exists(wes_path):
+        print(f"[Subsample Warning] CGGA WES not found at {wes_path}")
+        return set()
 
-    has_valid_state = state_scores.notna().any(axis=1)
-    max_cols = state_scores.fillna(-np.inf).idxmax(axis=1)
+    wes_df = pd.read_csv(wes_path, sep="\t", index_col=0, low_memory=False)
 
-    adata.obs["derived_state"] = max_cols.map(state_map)
-    adata.obs.loc[~has_valid_state, "derived_state"] = "Unknown"
+    if "IDH1" not in wes_df.index:
+        return set()
 
-    # Standardize column mappings required by baselines.py
-    adata.obs["patient_id"] = adata.obs["Sample"].astype(str)
-    adata.obs["state"] = adata.obs["derived_state"]
+    idh1_row = wes_df.loc["IDH1"].astype(str).str.lower()
 
-    # Strictly retain cells that have a valid state AND exist in patient_splits.json
-    adata_valid = adata[
-        (adata.obs["derived_state"] != "Unknown") &
-        (adata.obs["patient_id"].isin(valid_split_patients))
-        ].copy()
+    # Identify columns containing R132H, missense, or point mutations
+    mut_mask = idh1_row.str.contains("r132h|missense|point|multiple_variant", na=False)
+    raw_mut_cols = idh1_row[mut_mask].index.tolist()
 
-    print(f"      Retained {adata_valid.n_obs}/{adata.n_obs} cells with valid states and matching split IDs.")
+    idh1_cleaned_ids = {clean_id(str(col)) for col in raw_mut_cols if clean_id(str(col))}
+    return idh1_cleaned_ids
 
-    print("[5/6] Subsampling Neftel patients across derived states and GBMType...")
-    patient_df = adata_valid.obs[["patient_id", "derived_state", "GBMType"]].drop_duplicates()
 
-    sampled_patients = (
-        patient_df.groupby(["derived_state", "GBMType"], group_keys=False)
-        .apply(lambda x: x["patient_id"].sample(
-            n=min(10, len(x["patient_id"])),
-            random_state=42
-        ))
-        .tolist()
-    )
+def build_pilot_subsample(target_patient_count=20, target_idh1_count=12):
+    # 1. Locate dataset
+    data_dir = "data/processed"
+    raw_dir = "data/raw"
+    out_dir = "data/pilot"
 
-    with open("splits/patient_splits.json") as f:
-        split_data = json.load(f)["folds"][0]
+    # Check potential input locations
+    possible_paths = [
+        os.path.join(data_dir, "full_dataset.h5ad"),
+        os.path.join(data_dir, "merged_cohort.h5ad"),
+        os.path.join(raw_dir, "neftel/neftel_subsample.h5ad"),
+    ]
 
-    sampled_patients = set(sampled_patients)
-    for split_name in ("train", "validation", "test"):
-        split_patients = [p for p in split_data[split_name] if p in valid_split_patients]
-        # ensure at least a few patients from this split make it into the pilot
-        sampled_patients.update(split_patients[:5])
-    sampled_patients = list(sampled_patients)
+    h5ad_path = None
+    for path in possible_paths:
+        if os.path.exists(path):
+            h5ad_path = path
+            break
 
-    adata_pilot = adata_valid[adata_valid.obs["patient_id"].isin(sampled_patients)].copy()
+    if not h5ad_path:
+        # Fallback to scanning data directory for any valid h5ad
+        for root, _, files in os.walk("data"):
+            for f in files:
+                if f.endswith(".h5ad") and "pilot_subsample" not in f:
+                    h5ad_path = os.path.join(root, f)
+                    break
+            if h5ad_path:
+                break
 
-    print("[6/6] Subsetting highly variable & mandatory target genes...")
-    sc.pp.highly_variable_genes(adata_pilot, n_top_genes=2500)
-    hvg_list = set(adata_pilot.var_names[adata_pilot.var["highly_variable"]])
+    if not h5ad_path:
+        raise FileNotFoundError(
+            "Could not locate an existing .h5ad dataset in 'data/'. "
+            "Please ensure your full or processed single-cell/bulk AnnData file exists."
+        )
 
-    mandatory_genes = {"TP53", "IDH1", "EGFR", "RPRM"}
-    final_genes = list(hvg_list.union(mandatory_genes.intersection(adata_pilot.var_names)))
+    print(f"Loading base dataset from: {h5ad_path} ...")
+    adata = sc.read_h5ad(h5ad_path)
 
-    # Subset features on Neftel
-    adata_pilot = adata_pilot[:, final_genes].copy()
+    # Determine patient column
+    sample_col = None
+    for candidate in ["Sample", "patient_id", "patient", "sample_id", "Donor"]:
+        if candidate in adata.obs.columns:
+            sample_col = candidate
+            break
 
-    # Align CGGA & TCGA features to match the pilot gene set
-    cgga_shared_genes = [g for g in final_genes if g in cgga_adata.var_names]
-    cgga_pilot = cgga_adata[:, cgga_shared_genes].copy()
+    if not sample_col:
+        raise KeyError(
+            f"Could not find patient ID column in adata.obs. Available columns: {list(adata.obs.columns)}"
+        )
 
-    tcga_shared_genes = [g for g in final_genes if g in tcga_adata.var_names]
-    tcga_pilot = tcga_adata[:, tcga_shared_genes].copy()
+    print(f"Using '{sample_col}' to stratify patient selection.")
 
-    # Save all pilot objects
-    out_neftel = "data/pilot/pilot_subsample.h5ad"
-    out_cgga = "data/pilot/cgga_pilot_subsample.h5ad"
-    out_tcga = "data/pilot/tcga_pilot_subsample.h5ad"
+    # 2. Find IDH1-mutant patient candidates from CGGA WES
+    cgga_dir = os.path.join(raw_dir, "cgga")
+    idh1_mut_ids = get_idh1_mutant_patient_ids(cgga_dir)
+    print(f"Extracted {len(idh1_mut_ids)} IDH1-mutant candidate patient IDs from CGGA WES.")
 
-    adata_pilot.obs["batch"] = adata_pilot.obs["patient_id"]
-    adata_pilot.write_h5ad(out_neftel)
-    cgga_pilot.write_h5ad(out_cgga)
-    tcga_pilot.write_h5ad(out_tcga)
+    # Get unique patient IDs in dataset
+    all_raw_patients = adata.obs[sample_col].dropna().unique().tolist()
 
-    print(f"\n[PASS] Neftel pilot saved to: {out_neftel} ({adata_pilot.n_obs} cells x {adata_pilot.n_vars} genes)")
-    print(f"[PASS] CGGA pilot saved to:   {out_cgga} ({cgga_pilot.n_obs} samples x {cgga_pilot.n_vars} genes)")
-    print(f"[PASS] TCGA pilot saved to:   {out_tcga} ({tcga_pilot.n_obs} samples x {tcga_pilot.n_vars} genes)")
+    # Partition patients into IDH1-mutant candidates vs others
+    idh1_selected = []
+    other_patients = []
+
+    for raw_p in all_raw_patients:
+        c_p = clean_id(str(raw_p))
+        if c_p in idh1_mut_ids:
+            idh1_selected.append(raw_p)
+        else:
+            other_patients.append(raw_p)
+
+    print(f"Matched {len(idh1_selected)} IDH1-mutant patients within current dataset.")
+
+    # 3. Stratified Subsampling Selection
+    # Prioritize IDH1-mutant patients to make IDH1 missense dominant in Gate Gene check
+    selected_patients = []
+
+    # Pick target number of IDH1 mutants (or as many as available)
+    n_idh1_to_pick = min(target_idh1_count, len(idh1_selected))
+    selected_patients.extend(idh1_selected[:n_idh1_to_pick])
+
+    # Fill the remaining patient slots with Neftel / TCGA / non-IDH1 patients
+    remaining_slots = target_patient_count - len(selected_patients)
+    selected_patients.extend(other_patients[:remaining_slots])
+
+    print(f"Final pilot cohort patient composition ({len(selected_patients)} total):")
+    print(f"  - IDH1-mutant enriched: {len(selected_patients[:n_idh1_to_pick])}")
+    print(f"  - Non-IDH1 / Primary GBM / Controls: {len(selected_patients[n_idh1_to_pick:])}")
+
+    # 4. Filter AnnData object to selected patients
+    adata_pilot = adata[adata.obs[sample_col].isin(selected_patients)].copy()
+
+    # 5. Export pilot subsample
+    os.makedirs(out_dir, exist_ok=True)
+    out_h5ad = os.path.join(out_dir, "pilot_subsample.h5ad")
+    adata_pilot.write_h5ad(out_h5ad)
+
+    print(f"\n[Success] Pilot subsample saved to: {out_h5ad}")
+    print(f"Matrix shape: {adata_pilot.shape} ({adata_pilot.n_obs} cells x {adata_pilot.n_vars} genes)")
 
 
 if __name__ == "__main__":
-    generate_pilot_subsample()
+    build_pilot_subsample()

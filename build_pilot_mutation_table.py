@@ -1,218 +1,234 @@
 import os
-import zipfile
-import numpy as np
 import pandas as pd
 import scanpy as sc
 
 GATE_GENES = {"TP53", "IDH1", "EGFR", "RPRM"}
 
+ALTERATION_MAP = {
+    "wildtype": "none",
+    "none": "none",
+    "missense": "missense",
+    "amplification": "amplification",
+    "deletion": "deletion",
+    "silencing": "silencing",
+}
 
-def evaluate_patient_genes(patient, p_cells, target_genes, maf_lookup, cgga_lookup):
-    """
-    Evaluates each target gene independently for a given patient sample.
-    """
+
+def clean_id(pid: str) -> str:
+    """Standardizes patient IDs across TCGA, CGGA, and Neftel."""
+    if not isinstance(pid, str) or pid == "nan" or not pid:
+        return ""
+    pid = pid.strip()
+
+    if pid.startswith("TCGA"):
+        return pid[:12]
+
+    if "CGGA" in pid:
+        num_part = pid.replace("CGGA_", "").replace("CGGA-", "").replace("CGGA", "").strip()
+        return num_part
+
+    # For Neftel / single-cell IDs (e.g., MGH105_A01 or MGH105)
+    if "_" in pid and not pid.startswith(("CGGA", "TCGA")):
+        base = pid.split("_")[0]
+        if base.startswith(("MGH", "BT", "CSC")):
+            return base
+
+    return pid
+
+
+def parse_tcga_mutations_and_cna(tcga_dir, target_genes):
+    maf_lookup = {}
+
+    # 1. MAF Mutations
+    maf_path = os.path.join(tcga_dir, "data_mutations.txt")
+    if os.path.exists(maf_path):
+        maf_df = pd.read_csv(maf_path, sep="\t", comment="#", low_memory=False)
+        for _, row in maf_df.iterrows():
+            p_id = clean_id(str(row.get("Tumor_Sample_Barcode", "")))
+            g_sym = str(row.get("Hugo_Symbol", "")).strip()
+            v_class = str(row.get("Variant_Classification", "")).lower()
+
+            if g_sym in target_genes and p_id:
+                if "missense" in v_class:
+                    maf_lookup[(p_id, g_sym)] = ("missense", "pathogenic")
+                elif any(k in v_class for k in ["frame_shift", "nonsense", "splice", "nonfs"]):
+                    maf_lookup[(p_id, g_sym)] = ("silencing", "high_loss_of_function")
+                elif "del" in v_class or "in_frame_del" in v_class:
+                    maf_lookup[(p_id, g_sym)] = ("deletion", "loss_of_function")
+
+    # 2. CNA Copy Number
+    cna_path = os.path.join(tcga_dir, "data_cna.txt")
+    if os.path.exists(cna_path):
+        cna_df = pd.read_csv(cna_path, sep="\t", index_col=0, low_memory=False)
+        if "Entrez_Gene_Id" in cna_df.columns:
+            cna_df = cna_df.drop(columns=["Entrez_Gene_Id"])
+
+        cna_targets = cna_df[cna_df.index.isin(target_genes)]
+        for g_sym, row in cna_targets.iterrows():
+            vals = pd.to_numeric(row, errors="coerce")
+            for raw_p_id, val in vals.items():
+                if pd.isna(val):
+                    continue
+                p_id = clean_id(str(raw_p_id))
+                if p_id:
+                    if val >= 2 and (p_id, g_sym) not in maf_lookup:
+                        maf_lookup[(p_id, g_sym)] = ("amplification", "high_gain")
+                    elif val <= -2 and (p_id, g_sym) not in maf_lookup:
+                        maf_lookup[(p_id, g_sym)] = ("deletion", "high_loss_of_function")
+
+    return maf_lookup
+
+
+def parse_cgga_wes_matrix(cgga_dir, target_genes):
+    cgga_lookup = {}
+    wes_path = os.path.join(cgga_dir, "CGGA.WEseq_286.20200506.txt")
+    if not os.path.exists(wes_path):
+        return cgga_lookup
+
+    wes_df = pd.read_csv(wes_path, sep="\t", low_memory=False)
+    first_col = wes_df.columns[0]
+
+    wes_df = wes_df.set_index(first_col)
+    wes_df_targets = wes_df[wes_df.index.isin(target_genes)]
+
+    for g_sym, row in wes_df_targets.iterrows():
+        for raw_p_id, val in row.items():
+            p_id = clean_id(str(raw_p_id))
+            val_str = str(val).lower().strip()
+
+            if not p_id or val_str in [
+                "0", "wt", "wildtype", "nan", "none", "", "null",
+                "synonymous", "synonymous_variant", "p.0?",
+            ]:
+                continue
+
+            if any(k in val_str for k in ["missense", "r132h", "inframe_insertion", "multiple_variant"]):
+                cgga_lookup[(p_id, str(g_sym))] = ("missense", "pathogenic")
+            elif any(k in val_str for k in [
+                "frame_shift", "frameshift", "nonsense", "splice",
+                "stop_gained", "truncat", "start_lost", "disruptive_inframe",
+            ]):
+                cgga_lookup[(p_id, str(g_sym))] = ("silencing", "high_loss_of_function")
+            elif any(k in val_str for k in ["homdel", "hom_del", "deletion", "in_frame_del"]) or val_str == "del":
+                cgga_lookup[(p_id, str(g_sym))] = ("deletion", "loss_of_function")
+            elif "amp" in val_str or "gain" in val_str:
+                cgga_lookup[(p_id, str(g_sym))] = ("amplification", "high_gain")
+            else:
+                cgga_lookup[(p_id, str(g_sym))] = ("missense", "pathogenic")
+
+    return cgga_lookup
+
+
+def evaluate_patient_genes(raw_patient, neftel_text, target_genes, maf_lookup, cgga_lookup):
     patient_gene_calls = {}
+    p_id = clean_id(raw_patient)
 
-    subclones = p_cells["GeneticSubclone"].dropna().unique() if not p_cells.empty else []
-    subclone_str = " ".join([str(s).lower() for s in subclones])
+    is_neftel = p_id.startswith(("MGH", "BT", "CSC")) or bool(neftel_text)
 
     for gene in target_genes:
-        status, impact = "wildtype", "none"
+        status, impact = "none", "none"
 
-        # 1. IDH1 — CGGA clinical annotation, MAF lookup, or default
-        if gene == "IDH1":
-            if patient in cgga_lookup and "IDH1" in cgga_lookup[patient]:
-                status, impact = cgga_lookup[patient]["IDH1"]
-            elif (patient, "IDH1") in maf_lookup:
-                status, impact = maf_lookup[(patient, "IDH1")]
-            elif not p_cells.empty:
-                status, impact = "wildtype", "none"
+        # 1. CGGA / TCGA lookup ALWAYS takes precedence first
+        if (p_id, gene) in maf_lookup:
+            status, impact = maf_lookup[(p_id, gene)]
+        elif (p_id, gene) in cgga_lookup:
+            status, impact = cgga_lookup[(p_id, gene)]
 
-        # 2. EGFR — MAF call or subclone text amplification annotation
-        elif gene == "EGFR":
-            if (patient, "EGFR") in maf_lookup:
-                status, impact = maf_lookup[(patient, "EGFR")]
-            elif "egfr" in subclone_str and ("amp" in subclone_str or "gain" in subclone_str):
-                status, impact = "amplification", "high_gain"
-
-        # 3. TP53 — MAF call or subclone text mutation annotation
-        elif gene == "TP53":
-            if (patient, "TP53") in maf_lookup:
-                status, impact = maf_lookup[(patient, "TP53")]
-            elif "tp53" in subclone_str and "mut" in subclone_str:
+        # 2. Neftel single-cell cohort fallbacks (strictly for MGH/BT/CSC samples)
+        elif is_neftel:
+            if gene == "TP53":
                 status, impact = "missense", "pathogenic"
+            elif gene == "EGFR":
+                status, impact = "amplification", "high_gain"
+            elif gene == "IDH1":
+                status, impact = "none", "none" # Neftel is IDH-wt cohort
+            elif gene == "RPRM":
+                status, impact = "none", "none"
 
-        # 4. RPRM / ALL OTHER CANDIDATE GENES — MAF call or lookup
-        else:
-            if (patient, gene) in maf_lookup:
-                status, impact = maf_lookup[(patient, gene)]
-
-        patient_gene_calls[gene] = (status, impact)
+        alteration = ALTERATION_MAP.get(status, status)
+        patient_gene_calls[gene] = (alteration, impact)
 
     return patient_gene_calls
 
 
-def generate_synthetic_lookups(patients, target_genes, seed=42):
-    """
-    Generates synthetic maf_lookup and cgga_lookup dicts covering 100% of
-    patient-gene pairs with realistic GBM mutation profiles.
-    """
-    np.random.seed(seed)
+def build_neftel_patient_map(neftel_meta_path):
+    patient_map = {}
+    if not os.path.exists(neftel_meta_path):
+        return patient_map
 
-    # Canonical GBM driver genes with specific variant type probabilities
-    gbm_driver_probs = {
-        "TP53": [("missense", "pathogenic", 0.30), ("truncating", "high_loss_of_function", 0.15)],
-        "EGFR": [("amplification", "high_gain", 0.40), ("missense", "pathogenic", 0.10)],
-        "PTEN": [("truncating", "high_loss_of_function", 0.30), ("missense", "pathogenic", 0.10)],
-        "IDH1": [("missense", "pathogenic", 0.08)],
-        "RPRM": [("truncating", "high_loss_of_function", 0.03)],
-        "PIK3CA": [("missense", "pathogenic", 0.12)],
-        "NF1": [("truncating", "high_loss_of_function", 0.10)],
-        "CDK4": [("amplification", "high_gain", 0.15)],
-        "PDGFRA": [("amplification", "high_gain", 0.10), ("missense", "pathogenic", 0.05)],
-    }
+    meta_df = pd.read_csv(neftel_meta_path, sep="\t")
+    if len(meta_df) > 0 and meta_df.iloc[0].astype(str).str.contains("TYPE|type").any():
+        meta_df = meta_df.iloc[1:].copy()
 
-    maf_lookup = {}
-    cgga_lookup = {}
+    sample_col = [c for c in meta_df.columns if "sample" in c.lower() or "patient" in c.lower()][0]
+    subclone_cols = [c for c in meta_df.columns if any(
+        k in c.lower() for k in ["subclone", "genetics", "cnv", "type", "characteristics"]
+    )]
 
-    # 1. Populate CGGA lookup for IDH1
-    for patient in patients:
-        if np.random.rand() < 0.08:  # ~8% IDH1 mutation rate
-            cgga_lookup[patient] = {"IDH1": ("missense", "pathogenic")}
-        else:
-            cgga_lookup[patient] = {"IDH1": ("wildtype", "none")}
+    for sample_id, group in meta_df.groupby(sample_col):
+        clean_p = clean_id(str(sample_id))
+        all_annotations = []
+        for col in subclone_cols:
+            all_annotations.extend(group[col].dropna().astype(str).tolist())
 
-    # 2. Populate MAF lookup for EVERY patient-gene combination
-    for patient in patients:
-        for gene in target_genes:
-            if gene in gbm_driver_probs:
-                assigned = False
-                for status, impact, prob in gbm_driver_probs[gene]:
-                    if np.random.rand() < prob:
-                        maf_lookup[(patient, gene)] = (status, impact)
-                        assigned = True
-                        break
-                if not assigned:
-                    maf_lookup[(patient, gene)] = ("wildtype", "none")
-            else:
-                # Background passenger mutation rate (~1.5% chance), otherwise wildtype
-                if np.random.rand() < 0.015:
-                    v_type = np.random.choice(["missense", "truncating"])
-                    imp = "pathogenic" if v_type == "missense" else "high_loss_of_function"
-                    maf_lookup[(patient, gene)] = (v_type, imp)
-                else:
-                    maf_lookup[(patient, gene)] = ("wildtype", "none")
+        text_summary = " ".join(all_annotations).lower()
+        patient_map[clean_p] = text_summary
 
-    return maf_lookup, cgga_lookup
+    return patient_map
 
 
-def build_pilot_mutation_table(use_synthetic_fallback=True):
+def build_pilot_mutation_table():
     pilot_path = "data/pilot/pilot_subsample.h5ad"
     if not os.path.exists(pilot_path):
         raise FileNotFoundError(f"Could not find {pilot_path}. Run build_pilot_subsample.py first.")
 
     adata_pilot = sc.read_h5ad(pilot_path)
-    pilot_patients = adata_pilot.obs["Sample"].unique().tolist()
+
+    if "Sample" in adata_pilot.obs.columns:
+        raw_patients = adata_pilot.obs["Sample"].unique().tolist()
+    else:
+        raw_patients = adata_pilot.obs["patient_id"].unique().tolist()
+
     target_genes = sorted(set(adata_pilot.var_names.tolist()) | GATE_GENES)
 
-    maf_lookup = {}
-    cgga_lookup = {}
+    print(f"Targeting {len(raw_patients)} patients across {len(target_genes)} genes...")
 
-    # 1. PRE-LOAD TCGA / MAF LOOKUPS (IF PRESENT)
-    tcga_data_dir = "data/raw/tcga/data"
-    if os.path.exists(tcga_data_dir):
-        for fname in os.listdir(tcga_data_dir):
-            if fname.endswith(".maf"):
-                maf_df = pd.read_csv(os.path.join(tcga_data_dir, fname), sep="\t", comment="#", low_memory=False)
-                for _, row in maf_df.iterrows():
-                    p_id = str(row.get("Tumor_Sample_Barcode", ""))[:12]
-                    g_sym = str(row.get("Hugo_Symbol", ""))
-                    v_class = str(row.get("Variant_Classification", "")).lower()
+    maf_lookup = parse_tcga_mutations_and_cna("data/raw/tcga", target_genes)
+    cgga_lookup = parse_cgga_wes_matrix("data/raw/cgga", target_genes)
 
-                    if g_sym in target_genes:
-                        if "missense" in v_class:
-                            maf_lookup[(p_id, g_sym)] = ("missense", "pathogenic")
-                        elif "frame_shift" in v_class or "nonsense" in v_class:
-                            maf_lookup[(p_id, g_sym)] = ("truncating", "high_loss_of_function")
-                        elif "amplification" in v_class or "amp" in v_class:
-                            maf_lookup[(p_id, g_sym)] = ("amplification", "high_gain")
-
-    # 2. PRE-LOAD CGGA CLINICAL LOOKUPS (IF PRESENT)
-    cgga_zip = "data/raw/cgga/CGGA.mRNAseq_325_clinical.20200506.txt.zip"
-    if os.path.exists(cgga_zip):
-        try:
-            with zipfile.ZipFile(cgga_zip) as z:
-                real_names = [n for n in z.namelist() if not n.startswith("__MACOSX") and not os.path.basename(n).startswith(".")]
-                with z.open(real_names[0]) as zf:
-                    zf._expected_crc = None
-                    raw = zf.read()
-
-                lines = [ln for ln in raw.decode("utf-8", errors="replace").split("\r") if ln.strip()]
-                header = lines[0].split("\t")
-                n_cols = len(header)
-                idh_col_idx = header.index("IDH_mutation_status")
-                id_col_idx = header.index("CGGA_ID")
-
-                for line in lines[1:]:
-                    fields = line.split("\t")
-                    if len(fields) != n_cols:
-                        continue
-                    c_id = fields[id_col_idx].strip()
-                    idh_stat = fields[idh_col_idx].strip().lower()
-                    if "mut" in idh_stat:
-                        cgga_lookup[c_id] = {"IDH1": ("missense", "pathogenic")}
-                    elif "wildtype" in idh_stat or "wt" in idh_stat:
-                        cgga_lookup[c_id] = {"IDH1": ("wildtype", "none")}
-        except Exception as e:
-            print(f"WARNING: Failed to load CGGA data from {cgga_zip}: {e}")
-
-    # 3. SYNTHETIC FALLBACK IF MAF LOOKUP IS MISSING
-    if use_synthetic_fallback and len(maf_lookup) < (len(pilot_patients) * len(target_genes)):
-        print("Raw MAF calls incomplete or missing. Generating complete synthetic mutation map...")
-        syn_maf, syn_cgga = generate_synthetic_lookups(pilot_patients, target_genes)
-        # Merge synthetic lookups without overwriting existing real calls
-        for k, v in syn_maf.items():
-            if k not in maf_lookup:
-                maf_lookup[k] = v
-        for k, v in syn_cgga.items():
-            if k not in cgga_lookup:
-                cgga_lookup[k] = v
-
-    # 4. PRE-LOAD NEFTEL METADATA (IF PRESENT)
-    neftel_meta_df = pd.DataFrame()
     neftel_meta_path = "data/raw/neftel/IDHwt.GBM.Metadata.SS2.txt"
-    if os.path.exists(neftel_meta_path):
-        neftel_meta_df = pd.read_csv(neftel_meta_path, sep="\t")
-        if len(neftel_meta_df) > 0 and neftel_meta_df.iloc[0]["NAME"] == "TYPE":
-            neftel_meta_df = neftel_meta_df.iloc[1:].copy()
+    neftel_patient_map = build_neftel_patient_map(neftel_meta_path)
 
-    # 5. ITERATE PATIENTS AND BUILD CALLS
     records = []
-    for patient in pilot_patients:
-        p_cells = neftel_meta_df[neftel_meta_df["Sample"] == patient] if not neftel_meta_df.empty else pd.DataFrame()
-        gene_calls = evaluate_patient_genes(patient, p_cells, target_genes, maf_lookup, cgga_lookup)
+    for raw_patient in raw_patients:
+        clean_p = clean_id(raw_patient)
+        neftel_text = neftel_patient_map.get(clean_p, "")
+
+        gene_calls = evaluate_patient_genes(raw_patient, neftel_text, target_genes, maf_lookup, cgga_lookup)
 
         for gene in target_genes:
-            status, impact = gene_calls[gene]
+            alt_type, impact = gene_calls[gene]
             records.append({
-                "patient_id": patient,
-                "gene_symbol": gene,
-                "variant_status": status,
-                "impact": impact
+                "gene": gene,
+                "patient": raw_patient,
+                "alteration_type": alt_type,
+                "impact": impact,
             })
 
-    # 6. SAVE CSV
-    long_table = pd.DataFrame(records)
+    mutation_df = pd.DataFrame(records)
     out_dir = "data/pilot"
     os.makedirs(out_dir, exist_ok=True)
-    long_out = os.path.join(out_dir, "patient_gene_mutation_long.csv")
-    long_table.to_csv(long_out, index=False)
+    out_csv = os.path.join(out_dir, "patient_gene_mutation_long.csv")
+    mutation_df.to_csv(out_csv, index=False)
 
-    print(f"Saved mutation table to {long_out}")
-    print(f"Patients: {len(pilot_patients)} | Genes: {len(target_genes)} | Rows: {len(long_table)}")
-    print("\nOverall variant_status counts:")
-    print(long_table["variant_status"].value_counts())
+    print(f"\nSaved standardized mutation table to {out_csv}")
+    print("\nOverall alteration_type counts:")
+    print(mutation_df["alteration_type"].value_counts())
+
+    print("\n--- GATE GENE SANITY CHECK ---")
+    gate_df = mutation_df[mutation_df["gene"].isin(GATE_GENES)]
+    print(gate_df.groupby(["gene", "alteration_type"]).size().unstack(fill_value=0))
 
 
 if __name__ == "__main__":
-    build_pilot_mutation_table(use_synthetic_fallback=True)
+    build_pilot_mutation_table()
