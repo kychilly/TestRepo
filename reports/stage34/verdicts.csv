@@ -1,0 +1,1308 @@
+gene,mutation,outcome,reason
+EGFR,MGH100:high_gain,abstain,"alteration_type='amplification', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+TP53,MGH100:pathogenic,destabilizing_driver,"pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold"
+EGFR,MGH101:high_gain,abstain,"alteration_type='amplification', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+TP53,MGH101:pathogenic,destabilizing_driver,"pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold"
+EGFR,MGH102:high_gain,abstain,"alteration_type='amplification', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+TP53,MGH102:pathogenic,destabilizing_driver,"pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold"
+EGFR,MGH104:high_gain,abstain,"alteration_type='amplification', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+TP53,MGH104:pathogenic,destabilizing_driver,"pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold"
+EGFR,MGH105:high_gain,abstain,"alteration_type='amplification', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+TP53,MGH105:pathogenic,destabilizing_driver,"pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold"
+EGFR,MGH106:high_gain,abstain,"alteration_type='amplification', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+TP53,MGH106:pathogenic,destabilizing_driver,"pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold"
+EGFR,MGH110:high_gain,abstain,"alteration_type='amplification', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+TP53,MGH110:pathogenic,destabilizing_driver,"pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold"
+EGFR,MGH113:high_gain,abstain,"alteration_type='amplification', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+TP53,MGH113:pathogenic,destabilizing_driver,"pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold"
+A2M,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ACACB,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ACIN1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ACTL6B,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ADAMTS13,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ADAMTSL2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ADRA1D,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AEN,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AKAP10,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+AKAP12,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ANKRD30B,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ANKRD65,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ANO4,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+APOB,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+APOBEC3D,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARHGAP22,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARHGAP29,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARHGEF11,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARHGEF16,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARHGEF33,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARID5A,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ASXL1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATP10B,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATP10D,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATP7A,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+B3GAT1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BARX2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BEND6,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BMPR2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BRD2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BSN,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C20orf24,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C5orf63,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CARD6,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CASZ1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CC2D1A,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CCDC159,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CCDC57,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CD180,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CDC42BPG,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+CDC5L,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CDK10,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CDK5RAP2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CDK8,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CDR1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CDYL2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CEP192,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CEP250,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CEP350,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CHD2,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+CHIT1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CHRDL2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CIAO1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CISH,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CLCN6,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CLCN7,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CLDN9,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CLK3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CLTC,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CNOT2,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+COL18A1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+COL27A1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+COL4A2,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+COPS4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+COQ2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CORIN,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CPEB3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CPNE7,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CREB5,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CREBRF,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+CRTC2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CRY1,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+CSF1R,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CST1,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+CTNS,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CUL9,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CYFIP2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CYP4F22,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CYP8B1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DDX23,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DDX27,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+DIDO1,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+DIP2B,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DLGAP3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DMBT1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DNAJC4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DOK6,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DSC2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DYNC2H1,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+EEA1,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+ELL,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+EYS,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FAM129A,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FAM135A,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FAM149B1,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+FAM219B,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FAM57B,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FANCE,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FARSA,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FAT2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FBN3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FLG,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FOXN2,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+FRMPD2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FRY,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FSTL4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FYB,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+G6PD,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GAA,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GAL3ST3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GFPT2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GHRHR,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GIGYF1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GLIS2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GLTSCR1,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+GOLGA2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GPC4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GPR124,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GRK6,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GUCA1A,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HIATL1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HOGA1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HSPB9,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HUWE1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IAH1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IDH1,CGGA_1307:pathogenic,functional_driver,"ESM1b=-13.77 <= cutoff (-10.0), a clearly damaging sequence-level signal, without a confirmed destabilizing ddG signal"
+IGHMBP2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ILDR2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+INTS1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IPO13,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KBTBD13,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KCNV2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KEAP1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIAA1462,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+KIAA1683,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIAA1731,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIF1C,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIF26B,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIFC3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KLHL24,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KLHL9,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+LAMA1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LENG8,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LGI4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LILRB2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LYST,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MAATS1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MAEA,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MAP1LC3B2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MBNL1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MCTP2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ME3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MED16,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MEFV,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MEGF8,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MFF,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MFN1,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+MFSD6,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MINK1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MKRN3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MMP7,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MORC4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MPEG1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MPND,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MPO,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MRPS23,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MTPAP,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MTSS1L,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MUC13,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MUC5B,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MUC6,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYH6,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYO16,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYO1F,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYO1H,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYO9B,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+N4BP3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NAA40,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NBEAL2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NCL,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NEB,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NEDD9,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NEUROD4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NEXN,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NFKB2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NHS,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NIPBL,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+NKX2-2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NLRP1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NOVA2,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+NPC1L1,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+NR6A1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NTN4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NUP160,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+OASL,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+OPLAH,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PAPPA2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PBDC1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PBX2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PCLO,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+PCSK5,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PDLIM2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PDPR,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PEX5L,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PFKFB4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PHTF1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PIK3R1,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+PLCG2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PLEC,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PLK1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PLXNB2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PMEL,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PML,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PNO1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+POP1,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+PPRC1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRAM1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PREX1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRKDC,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRRC2C,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+PRRT1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRRT4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRSS42,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PSD2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PTEN,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+PTPN23,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PTPN3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PTPRK,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PTPRS,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PXN,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PYGL,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RAB34,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RASGRP1,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+RB1CC1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RBBP5,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RBMS3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RCAN1,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+RCOR1,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+RCOR2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RFWD3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RFX1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RFX3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RNF183,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RPL3L,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RPS16,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RPS6KA1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RYR1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RYR2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RYR3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+S1PR4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SCN3B,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SCN4A,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SEC31A,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SEMA6D,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SEPN1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SEPT9,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SERAC1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SETD2,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+SETD5,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SETX,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SGSM1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SH3PXD2A,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SHD,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SHROOM4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC16A5,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC28A1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC30A6,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC39A11,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC41A1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC45A4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC6A13,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC6A9,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC9A3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC9A6,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SMTNL1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SNAPC4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SNRNP70,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SORCS1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SOX8,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SPATA17,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SPATA9,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SPR,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SPTBN5,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+STK3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+STX11,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SUOX,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SUPT6H,CGGA_1307:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+SV2C,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SVEP1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SVIL,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SYK,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TAOK2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TBC1D10C,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TBC1D8,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TBCEL,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TDRKH,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TENM3,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+THAP4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TLR7,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TMEM104,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TMEM2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TMUB1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TOP1MT,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TOPBP1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TP53,CGGA_1307:pathogenic,destabilizing_driver,"pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold"
+TPPP,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TRIM26,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TRIM29,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TSPAN4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TTC7B,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TTN,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+U2AF2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+USP4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+UXS1,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+UXT,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+VAC14,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+VPS13D,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+WDFY4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+WDR90,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+WNK2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+XIRP2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZBTB20,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZC3H13,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZC3H4,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZCCHC14,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZCCHC6,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZDBF2,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZFAT,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF169,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF236,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF347,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF366,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF500,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF646,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF717,CGGA_1307:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AFG3L2,CGGA_1314:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+ARHGAP44,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATRX,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BNC2,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C1GALT1C1,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C3,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CCL20,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CILP2,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DCAF17,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DEAF1,CGGA_1314:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+DHH,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+EYS,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+F5,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GPATCH8,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IDH1,CGGA_1314:pathogenic,functional_driver,"ESM1b=-13.77 <= cutoff (-10.0), a clearly damaging sequence-level signal, without a confirmed destabilizing ddG signal"
+JRK,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIAA2026,CGGA_1314:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+MYO1A,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYT1,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NBEA,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PIK3R1,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PJA1,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PNPLA8,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRRX1,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RBM7,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC10A3,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SYNE1,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TBC1D15,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TLR5,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TLR6,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TP53,CGGA_1314:pathogenic,destabilizing_driver,"pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold"
+TRPM3,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZSCAN5A,CGGA_1314:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARHGEF6,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATP11B,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BBIP1,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CCNY,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CHL1,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CNTLN,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FAM71F2,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HOXA2,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IDH1,CGGA_1384:pathogenic,functional_driver,"ESM1b=-13.77 <= cutoff (-10.0), a clearly damaging sequence-level signal, without a confirmed destabilizing ddG signal"
+ITPR3,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LAMA3,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MAML1,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MGAT4C,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MTFR1L,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PARP14,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TP53,CGGA_1384:pathogenic,destabilizing_driver,"pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold"
+ZNF839,CGGA_1384:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+A2ML1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AARS2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ABCA2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ABCA9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ABCC1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ABCG4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ABL1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ACHE,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ACSS2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ADAMTS16,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ADAMTS2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ADAMTS6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ADAMTSL1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ADAMTSL4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ADCY4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ADCY7,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ADD3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ADIPOR1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ADNP,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ADSSL1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AFF3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AGPAT5,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AGPAT6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AHNAK,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AHNAK2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AIM1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AKAP13,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ALKBH7,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AMER1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AMOTL1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ANK3,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+ANKRD11,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ANKRD13D,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ANKRD17,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ANKS6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ANO1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+APAF1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+APBA2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+APBB2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+APOB,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+APOBEC3G,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AR,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARHGAP11A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARHGAP20,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+ARHGAP22,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARHGAP35,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARHGAP44,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARHGEF16,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARMCX3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARSK,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ASAP2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATAD2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATG2A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATG4B,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+ATP10A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATP12A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATP13A5,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATP2A1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATP4A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATP6V0E2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATRIP,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATXN2L,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+AZIN1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+B9D1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BBS12,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BCHE,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BCO2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BHLHE41,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BICD2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BMP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BPTF,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BTN3A2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BZRAP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C10orf128,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C15orf39,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C16orf71,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C17orf104,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C17orf64,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C2orf42,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C5orf24,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C8orf76,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C9orf131,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C9orf171,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C9orf172,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+C9orf78,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CA7,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CACNA1H,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CAD,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CALD1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CAMSAP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CAMSAP3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CAMTA1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CAP2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CAPRIN2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CASS4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CBX8,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CCDC13,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CCDC141,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CCDC170,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CCDC174,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CCDC64B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CCDC77,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CCDC88B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CCR3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CCT6A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CD53,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CD5L,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CD72,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CDC42BPB,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CDH11,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CDH23,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CDHR2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CDK1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CDK14,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CELSR3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CEP164,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CFTR,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CGNL1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CHD9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CHEK1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CHL1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CHST11,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CHST2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CINP,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CLEC4F,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CLSPN,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CLTA,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CMIP,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CMYA5,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CNGA3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CNOT3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CNTD2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CNTN3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+COG8,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+COL12A1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+COL27A1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+COL6A6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+COL7A1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+COQ9,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+CP,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CPB1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CPNE6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CPPED1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CPS1,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+CPSF1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CROCC,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CRYBB2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CSDE1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CSF1R,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CSF2RB,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CSNK1G2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CTTNBP2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CUL9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CUX1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CXCL16,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CXCL6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CXorf40A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CYP2A7,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CYP2C8,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CYP4F22,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CYP4F3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DACT1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DAG1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DCHS1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DCHS2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DCP1A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DCPS,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DDIT4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DDX10,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DDX31,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DDX3X,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DDX42,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DENND5B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DENND6B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DES,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DIDO1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DIO2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DIRAS2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DIRC2,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+DLD,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DMTF1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DNAH3,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+DNAJA1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DNAJA2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DNAJC11,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DNAJC2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DNM3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DOCK2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DOCK4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DOCK6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DOK1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DSCAML1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DSEL,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DSP,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DTNA,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DUOX2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DVL2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DVL3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DYNC1I1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ECM1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+EEF2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+EHHADH,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ELAC2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+EMILIN2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+EML3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ENO1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ENO2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ENTPD7,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+EPHA6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+EPPK1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+EPX,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ERBB3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ERVMER34-1,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+ETS1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FAM198A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FAM65A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FAM76A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FAM83D,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FANCD2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FASTKD3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FAT1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FBN1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FBN3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FBXL19,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FBXO38,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FBXO9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FCHO2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FEM1B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FER,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FGD5,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FHOD3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FLNC,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FNDC1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FOSL2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FOXE1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FOXP3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FREM2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FRMPD4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FZD6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FZD9,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+GABRB3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GALNT3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GARS,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GAS2L2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GATA3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GATA5,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GBP2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GCAT,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GDF9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GGA1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GGCX,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GGH,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GJB2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GLB1L,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+GLYCTK,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GNPDA1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GPATCH8,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GPR113,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GPR153,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GPR161,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GPR179,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GPR98,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GPRIN1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GPS1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GPT,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GRAMD4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GRM1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GSDMC,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GTF3C1,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+GTF3C4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GTSE1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HCN4,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+HEATR1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HEATR5A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HERC6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HES1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HIF1AN,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HIVEP2,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+HIVEP3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HK3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HMBOX1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HMGN3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HMGXB3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HPCAL1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HS3ST2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HTR2C,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HYDIN,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ICAM2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IDE,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IDH1,CGGA_1394:pathogenic,functional_driver,"ESM1b=-13.77 <= cutoff (-10.0), a clearly damaging sequence-level signal, without a confirmed destabilizing ddG signal"
+IDUA,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IFIH1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IGF1R,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+IGFBPL1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IGSF10,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IL12RB1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IL7R,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+ILDR1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+INADL,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ING5,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+INTS12,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IPO11,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IRAK1BP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IRGQ,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ITFG1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ITGA1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ITGA2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ITGA7,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ITGAD,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ITGB2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ITPK1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ITPR1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ITSN1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IZUMO1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+JUP,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KALRN,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KARS,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KATNB1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KBTBD12,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+KCNA3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KCNF1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KCNH7,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KCNJ16,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KCTD3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KDM5C,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+KEL,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIAA0355,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIAA0895,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIAA1107,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIAA1522,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIAA1549L,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIAA1731,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+KIF12,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIF20B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIF27,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KLHL12,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KLHL42,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KNDC1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KNTC1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LAMA2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LAMA3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LAMB2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LCK,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LCN12,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LCOR,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LDLRAD4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LGR5,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LIN9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LMCD1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LMTK2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LOXL4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LRCH2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LRIF1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LRRC15,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LRRC16A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LRRC23,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LRRC66,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LRRK1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LTBP2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LTBP3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LZTS1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MACF1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MAP1B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MAP1S,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MAP2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MAP3K1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MAP7D2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MAPK7,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MAPK8,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+MAPKBP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MAPRE1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MARK4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MAST4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MATK,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MED13L,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MED27,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MELK,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+MEX3D,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MFGE8,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MGA,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MIB2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MICAL3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MICALCL,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MIDN,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MKL2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MN1,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+MON2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MPP4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MPP6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MRFAP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MROH6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MRVI1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MST1L,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MTMR6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MTUS1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MUC6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MUSK,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MXRA8,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYBPC2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYCBPAP,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYH10,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYH14,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYH15,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYL7,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYO15A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYO18B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYO1D,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYO1F,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYO1H,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYO7A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYT1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NAA16,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NAV2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NAV3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NCKAP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NDUFAB1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NEDD4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NEDD4L,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NELFB,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NELL2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NEURL3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NFATC4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NFE2L3,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+NFIB,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NFRKB,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NHLRC2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NHSL1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NKD1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NLGN1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NLRP9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NOS2,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+NPC1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NR4A1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NR4A2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NRXN3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NTPCR,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NUBPL,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NUDT9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NUP107,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NUP210,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NXN,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+OBSCN,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+OGFOD1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+OLFM1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+OLFM4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+OR51E2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+OR5K2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+OS9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+OTOA,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+OVCH1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+P2RX4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PABPC4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PADI2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PALM3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PAPOLA,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PAPPA2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PARK2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PARP14,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PARP9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PATL1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PC,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PCDH15,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PCDH20,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PCDH9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PCK2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PCNT,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PCOLCE,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PCSK7,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PDCD11,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PDE10A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PDE6D,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+PDGFA,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PDIA2,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+PDPR,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PDS5B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PEAR1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PELP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PER1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PGBD1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PGC,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PGM3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PHF20L1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PICALM,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PIEZO1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PIK3C2G,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PIK3CA,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PINX1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PITRM1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PLA2G2A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PLEK2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PLEKHA6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PLEKHG1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PLEKHH1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PLXNA4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PLXNC1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PMS1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+POLK,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+POLRMT,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+POU3F4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PPARD,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PPFIA3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PPIF,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PPM1B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PPP2R3A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PPP6R1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRKAA1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRKAR1A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRKCD,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRKDC,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRMT5,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRR12,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRSS33,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRSS36,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PRSS45,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PSAT1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PSMD4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PTEN,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PTGDR,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PTK7,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PTPN13,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PTPN21,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PTPRJ,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PTPRK,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PTPRQ,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PUS10,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PVRL3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+R3HCC1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RAB11A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RAB11FIP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RAB11FIP4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RAB3GAP2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RAD51AP2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RALGAPB,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RALGDS,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RAPGEF6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RASA2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RASSF9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RBBP5,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RBCK1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RBM19,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RBM26,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RBM45,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RBPJ,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RC3H2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RELN,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RERE,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RGMB,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RGS6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RIMBP2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RIMS2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RIN3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RNASE4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RNF213,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RNF43,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ROBO2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ROBO3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RPL32,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RPS6KA6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RTL1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RUNX2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RUNX3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RYR1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RYR3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SAMD15,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SBSPON,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+SCN5A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SEC14L1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SEC14L2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SENP2,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+SERPINE3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SERPINF2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SERPINI2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SETBP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SETD1A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SF3A3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SGIP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SGPP2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SH2B3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SH3BGR,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SH3PXD2B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SH3RF2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SHE,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SHPRH,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SIGIRR,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SIMC1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC17A6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC22A18,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC25A45,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC30A4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC30A9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC36A4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC38A11,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC38A7,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC44A2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC4A4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC6A1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLCO5A1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLIT2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLITRK5,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLK,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SMC1A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SMG6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SMURF2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SMYD5,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SNRNP200,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SNW1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SNX10,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SNX13,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SORL1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SP9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SPATA31C2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SPIRE1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SPRED3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SSBP3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SSPO,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SSRP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SSSCA1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ST6GALNAC5,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ST8SIA3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ST8SIA6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+STAB1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+STAG1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+STARD8,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+STIM1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+STK16,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+STRN3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+STX8,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SVEP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SYBU,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SYDE2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SYMPK,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SYN1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SYNM,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+SYNPO2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SYNRG,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SZT2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TACSTD2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TAF1C,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TBC1D14,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TBK1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TCERG1,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+TCF12,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TDP2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TEAD1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TEC,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TECPR2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TECTA,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TENM4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TEP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TEX2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TG,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+THEMIS2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+THOP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+THSD7A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TIAM1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TIE1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TIGIT,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TIMELESS,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TJP2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TLE4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TLL1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TM6SF1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TMEM131,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TMEM150C,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TMEM30B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TMEM8A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TNRC6A,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+TOR1B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TP53,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+TP63,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TPCN1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TPRG1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TRABD2A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TRAIP,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TRAPPC8,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TRAPPC9,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TRIO,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TRMT12,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TRMT1L,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TRMT2A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TRRAP,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TSEN15,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TSLP,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TTC7A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TTF2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TTLL6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TTN,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TXN,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TXNDC15,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+UBA1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+UBA7,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+UBAP2L,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+UBE3C,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+UBN1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+UBN2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+UBR2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+UBR4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+UHRF1BP1L,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+UNC13A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+UPF1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+UPF2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+USP24,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+USP34,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+USP35,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+USP9Y,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+VKORC1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+VOPP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+VPRBP,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+VPS13C,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+VPS4A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+VPS4B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+VSIG8,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+VWA5A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+WDFY4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+WDR36,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+WDR46,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+WHSC1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+WNK1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+WNK3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+WNT5B,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+WSB2,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+WTIP,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+XKR6,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+XPO7,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+XRCC4,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+YAE1D1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+YLPM1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+YY1AP1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZBTB10,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZBTB21,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZC3H12B,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+ZC3H18,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZC3HAV1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZC3HC1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZDHHC3,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZFP57,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+ZFPL1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZFYVE1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZFYVE19,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+ZMPSTE24,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF133,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF205,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF221,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF253,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF256,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF296,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF304,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF354A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF407,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF443,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF445,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF510,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF521,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF572,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF615,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF619,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF662,CGGA_1394:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+ZNF783,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF793,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF799,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF804A,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF814,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF821,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZZEF1,CGGA_1394:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CNOT1,CGGA_D47:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+GOLPH3,CGGA_D47:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+IDH1,CGGA_D47:pathogenic,functional_driver,"ESM1b=-13.77 <= cutoff (-10.0), a clearly damaging sequence-level signal, without a confirmed destabilizing ddG signal"
+KIAA0196,CGGA_D47:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PIK3CA,CGGA_D47:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SNAP23,CGGA_D47:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TCHH,CGGA_D47:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+VPS37C,CGGA_D47:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF280D,CGGA_D47:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ABCC11,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ANKH,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CDH12,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CLCN1,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DNAH9,CGGA_1303:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+FFAR1,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FOLR3,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GPAA1,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HDGFRP3,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IDH1,CGGA_1303:pathogenic,functional_driver,"ESM1b=-13.77 <= cutoff (-10.0), a clearly damaging sequence-level signal, without a confirmed destabilizing ddG signal"
+LARP4B,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MTMR1,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MYT1,CGGA_1303:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+NT5C1A,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+OPHN1,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PLEC,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RYR1,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SOX30,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TCF7L2,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TENM2,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+THADA,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TP53,CGGA_1303:pathogenic,destabilizing_driver,"pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold"
+WDR63,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZEB1,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF732,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZZZ3,CGGA_1303:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARID1A,CGGA_1317:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+ARPC5L,CGGA_1317:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+BDP1,CGGA_1317:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+BRD1,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CAMTA1,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CEBPZ,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DQX1,CGGA_1317:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+GFPT1,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HIC1,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IDH1,CGGA_1317:pathogenic,functional_driver,"ESM1b=-13.77 <= cutoff (-10.0), a clearly damaging sequence-level signal, without a confirmed destabilizing ddG signal"
+IL17RE,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MBNL2,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MTOR,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PAX5,CGGA_1317:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+PLA2G4A,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+POR,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RNF20,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC12A2,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SLC24A3,CGGA_1317:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+SND1,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SRGAP1,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+WSB2,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ZNF662,CGGA_1317:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CIC,CGGA_1350:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DAB2IP,CGGA_1350:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DCUN1D4,CGGA_1350:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+FUBP1,CGGA_1350:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+HBB,CGGA_1350:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IDH1,CGGA_1350:pathogenic,functional_driver,"ESM1b=-13.77 <= cutoff (-10.0), a clearly damaging sequence-level signal, without a confirmed destabilizing ddG signal"
+IL17B,CGGA_1350:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NIPBL,CGGA_1350:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+NOTCH1,CGGA_1350:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PLCG1,CGGA_1350:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+REV3L,CGGA_1350:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RIMBP2,CGGA_1350:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CCSER2,CGGA_1368:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+EDN3,CGGA_1368:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+G3BP1,CGGA_1368:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IDH1,CGGA_1368:pathogenic,functional_driver,"ESM1b=-13.77 <= cutoff (-10.0), a clearly damaging sequence-level signal, without a confirmed destabilizing ddG signal"
+IER3,CGGA_1368:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LRRC14,CGGA_1368:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MASTL,CGGA_1368:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MCHR1,CGGA_1368:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MICB,CGGA_1368:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MMP24,CGGA_1368:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MUC6,CGGA_1368:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+NBN,CGGA_1368:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NRAS,CGGA_1368:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PPM1D,CGGA_1368:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+PTPRU,CGGA_1368:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RANBP2,CGGA_1368:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+RGR,CGGA_1368:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+VWA7,CGGA_1368:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+ZNF208,CGGA_1368:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ANO3,CGGA_1377:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ATRX,CGGA_1377:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+CNNM2,CGGA_1377:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+EMR2,CGGA_1377:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HPS1,CGGA_1377:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+IDH1,CGGA_1377:pathogenic,functional_driver,"ESM1b=-13.77 <= cutoff (-10.0), a clearly damaging sequence-level signal, without a confirmed destabilizing ddG signal"
+KIF20A,CGGA_1377:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LAPTM4A,CGGA_1377:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PELP1,CGGA_1377:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+PTPDC1,CGGA_1377:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TP53,CGGA_1377:pathogenic,destabilizing_driver,"pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold"
+UTRN,CGGA_1377:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+VWA3A,CGGA_1377:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+BEND4,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CASC1,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CIC,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CLIC2,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CSF2RB,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+DNHD1,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+EBNA1BP2,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FBN2,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FLNB,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FTSJ3,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FUBP1,CGGA_1424:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+IDH1,CGGA_1424:pathogenic,functional_driver,"ESM1b=-13.77 <= cutoff (-10.0), a clearly damaging sequence-level signal, without a confirmed destabilizing ddG signal"
+KIAA0922,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+KIF19,CGGA_1424:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+KPNA6,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+L1CAM,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+LNPEP,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+MTOR,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NOTCH1,CGGA_1424:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+PCYT2,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+TET2,CGGA_1424:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ARHGAP25,CGGA_1429:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+ASIC4,CGGA_1429:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+BCOR,CGGA_1429:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CIC,CGGA_1429:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+CTBP2,CGGA_1429:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+EFCC1,CGGA_1429:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FANCM,CGGA_1429:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+FUBP1,CGGA_1429:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GGT1,CGGA_1429:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+GLP2R,CGGA_1429:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+HIST1H2BD,CGGA_1429:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+HOXA7,CGGA_1429:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+IDH1,CGGA_1429:pathogenic,functional_driver,"ESM1b=-13.77 <= cutoff (-10.0), a clearly damaging sequence-level signal, without a confirmed destabilizing ddG signal"
+MUC12,CGGA_1429:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+NOTCH1,CGGA_1429:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+PIK3R1,CGGA_1429:loss_of_function,abstain,"alteration_type='deletion', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+RAB33A,CGGA_1429:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
+SPTBN5,CGGA_1429:high_loss_of_function,abstain,"alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+WNT3,CGGA_1429:pathogenic,data_deficient,missense variant but ESM1b score is missing; cannot run any test
