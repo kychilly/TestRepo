@@ -44,10 +44,13 @@ class ScVIProbe(Baseline):
             self.applicability = "scvi-tools is not installed"
             raise MethodNotApplicable(self.applicability) from exc
         self.applicability = f"scvi-tools {scvi.__version__}"
-        if self.count_layer != "X" and self.count_layer not in train_metadata:
-            raise BaselineError(
-                f"Configured count layer {self.count_layer!r} was not supplied"
-            )
+        counts_to_check = train_data.X if self.count_layer == "X" else train_data.raw_counts
+        if (
+                counts_to_check is None
+                or not np.allclose(counts_to_check, np.floor(counts_to_check))
+                or np.any(counts_to_check < 0)
+        ):
+            raise BaselineError("scVI input must be non-negative integer-like raw counts")
         if not np.allclose(train_data.X, np.floor(train_data.X)) or np.any(
             train_data.X < 0
         ):
@@ -129,11 +132,18 @@ class ScVIProbe(Baseline):
             if data.batch is None:
                 raise BaselineError("Configured scVI batch_key requires CellData.batch")
             obs[self.batch_key] = data.batch.astype(str)
-        return ad.AnnData(
+        adata = ad.AnnData(
             X=np.asarray(data.X, dtype=np.float32),
             obs=obs,
             var={"gene_id": list(data.gene_ids)},
         )
+        if self.count_layer != "X":
+            if data.raw_counts is None:
+                raise BaselineError(
+                    f"Configured count layer {self.count_layer!r} was not supplied"
+                )
+            adata.layers[self.count_layer] = np.asarray(data.raw_counts, dtype=np.float32)
+        return adata
 
     def _latent_data(self, data: CellData, latent: NDArray[Any]) -> CellData:
         if self.latent_gene_ids is None:

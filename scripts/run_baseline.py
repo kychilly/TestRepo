@@ -50,6 +50,7 @@ def subset_cell_data(data: CellData, mask: np.ndarray) -> CellData:
         state=data.state[mask],
         gene_ids=data.gene_ids,
         batch=data.batch[mask] if data.batch is not None else None,
+        raw_counts=data.raw_counts[mask] if data.raw_counts is not None else None,
     )
 
 
@@ -84,9 +85,16 @@ def load_data(path: Path, config: dict[str, Any]) -> CellData:
                 cell_id = adata.obs_names.to_numpy().astype(str)
 
             gene_ids = tuple(adata.var_names.astype(str).tolist())
-            batch = adata.obs["batch"].to_numpy() if "batch" in adata.obs.columns else None
+            batch_col = config.get("batch_key", "batch")
+            batch = adata.obs[batch_col].to_numpy() if batch_col in adata.obs.columns else None
 
-            data = CellData(X, patient_id, cell_id, state, gene_ids, batch)
+            raw_counts = None
+            count_layer = config.get("scvi_probe", {}).get("count_layer")
+            if count_layer and count_layer != "X" and count_layer in adata.layers:
+                layer = adata.layers[count_layer]
+                raw_counts = layer.toarray() if hasattr(layer, "toarray") else np.asarray(layer)
+
+            data = CellData(X, patient_id, cell_id, state, gene_ids, batch, raw_counts)
         except OSError as exc:
             raise BaselineError(f"Cannot read h5ad file {path}: {exc}") from exc
     else:
