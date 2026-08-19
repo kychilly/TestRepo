@@ -1,0 +1,5 @@
+{
+  "measured_gpu_seconds_per_10000_cells": null,
+  "reason": "CUDA is unavailable; no GPU plan was created",
+  "status": "blocked"
+}

@@ -75,67 +75,28 @@ def load_data(
         try:
             adata = sc.read_h5ad(path)
 
-            patient_key = str(config.get("patient_id_key", "patient_id"))
-            state_key = str(config.get("state_key", "state"))
-            batch_key = config.get("batch_key")
+            # Use dynamic config keys with fallbacks
+            patient_key = config.get("patient_id_key", "patient_id")
+            state_key = config.get("state_key", "state")
             cell_key = config.get("cell_id_key")
-            missing = [
-                key
-                for key in (patient_key, state_key)
-                if key not in adata.obs.columns
-            ]
-            if missing:
-                raise BaselineError(
-                    f"H5AD obs must contain configured columns: {missing}"
-                )
-            if batch_key is not None and batch_key not in adata.obs.columns:
-                raise BaselineError(
-                    f"H5AD obs is missing configured batch column: {batch_key!r}"
-                )
+
+            req_cols = {patient_key, state_key}
+            if not req_cols.issubset(set(adata.obs.columns)):
+                raise BaselineError(f"H5AD obs must contain columns: {sorted(req_cols)}")
 
             X = adata.X.toarray() if hasattr(adata.X, "toarray") else adata.X
-            if method == "scvi_probe":
-                count_layer = str(config.get("scvi_probe", {}).get("count_layer", "X"))
-                if count_layer != "X" and count_layer not in adata.layers:
-                    raise MethodNotApplicable(
-                        f"scVI count layer {count_layer!r} is not present in the H5AD"
-                    )
-                if count_layer == "X" and "counts" not in adata.layers:
-                    raise MethodNotApplicable(
-                        "scVI requires raw integer counts; H5AD has no counts layer"
-                    )
-                count_values = (
-                    adata.layers[count_layer]
-                    if count_layer != "X"
-                    else X
-                )
-                if hasattr(count_values, "toarray"):
-                    count_values = count_values.toarray()
-                if not np.allclose(count_values, np.floor(count_values)) or np.any(
-                    count_values < 0
-                ):
-                    raise MethodNotApplicable(
-                        "scVI requires raw integer counts; pilot X is log-normalized"
-                    )
-            patient_id = adata.obs[patient_key].astype(str).to_numpy()
-            cell_id = (
-                adata.obs[cell_key].astype(str).to_numpy()
-                if cell_key is not None and cell_key in adata.obs.columns
-                else adata.obs_names.astype(str).to_numpy()
-            )
-            state = adata.obs[state_key].astype(str).to_numpy()
-            aliases = PILOT_STATE_ALIASES if config.get("normalize_pilot_state_labels") else {}
-            state = np.asarray([aliases.get(value, value) for value in state], dtype=str)
-            batch = (
-                adata.obs[batch_key].astype(str).to_numpy()
-                if batch_key is not None
-                else None
-            )
-            gene_key = config.get("gene_id_key")
-            if gene_key is not None and gene_key in adata.var.columns:
-                gene_ids = tuple(adata.var[gene_key].astype(str).tolist())
+
+            # Ensure clean string conversion from Categorical dtypes
+            patient_id = adata.obs[patient_key].to_numpy().astype(str)
+            state = adata.obs[state_key].to_numpy().astype(str)
+
+            if cell_key and cell_key in adata.obs.columns:
+                cell_id = adata.obs[cell_key].to_numpy().astype(str)
             else:
-                gene_ids = tuple(adata.var_names.astype(str).tolist())
+                cell_id = adata.obs_names.to_numpy().astype(str)
+
+            gene_ids = tuple(adata.var_names.astype(str).tolist())
+            batch = adata.obs["batch"].to_numpy() if "batch" in adata.obs.columns else None
 
             data = CellData(X, patient_id, cell_id, state, gene_ids, batch)
         except OSError as exc:
@@ -226,7 +187,9 @@ def main(argv: list[str] | None = None) -> int:
     try:
         data = load_data(args.adata, config, args.method)
 
-        splits = load_patient_splits(args.splits, args.fold)
+        # Enforce Path object conversion to prevent AttributeError
+        splits_path = Path(args.splits)
+        splits = load_patient_splits(splits_path, args.fold)
         if any(
                 "cgga" in patient.lower()
                 for patients in splits.as_dict().values()
@@ -242,12 +205,10 @@ def main(argv: list[str] | None = None) -> int:
                 "Input genes do not exactly match the frozen preprocessing gene list"
             )
 
-        # ``assign_cells`` returns row indices, not patient IDs. Preserve that
-        # contract here so the training partition cannot become accidentally
-        # empty when patient IDs are strings.
-        train = data.subset(assignments["train"])
-        validation = data.subset(assignments["validation"])
-        test = data.subset(assignments["test"])
+        # Slice CellData using the helper function
+        train = subset_cell_data(data, assignments["train"])
+        validation = subset_cell_data(data, assignments["validation"])
+        test = subset_cell_data(data, assignments["test"])
 
         train_metadata = {"split": "train", "batch": train.batch}
         validation_selection: dict[str, Any] = {"rule": "not_applicable"}

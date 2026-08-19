@@ -1,0 +1,10 @@
+{
+  "interpretation_label": "candidate/suspect gene ranking \u2014 not a confirmed driver",
+  "provenance": {
+    "checkpoint_sha256": null,
+    "config_sha256": null,
+    "vocabulary_sha256": null
+  },
+  "reason": "Missing real pilot inputs: cell_data_path, split_file, checkpoint_path, vocabulary_path, gene_id_type",
+  "status": "blocked"
+}

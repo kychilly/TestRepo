@@ -1,0 +1,14 @@
+{
+  "audit": "results/week1_audit.json",
+  "report": "docs/week1_adit.md",
+  "reproduction": [
+    "make environment-check",
+    "make scgpt-smoke",
+    "make baselines-smoke",
+    "make evaluate-smoke",
+    "make test",
+    "make week1-audit"
+  ],
+  "status": "infrastructure_complete_scientific_run_blocked",
+  "week": 1
+}

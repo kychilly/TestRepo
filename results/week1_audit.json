@@ -1,0 +1,218 @@
+{
+  "baseline_arms": {
+    "harmony_knn": {
+      "reason": "No valid unseen-cell transform is available without transductive leakage",
+      "status": "blocked"
+    },
+    "pca_logreg": {
+      "fold_safety": "training-only transform fit verified",
+      "status": "completed_on_synthetic_fixture"
+    },
+    "scvi_probe": {
+      "reason": "scVI/AnnData runtime and verified loader are unavailable",
+      "status": "blocked"
+    }
+  },
+  "benchmark": {
+    "benchmark_cells": 1000,
+    "mapping": {
+      "dropped": null,
+      "duplicated": null,
+      "genes_after": null,
+      "genes_before": null,
+      "retained": null,
+      "unmapped": null
+    },
+    "model": {
+      "batch_size": 32,
+      "precision": "float32",
+      "token_length": null
+    },
+    "provenance": {
+      "checkpoint_sha256": null,
+      "vocabulary_sha256": null
+    },
+    "reason": "Missing real benchmark inputs: cell_data_path, patient_id_column, gene_id_column, gene_id_type, split_file, checkpoint_path, vocabulary_path",
+    "selection": {
+      "patients_represented": null,
+      "seed": 20260802,
+      "training_patients_only": false
+    },
+    "status": "blocked",
+    "timing": {
+      "cells_per_second": null,
+      "gpu_seconds_per_1000_cells": null,
+      "gpu_synchronization": null,
+      "peak_allocated_bytes": null,
+      "peak_reserved_bytes": null,
+      "projected_gpu_seconds_per_10000_cells": null,
+      "wall_clock_seconds": null
+    }
+  },
+  "checks": {
+    "candidate_variant_explicit_join": {
+      "evidence": "schemas.records.build_validator_inputs preserves zero/one/multiple variants",
+      "status": "passed"
+    },
+    "checkpoint_vocabulary_hashes": {
+      "reason": "real assets absent; fields are null in blocked benchmark",
+      "status": "blocked"
+    },
+    "clean_environment_tests": {
+      "evidence": "repository quality gate completed before audit",
+      "status": "passed"
+    },
+    "donor_batch_audit": {
+      "batch_risk_interpretation": "available cell-assignment labels explain equal or more separation than donor",
+      "n_cell_assignment_groups": 4,
+      "n_cells": 7930,
+      "n_donors": 28,
+      "n_hvg": 2000,
+      "silhouette": {
+        "cell_assignment_proxy": 0.432306170463562,
+        "donor": -0.016822267323732376
+      },
+      "state_label_warning": "CellAssignment is not the agreed AC/MES/NPC/OPC state label.",
+      "status": "completed"
+    },
+    "independent_zero_patient_overlap": {
+      "evidence": "baseline loader and gbm_study leakage module assert pairwise disjointness",
+      "status": "passed"
+    },
+    "manuscript_metrics_source": {
+      "evidence": "metrics and bootstrap are implemented under src/evaluation and consumed by run_evaluation",
+      "status": "passed"
+    },
+    "neftel_data_registration": {
+      "evidence": "data/README.md records the downloaded file hash and observed cohort fields",
+      "status": "completed"
+    },
+    "no_cgga_access": {
+      "evidence": "configuration and Neftel loaders reject CGGA; static references are guards/documentation only",
+      "static_scan": {
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "scripts/week1_audit.py\nscripts/run_baseline.py\nsrc/gbm_study/config.py\n"
+      },
+      "status": "passed"
+    },
+    "no_rank_implies_driver": {
+      "evidence": "candidate schema records rank/score only; documentation does not claim causality",
+      "status": "passed"
+    },
+    "prediction_row_provenance": {
+      "evidence": "shared evaluate_predictions emits patient/cell/split/fold/seed/config_hash/split_hash",
+      "status": "passed"
+    },
+    "scgpt_real_1000_cell_forward_pass": {
+      "reason": "Missing real benchmark inputs: cell_data_path, patient_id_column, gene_id_column, gene_id_type, split_file, checkpoint_path, vocabulary_path",
+      "status": "blocked"
+    },
+    "shared_patient_split_contract": {
+      "evidence": "canonical train/validation/test split keys and baselines.base.load_patient_splits",
+      "status": "passed_on_disk_contract"
+    },
+    "structured_failures": {
+      "evidence": "environment, benchmark, baselines, evaluator, and contract CLI write structured failure records",
+      "status": "passed"
+    },
+    "training_only_transforms": {
+      "evidence": "PCA pipeline is fit on train subset; scVI/Harmony remain blocked",
+      "status": "passed_for_applicable_arm"
+    }
+  },
+  "completion_blockers": [
+    "No real scGPT checkpoint or vocabulary is available; TCGA/CGGA and canonical four-state labels are also absent from the supplied data.",
+    "The current runtime has no CUDA GPU and scGPT/AnnData/scVI/Harmony are unavailable.",
+    "Validator Lead sign-off on the versioned contract is still required."
+  ],
+  "environment": {
+    "anndata": null,
+    "harmonypy": null,
+    "numpy": "1.26.4",
+    "pandas": "2.1.3",
+    "pip_freeze_export": "results/compute/week1_pip_freeze.txt",
+    "platform": "macOS-26.2-arm64-arm-64bit",
+    "python": "3.11.9",
+    "scanpy": null,
+    "scgpt": null,
+    "scikit-learn": "1.3.2",
+    "scvi-tools": null,
+    "torch": "2.9.1"
+  },
+  "generated_at": "2026-08-10T06:13:12.034785+00:00",
+  "gpu_and_checkpoint": {
+    "checkpoint_sha256": null,
+    "environment_report": {
+      "checkpoint": null,
+      "config_path": "config/model.yaml",
+      "determinism": {
+        "requested_device": "cuda",
+        "seed": 20260802
+      },
+      "failures": [
+        "CUDA was requested but is unavailable",
+        "checkpoint is missing: None",
+        "vocabulary is missing: None"
+      ],
+      "operating_system": "macOS-26.2-arm64-arm-64bit",
+      "package_versions": {
+        "anndata": null,
+        "scanpy": null,
+        "scgpt": null,
+        "torch": "2.9.1"
+      },
+      "python_version": "3.11.9",
+      "scgpt": {
+        "git_commit": null,
+        "version": null
+      },
+      "status": "failed",
+      "torch": {
+        "cuda_available": false,
+        "cuda_runtime": null,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "cudnn_version": null,
+        "deterministic_algorithms": false,
+        "devices": [],
+        "gpu_count": 0,
+        "installed": true,
+        "mixed_precision_capability": {
+          "bfloat16": false,
+          "float16": false
+        },
+        "version": "2.9.1"
+      },
+      "vocabulary": null
+    },
+    "vocabulary_sha256": null
+  },
+  "schema_versions": {
+    "candidate_gene": "1.0.0",
+    "evaluation_result": "draft-2020-12",
+    "prediction": "draft-2020-12",
+    "validator_input": "1.0.0",
+    "variant_record": "1.0.0"
+  },
+  "status": "completed",
+  "test_commands": {
+    "baseline_tests": {
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "........s.                                                               [100%]\n=============================== warnings summary ===============================\ntests/test_baselines.py::test_training_only_fitting_and_probability_order\ntests/test_baselines.py::test_state_label_order_and_save_load_equivalence\ntests/test_baselines.py::test_same_seed_reproducibility_and_different_seed_recorded\ntests/test_baselines.py::test_same_seed_reproducibility_and_different_seed_recorded\ntests/test_baselines.py::test_same_seed_reproducibility_and_different_seed_recorded\ntests/test_baselines.py::test_common_evaluation_outputs_cell_and_patient_rows\n  /Users/aditrajaram/.pyenv/versions/3.11.9/lib/python3.11/site-packages/sklearn/linear_model/_logistic.py:452: DeprecationWarning: scipy.optimize: The `disp` and `iprint` options of the L-BFGS-B solver are deprecated and will be removed in SciPy 1.18.0.\n    opt_res = optimize.minimize(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n9 passed, 1 skipped, 6 warnings in 1.07s\n"
+    },
+    "contract_tests": {
+      "returncode": 0,
+      "stderr": "",
+      "stdout": ".................                                                        [100%]\n=============================== warnings summary ===============================\nsrc/schemas/records.py:12\nsrc/schemas/records.py:12\n  /Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/src/schemas/records.py:12: DeprecationWarning: jsonschema.RefResolver is deprecated as of v4.18.0, in favor of the https://github.com/python-jsonschema/referencing library, which provides more compliant referencing behavior as well as more flexible APIs for customization. A future release will remove RefResolver. Please file a feature request (on referencing) if you are missing an API for the kind of customization you need.\n    from jsonschema import Draft202012Validator, FormatChecker, RefResolver  # type: ignore[import-untyped]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n17 passed, 2 warnings in 0.11s\n"
+    },
+    "evaluation_tests": {
+      "returncode": 0,
+      "stderr": "",
+      "stdout": ".........                                                                [100%]\n9 passed in 1.34s\n"
+    }
+  },
+  "week": 1,
+  "week1_complete": false
+}

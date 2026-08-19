@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any, cast
 
 import numpy as np
-import pandas as pd  # type: ignore[import-untyped]
+import pandas as pd
 from numpy.typing import NDArray
 from sklearn.decomposition import PCA  # type: ignore[import-untyped]
 from sklearn.linear_model import Ridge  # type: ignore[import-untyped]

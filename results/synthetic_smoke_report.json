@@ -1,0 +1,36 @@
+{
+  "results": {
+    "candidate_schema": {
+      "metric": null,
+      "producer": "implemented_and_schema_validated",
+      "status": "completed",
+      "validator_consumer": "held_for_Ishaan_signoff"
+    },
+    "gpu_plan": {
+      "metric": null,
+      "reason": "CUDA is unavailable; no GPU plan was created",
+      "status": "blocked"
+    },
+    "harmony_knn": {
+      "metric": null,
+      "reason": "harmonypy is not installed",
+      "status": "blocked"
+    },
+    "idh_evaluation": {
+      "auroc": 1.0,
+      "metric_scope": "synthetic_patient_level_only",
+      "status": "completed"
+    },
+    "pca_logreg": {
+      "macro_f1": 0.5791666666666666,
+      "status": "completed"
+    },
+    "scvi": {
+      "metric": null,
+      "reason": "scvi-tools is not installed",
+      "status": "blocked"
+    }
+  },
+  "scientific_use": "forbidden",
+  "synthetic": true
+}

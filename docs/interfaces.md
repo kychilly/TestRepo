@@ -71,8 +71,8 @@ PYTHONPATH=src python scripts/validate_contracts.py \
   --variants examples/variant_record.example.jsonl \
   --evidence examples/protein_evidence.synthetic.jsonl \
   --validator-config-version 1.0.0 \
-  --output results/contracts/validator_input.jsonl \
-  --join-output results/contracts/validator_join.jsonl
+  --output baseline_results/contracts/validator_input.jsonl \
+  --join-output baseline_results/contracts/validator_join.jsonl
 ```
 
 This makes the conversion explicit and reversible: Ishaan receives the compact
@@ -134,7 +134,7 @@ PYTHONPATH=src python scripts/validate_contracts.py \
   --variants examples/variant_record.example.jsonl \
   --evidence examples/protein_evidence.synthetic.jsonl \
   --validator-config-version 1.0.0 \
-  --output results/contracts/validator_input.jsonl
+  --output baseline_results/contracts/validator_input.jsonl
 ```
 
 The synthetic EGFR missense and amplification rows intentionally produce a multiple-variant abstention for EGFR. The RPRM silencing row remains present and produces non-protein abstention. This is expected and demonstrates why a gene-level candidate cannot be sent directly to a missense validator.

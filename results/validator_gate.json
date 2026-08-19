@@ -1,0 +1,107 @@
+{
+  "classification_gate_passed": true,
+  "completed_at_utc": "2026-08-10T21:15:20.672531+00:00",
+  "gate_passed": false,
+  "interpretation": "Software classifications matched the requested outcomes, but publication gate is blocked until complete precomputed evidence provenance is supplied.",
+  "provenance_warnings": [
+    "incomplete_and_estimated_ddg",
+    "incomplete_source_version_metadata"
+  ],
+  "publication_gate_passed": false,
+  "status": "blocked",
+  "threshold_change_log": [
+    {
+      "change": "initial configuration",
+      "date": "2026-08-10",
+      "reason": "No prior validator.yaml was present in the pulled Ishaan merge; thresholds were frozen before the gate run and were not tuned after observing verdicts."
+    }
+  ],
+  "thresholds": {
+    "ddg_cutoff": 1.0,
+    "esm1b_cutoff": -10.0,
+    "plddt_floor": 70.0
+  },
+  "thresholds_moved_after_gate_observation": false,
+  "verdicts": [
+    {
+      "counts_toward_prediction": true,
+      "evidence_provenance": {
+        "access_date": "2026-08-10",
+        "alphafold_source": "user-supplied precomputed note",
+        "alphafold_version": "not stated",
+        "ddg_source": "user-supplied precomputed note",
+        "ddg_version": "not stated",
+        "esm1b_source": "user-supplied precomputed note",
+        "esm1b_version": "not stated",
+        "provenance_status": "incomplete_source_version_metadata",
+        "source_url": "https://docs.google.com/document/d/13q6H5QVpBlpXkRmxbnVRqA7rNWgFbJKzvOyRsatrmUU/edit?usp=sharing"
+      },
+      "expected_outcome": "destabilizing_driver",
+      "gene": "TP53",
+      "matches_expected": true,
+      "mutation": "R175H",
+      "outcome": "destabilizing_driver",
+      "reason": "pLDDT=96.62 >= floor (70.0) so the structure is trustworthy, and ddG=3.01 >= cutoff (1.0) kcal/mol, i.e. the mutation destabilizes the fold"
+    },
+    {
+      "counts_toward_prediction": true,
+      "evidence_provenance": {
+        "access_date": "2026-08-10",
+        "alphafold_source": "user-supplied precomputed note",
+        "alphafold_version": "not stated",
+        "ddg_source": "user-supplied estimate in note",
+        "ddg_version": "not stated",
+        "esm1b_source": "user-supplied precomputed note",
+        "esm1b_version": "not stated",
+        "provenance_status": "incomplete_and_estimated_ddg",
+        "source_url": "https://docs.google.com/document/d/13q6H5QVpBlpXkRmxbnVRqA7rNWgFbJKzvOyRsatrmUU/edit?usp=sharing"
+      },
+      "expected_outcome": "functional_driver",
+      "gene": "IDH1",
+      "matches_expected": true,
+      "mutation": "R132H",
+      "outcome": "functional_driver",
+      "reason": "ESM1b=-13.77 <= cutoff (-10.0), a clearly damaging sequence-level signal, without a confirmed destabilizing ddG signal"
+    },
+    {
+      "counts_toward_prediction": false,
+      "evidence_provenance": {
+        "access_date": "2026-08-10",
+        "alphafold_source": "not applicable",
+        "alphafold_version": "not applicable",
+        "ddg_source": "not applicable",
+        "ddg_version": "not applicable",
+        "esm1b_source": "not applicable",
+        "esm1b_version": "not applicable",
+        "provenance_status": "non_missense_gate_record",
+        "source_url": "https://docs.google.com/document/d/13q6H5QVpBlpXkRmxbnVRqA7rNWgFbJKzvOyRsatrmUU/edit?usp=sharing"
+      },
+      "expected_outcome": "abstain",
+      "gene": "EGFR",
+      "matches_expected": true,
+      "mutation": "amplification",
+      "outcome": "abstain",
+      "reason": "alteration_type='amplification', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+    },
+    {
+      "counts_toward_prediction": false,
+      "evidence_provenance": {
+        "access_date": "2026-08-10",
+        "alphafold_source": "not applicable",
+        "alphafold_version": "not applicable",
+        "ddg_source": "not applicable",
+        "ddg_version": "not applicable",
+        "esm1b_source": "not applicable",
+        "esm1b_version": "not applicable",
+        "provenance_status": "non_missense_gate_record",
+        "source_url": "https://docs.google.com/document/d/13q6H5QVpBlpXkRmxbnVRqA7rNWgFbJKzvOyRsatrmUU/edit?usp=sharing"
+      },
+      "expected_outcome": "abstain",
+      "gene": "RPRM",
+      "matches_expected": true,
+      "mutation": "silencing",
+      "outcome": "abstain",
+      "reason": "alteration_type='silencing', not a missense mutation; there is no single mutant protein structure or sequence-effect to test, so we abstain rather than guess"
+    }
+  ]
+}

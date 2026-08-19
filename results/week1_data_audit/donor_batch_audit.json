@@ -1,0 +1,13 @@
+{
+  "batch_risk_interpretation": "available cell-assignment labels explain equal or more separation than donor",
+  "n_cell_assignment_groups": 4,
+  "n_cells": 7930,
+  "n_donors": 28,
+  "n_hvg": 2000,
+  "silhouette": {
+    "cell_assignment_proxy": 0.432306170463562,
+    "donor": -0.016822267323732376
+  },
+  "state_label_warning": "CellAssignment is not the agreed AC/MES/NPC/OPC state label.",
+  "status": "completed"
+}

@@ -27,12 +27,12 @@ IDH prediction files and writes one combined `metrics.json` source of truth:
 
 ```sh
 PYTHONPATH=src python eval.py \
-  --cell-predictions results/baselines/pca_logreg/fold0_seed17/predictions.jsonl \
-  --idh-predictions results/idh/pca_logreg/fold0_seed17/predictions.jsonl \
+  --cell-predictions baseline_results/baselines/pca_logreg/fold0_seed17/predictions.jsonl \
+  --idh-predictions baseline_results/idh/pca_logreg/fold0_seed17/predictions.jsonl \
   --splits splits/patient_splits.json \
   --config config/evaluation.yaml \
   --idh-config config/evaluation_idh.yaml \
-  --output results/evaluation/pca_logreg/fold0_seed17
+  --output baseline_results/evaluation/pca_logreg/fold0_seed17
 ```
 
 `--idh-predictions` is optional for a cell-state-only run, but IDH AUROC is not
@@ -44,10 +44,10 @@ The lower-level single-task command remains available:
 
 ```sh
 PYTHONPATH=src python scripts/run_evaluation.py \
-  --predictions results/baselines/pca_logreg/fold0_seed17/predictions.jsonl \
+  --predictions baseline_results/baselines/pca_logreg/fold0_seed17/predictions.jsonl \
   --splits splits/patient_splits.json \
   --config config/evaluation.yaml \
-  --output results/evaluation/pca_logreg/fold0_seed17
+  --output baseline_results/evaluation/pca_logreg/fold0_seed17
 ```
 
 The command writes `metrics.json`, `bootstrap_distribution.parquet`, `confusion_matrix.csv`, `per_patient_metrics.parquet`, `warnings.json`, and `evaluation_manifest.json`. The manifest records evaluator Git commit, prediction/split hashes, split hash, configuration hash, bootstrap seed and replicate count, UTC timestamp, and package versions.

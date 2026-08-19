@@ -1,0 +1,73 @@
+WEEK 1 TEAM INPUTS REQUIRED BEFORE SCIENTIFIC COMPLETION
+
+This file is intentionally stored under results/, which is ignored by .gitignore. It is local, untracked, and should not be committed.
+
+1. DATA LEAD
+
+- Real Neftel single-cell expression dataset in the documented loader format.
+- Patient identifier column and cell identifier column.
+- Gene identifier namespace and gene vocabulary file.
+- Exact patient split JSON for every requested fold, with disjoint train, validation, and test patient lists.
+- SHA-256 hash of the dataset manifest.
+- SHA-256 hash of the split file.
+- SHA-256 hash of the vocabulary.
+- Cohort name and release/version.
+- Authoritative gene-symbol alias mapping, including source and release.
+- Explicit list of validation/test patients forbidden from training-only rankings.
+- Confirmation that no CGGA data are included in the Week 1 Neftel track.
+
+2. MODELING LEAD
+
+- Verified scGPT checkpoint file and SHA-256 hash.
+- Exact scGPT package/version and git commit.
+- Model loader implementation or documented checkpoint loading contract.
+- Expected checkpoint tensor shapes and required special vocabulary tokens.
+- Exact checkpoint precision, batch size, token length, requested device, and seed.
+- Confirmation that the benchmark selects exactly 1,000 real cells from training patients only.
+- Confirmation that checkpoint and vocabulary hashes are emitted in benchmark results.
+- Fold-specific candidate rankings with score method, score mean/SD, rank, contributing patient IDs, cell count, patient count, split hash, checkpoint hash, vocabulary hash, and config hash.
+- Proof that no validation/test patients contributed to training-only candidate rankings.
+
+3. BASELINE LEAD
+
+- Confirmation that PCA-logistic uses the shared patient split file and split hash.
+- End-to-end real-data PCA-logistic output with prediction rows containing patient_id, cell_id, split, fold, seed, config_hash, split_hash, and model_hash.
+- scVI runtime, AnnData loader, count-layer definition, architecture configuration, and training output if the arm is to be run.
+- Harmony version, covariate definition, and a validated non-transductive transform for unseen validation/test cells if the arm is to be run.
+- Otherwise, retain the current structured blocker artifacts and do not report arm performance.
+
+4. EVALUATION LEAD
+
+- Exact prediction JSONL/CSV/Parquet for each real method/fold/seed.
+- Exact split file used to produce each prediction file.
+- Configuration file and configuration hash.
+- Model hash and run metadata.
+- Confirmation that all manuscript numbers are copied only from the evaluation package outputs.
+- No manual notebook metrics or independently calculated manuscript values.
+- Confirmation that patient-level bootstrap distributions are retained.
+
+5. VALIDATOR LEAD
+
+- Written sign-off on docs/interfaces.md before production contract use.
+- Approved meanings for train_only, internal_refit, and external_forbidden.
+- Approved score-method controlled vocabulary; ambiguous "importance" remains prohibited.
+- Approved candidate-to-variant join key.
+- Approved transcript source, transcript version, protein accession, isoform, genome build, and mapping status conventions.
+- Approved validator configuration version.
+- Approved abstention rules for multiple variants, non-missense alterations, missing evidence, transcript ambiguity, isoform ambiguity, and mapping failure.
+- Confirmation that candidate and variant provenance remain separate until explicit join.
+
+6. REPRODUCTION/REVIEW EVIDENCE
+
+- Pinned dependency installation output and environment export from the actual run host.
+- GPU identity, CUDA version, and available memory if a GPU run is expected.
+- Git commit or uncommitted-work explanation for every reported run.
+- Results/week1_audit.json from make week1-audit.
+- Results/week1_manifest.json from the same audit.
+- Review confirmation that no candidate is called a causal driver from model rank alone.
+
+CURRENT BLOCKERS
+
+- No real data, split, checkpoint, vocabulary, or verified scGPT loader exists in this repository.
+- Current runtime has no CUDA GPU and lacks scGPT/AnnData/scVI/Harmony execution dependencies.
+- Therefore the verified scGPT forward-pass gate and scientific manuscript-number gate remain blocked.

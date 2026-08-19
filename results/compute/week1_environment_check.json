@@ -1,0 +1,43 @@
+{
+  "checkpoint": null,
+  "config_path": "config/model.yaml",
+  "determinism": {
+    "requested_device": "cuda",
+    "seed": 20260802
+  },
+  "failures": [
+    "CUDA was requested but is unavailable",
+    "checkpoint is missing: None",
+    "vocabulary is missing: None"
+  ],
+  "operating_system": "macOS-26.2-arm64-arm-64bit",
+  "package_versions": {
+    "anndata": null,
+    "scanpy": null,
+    "scgpt": null,
+    "torch": "2.9.1"
+  },
+  "python_version": "3.11.9",
+  "scgpt": {
+    "git_commit": null,
+    "version": null
+  },
+  "status": "failed",
+  "torch": {
+    "cuda_available": false,
+    "cuda_runtime": null,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "cudnn_version": null,
+    "deterministic_algorithms": false,
+    "devices": [],
+    "gpu_count": 0,
+    "installed": true,
+    "mixed_precision_capability": {
+      "bfloat16": false,
+      "float16": false
+    },
+    "version": "2.9.1"
+  },
+  "vocabulary": null
+}
