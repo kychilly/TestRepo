@@ -218,7 +218,7 @@ def build_pilot_mutation_table():
     mutation_df = pd.DataFrame(records)
     out_dir = "data/pilot"
     os.makedirs(out_dir, exist_ok=True)
-    out_csv = os.path.join(out_dir, "patient_gene_mutation_long.csv")
+    out_csv = os.path.join(out_dir, "patient_gene_mutation_table.csv")
     mutation_df.to_csv(out_csv, index=False)
 
     print(f"\nSaved standardized mutation table to {out_csv}")
