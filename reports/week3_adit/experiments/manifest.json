@@ -1,0 +1,193 @@
+{
+  "ablation_design": "one_variable_at_a_time",
+  "backbone_scope": {
+    "backbones": [
+      "scGPT"
+    ],
+    "branch": "phase1_scgpt_only",
+    "estimated_scgpt_gpu_seconds": null,
+    "reason": "Week 2 measured scGPT timing is unavailable"
+  },
+  "blocked_runs": 12,
+  "checkpointing": {
+    "enabled": true,
+    "gene_progress_file": "ranking_checkpoint.jsonl",
+    "resume_policy": "same run_id, config fingerprint, seed, fold, backbone, and ablation",
+    "status_file": "checkpoint_status.json"
+  },
+  "completed_runs": 0,
+  "config_hash": "cdbf6572a17daa4e184beb6a3b74768752ec53e38250611026786c7a5382eb22",
+  "runs": [
+    {
+      "ablation": {
+        "grn": true,
+        "mc_dropout": true,
+        "name": "all_on",
+        "validator": true
+      },
+      "backbone": "scGPT",
+      "reason": "CUDA is unavailable",
+      "run_id": "week3-scgpt-seed17-all_on",
+      "seed": 17,
+      "status": "blocked"
+    },
+    {
+      "ablation": {
+        "grn": true,
+        "mc_dropout": true,
+        "name": "validator_off",
+        "validator": false
+      },
+      "backbone": "scGPT",
+      "reason": "CUDA is unavailable",
+      "run_id": "week3-scgpt-seed17-validator_off",
+      "seed": 17,
+      "status": "blocked"
+    },
+    {
+      "ablation": {
+        "grn": false,
+        "mc_dropout": true,
+        "name": "grn_off",
+        "validator": true
+      },
+      "backbone": "scGPT",
+      "reason": "CUDA is unavailable",
+      "run_id": "week3-scgpt-seed17-grn_off",
+      "seed": 17,
+      "status": "blocked"
+    },
+    {
+      "ablation": {
+        "grn": true,
+        "mc_dropout": false,
+        "name": "mc_dropout_off",
+        "validator": true
+      },
+      "backbone": "scGPT",
+      "reason": "CUDA is unavailable",
+      "run_id": "week3-scgpt-seed17-mc_dropout_off",
+      "seed": 17,
+      "status": "blocked"
+    },
+    {
+      "ablation": {
+        "grn": true,
+        "mc_dropout": true,
+        "name": "all_on",
+        "validator": true
+      },
+      "backbone": "scGPT",
+      "reason": "CUDA is unavailable",
+      "run_id": "week3-scgpt-seed42-all_on",
+      "seed": 42,
+      "status": "blocked"
+    },
+    {
+      "ablation": {
+        "grn": true,
+        "mc_dropout": true,
+        "name": "validator_off",
+        "validator": false
+      },
+      "backbone": "scGPT",
+      "reason": "CUDA is unavailable",
+      "run_id": "week3-scgpt-seed42-validator_off",
+      "seed": 42,
+      "status": "blocked"
+    },
+    {
+      "ablation": {
+        "grn": false,
+        "mc_dropout": true,
+        "name": "grn_off",
+        "validator": true
+      },
+      "backbone": "scGPT",
+      "reason": "CUDA is unavailable",
+      "run_id": "week3-scgpt-seed42-grn_off",
+      "seed": 42,
+      "status": "blocked"
+    },
+    {
+      "ablation": {
+        "grn": true,
+        "mc_dropout": false,
+        "name": "mc_dropout_off",
+        "validator": true
+      },
+      "backbone": "scGPT",
+      "reason": "CUDA is unavailable",
+      "run_id": "week3-scgpt-seed42-mc_dropout_off",
+      "seed": 42,
+      "status": "blocked"
+    },
+    {
+      "ablation": {
+        "grn": true,
+        "mc_dropout": true,
+        "name": "all_on",
+        "validator": true
+      },
+      "backbone": "scGPT",
+      "reason": "CUDA is unavailable",
+      "run_id": "week3-scgpt-seed101-all_on",
+      "seed": 101,
+      "status": "blocked"
+    },
+    {
+      "ablation": {
+        "grn": true,
+        "mc_dropout": true,
+        "name": "validator_off",
+        "validator": false
+      },
+      "backbone": "scGPT",
+      "reason": "CUDA is unavailable",
+      "run_id": "week3-scgpt-seed101-validator_off",
+      "seed": 101,
+      "status": "blocked"
+    },
+    {
+      "ablation": {
+        "grn": false,
+        "mc_dropout": true,
+        "name": "grn_off",
+        "validator": true
+      },
+      "backbone": "scGPT",
+      "reason": "CUDA is unavailable",
+      "run_id": "week3-scgpt-seed101-grn_off",
+      "seed": 101,
+      "status": "blocked"
+    },
+    {
+      "ablation": {
+        "grn": true,
+        "mc_dropout": false,
+        "name": "mc_dropout_off",
+        "validator": true
+      },
+      "backbone": "scGPT",
+      "reason": "CUDA is unavailable",
+      "run_id": "week3-scgpt-seed101-mc_dropout_off",
+      "seed": 101,
+      "status": "blocked"
+    }
+  ],
+  "scientific_guidelines": [
+    "Use the same patient fold and the same seeds for every ablation.",
+    "Change exactly one of validator, GRN, or MC dropout at a time.",
+    "Fit probes on training patients only; never use test patients for fitting or ranking.",
+    "MC dropout must stay active for 20-50 passes and report mean, variance, and timing.",
+    "Do not report synthetic fixtures, blocked runs, or CPU smoke timing as scientific results.",
+    "Use CellFM and Geneformer only when measured scGPT timing fits the compute budget.",
+    "Keep checkpoint, vocabulary, split, config, seed, and evidence provenance with outputs."
+  ],
+  "seeds": [
+    17,
+    42,
+    101
+  ],
+  "status": "completed_with_blockers"
+}

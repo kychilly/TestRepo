@@ -97,7 +97,7 @@ Evaluate the approved prediction file through `eval.py`:
 
 ```sh
 PYTHONPATH=src python eval.py \
-  --predictions baseline_results/baselines/pca_logreg/fold0_seed17/predictions.jsonl \
+  --cell-predictions baseline_results/baselines/pca_logreg/fold0_seed17/predictions.jsonl \
   --splits SPLITS.json --config config/evaluation.yaml \
   --output baseline_results/evaluation/pca_logreg/fold0_seed17
 ```
@@ -145,3 +145,85 @@ benchmark=<results/compute/week3_scgpt_benchmark.json>.
 
 The current macOS host has no CUDA device, so this message must remain
 unposted until the provisioned run produces the required artifact.
+
+## Full Adit experiment matrix
+
+`src/experiments/week3.py` executes three seeds and four one-factor-at-a-time
+conditions: all branches on, validator off, GRN off, and MC dropout off. The
+real implementation in `src/models/scgpt_internal.py` loads the internal H5AD,
+uses the frozen patient split, embeds cells with the official checkpoint,
+fits the state probe on training patients, ranks genes by patient-balanced
+mask-logit deltas, and writes test predictions. MC-on conditions use 20–50
+active-dropout passes. Every run writes its seed plus embeddings, embedding
+variance, rankings, predictions, metrics, timing, and model hashes.
+
+Run on the CUDA host after filling `config/week3_adit.yaml`:
+
+```sh
+PYTHONPATH=src:. python scripts/run_week3_experiments.py \
+  --config config/week3_adit.yaml \
+  --output reports/week3_adit/experiments
+```
+
+For a Jupyter/A100 session, keep the repository on persistent storage and put
+scratch and model caches on the attached disk. The session name is the resume
+key; rerunning this exact command skips stages already marked completed:
+
+```sh
+export GBM_A100_SCRATCH=/mnt/localssd/gbm-a100-scratch
+export GBM_PERSISTENT_OUTPUT_DIR=/mnt/persistent/gbm-results
+mkdir -p "$GBM_A100_SCRATCH" "$GBM_PERSISTENT_OUTPUT_DIR"
+export HF_HOME="$GBM_A100_SCRATCH/huggingface"
+export HF_DATASETS_CACHE="$HF_HOME/datasets"
+export TRANSFORMERS_CACHE="$HF_HOME/transformers"
+export PYTHONPATH="$PWD/src:."
+
+python scripts/run_a100_week3.py \
+  --config config/model_shared_gpu.yaml \
+  --scratch "$GBM_A100_SCRATCH" \
+  --results "$GBM_PERSISTENT_OUTPUT_DIR" \
+  --session-id week3-scgpt-a100 \
+  --run-week3 \
+  --week3-config config/week3_adit.yaml \
+  --week3-output "$GBM_PERSISTENT_OUTPUT_DIR/week3-scgpt-a100/experiments"
+```
+
+Before running it, fill the shared GPU config with the real Hugging Face
+dataset ID, immutable revision, split, checkpoint-matched assets, and patient
+split. After an interruption, rerun the same command and inspect
+`run_manifest.json`, `preflight.json`, and each stage's stdout/stderr files.
+Interrupted or failed stages are not scientific results.
+
+CellFM and Geneformer are selected only when the measured Week 2 timing,
+including the configured masking/dropout workload, fits the GPU budget. When
+timing is absent or over budget, the manifest records
+`phase1_scgpt_only` and its compute reason. A checkpoint-specific runner must
+also be configured before either additional backbone can execute.
+
+### Resume and checkpoint rules
+
+Each seed/ablation directory is a resumable unit. The real runner saves the
+unmasked embeddings immediately, appends each completed gene's four state
+scores to `ranking_checkpoint.jsonl`, and updates `checkpoint_status.json`
+every `checkpoint_every_genes` genes. Run the exact same command and output
+directory after an interruption. Completed genes are skipped.
+
+Resume is refused if the checkpoint fingerprint changes. The protected values
+are seed, fold, backbone, validator/GRN/MC settings, checkpoint hash,
+vocabulary hash, target states, candidate genes, and MC pass count. Use a new
+output directory for a changed experiment.
+
+The required rules remain:
+
+- Same patient fold and same three or more seeds in every arm.
+- Change only one branch at a time.
+- Fit probes and make rankings from training patients only.
+- Use 20–50 active-dropout passes and save mean, variance, and timing.
+- Never call a fixture, blocked run, CPU smoke test, or missing-evidence output
+  a scientific result.
+- Add CellFM/Geneformer only after measured scGPT timing fits the budget.
+- Preserve model, vocabulary, split, configuration, seed, and evidence hashes.
+
+Every JSON written by the Week 3 experiment engine has a same-name `.txt`
+file. The text explains what happened, why, what matters, concerns, and next
+actions in plain language.

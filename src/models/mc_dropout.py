@@ -19,6 +19,7 @@ class MCDropoutResult:
     pass_times: tuple[float, ...]
     single_pass_seconds: float
     gene_names: tuple[str, ...] | None = None
+    samples: NDArray[np.float32] | None = None
 
     @property
     def compute_multiplier(self) -> float:
@@ -95,6 +96,7 @@ def infer_mc_dropout(
         pass_times=tuple(timings),
         single_pass_seconds=single,
         gene_names=gene_names,
+        samples=np.asarray(stacked, dtype=np.float32),
     )
 
 

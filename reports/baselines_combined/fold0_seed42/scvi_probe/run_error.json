@@ -1,0 +1,13 @@
+{
+  "config_hash": "e3b6ba9602f1a5e2fbd32f8c9aee247a8817dc69d5bd642199c2e6a602221c68",
+  "fold": 0,
+  "method": "scvi_probe",
+  "reason": "scvi-tools is not installed",
+  "runtime": {
+    "git_commit": "071e33c591a1d195312887b18938df643921a6a9",
+    "platform": "macOS-26.2-arm64-arm-64bit",
+    "python": "3.11.9 (main, Jul 30 2025, 13:48:57) [Clang 17.0.0 (clang-1700.0.13.5)]"
+  },
+  "seed": 42,
+  "status": "not_applicable"
+}

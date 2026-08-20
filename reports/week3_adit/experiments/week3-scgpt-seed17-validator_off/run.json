@@ -1,0 +1,13 @@
+{
+  "ablation": {
+    "grn": true,
+    "mc_dropout": true,
+    "name": "validator_off",
+    "validator": false
+  },
+  "backbone": "scGPT",
+  "reason": "CUDA is unavailable",
+  "run_id": "week3-scgpt-seed17-validator_off",
+  "seed": 17,
+  "status": "blocked"
+}

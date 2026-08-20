@@ -1,0 +1,18 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/readiness/dataset_archives.json
+
+WHAT HAPPENED
+- The job did the parts it could do, but some parts could not run.
+
+WHY
+- The JSON file did not give a special reason.
+
+WHAT IS IMPORTANT
+- The JSON file is the exact machine-readable record.
+
+WHAT IS CONCERNING
+- Read the JSON for details before using this result.
+
+NEXT ACTIONS
+- Obtain part 002 if it contains additional files; do not invent it from the extracted directory.
+- Use the raw TCGA files from part 003 to build the provenance-preserving mutation join.

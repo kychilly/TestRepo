@@ -1,0 +1,226 @@
+{
+  "arms": {
+    "all_genes": {
+      "external_idh_mutation_auroc": {
+        "mean": 0.20685470196477407,
+        "standard_deviation": 0.006078645675493555,
+        "values": [
+          0.19985280429465116,
+          0.20993138082559476,
+          0.21077992077407623
+        ]
+      },
+      "external_macro_f1": {
+        "mean": 0.31049250535331907,
+        "standard_deviation": 0.0,
+        "values": [
+          0.31049250535331907,
+          0.31049250535331907,
+          0.31049250535331907
+        ]
+      },
+      "internal_macro_f1": {
+        "mean": 0.48234950726001785,
+        "standard_deviation": 0.05074919716343397,
+        "values": [
+          0.525691699604743,
+          0.49483352468427094,
+          0.42652329749103945
+        ]
+      },
+      "internal_to_external_macro_f1_drop": {
+        "mean": 0.17185700190669873,
+        "standard_deviation": 0.05074919716343397,
+        "values": [
+          0.21519919425142398,
+          0.18434101933095187,
+          0.11603079213772038
+        ]
+      }
+    },
+    "confirmed_genes": {
+      "external_idh_mutation_auroc": {
+        "mean": 0.606085532249569,
+        "standard_deviation": 0.0036302557938657403,
+        "values": [
+          0.6092300365824621,
+          0.6069138688659438,
+          0.602112691300301
+        ]
+      },
+      "external_macro_f1": {
+        "mean": 0.47019855725096366,
+        "standard_deviation": 0.09969855064772254,
+        "values": [
+          0.5289630761595027,
+          0.526547560993631,
+          0.3550850345997572
+        ]
+      },
+      "internal_macro_f1": {
+        "mean": 0.5201127075231438,
+        "standard_deviation": 0.0465040229621154,
+        "values": [
+          0.5423340961098397,
+          0.551337359792925,
+          0.4666666666666667
+        ]
+      },
+      "internal_to_external_macro_f1_drop": {
+        "mean": 0.04991415027218018,
+        "standard_deviation": 0.053709923298937944,
+        "values": [
+          0.01337101995033707,
+          0.024789798799293994,
+          0.11158163206690946
+        ]
+      }
+    },
+    "shuffled_size_matched_control": {
+      "external_idh_mutation_auroc": {
+        "mean": 0.7751628893651104,
+        "standard_deviation": 0.12925385247465257,
+        "values": [
+          0.9244063467324718,
+          0.7017035738251403,
+          0.6993787475377189
+        ]
+      },
+      "external_macro_f1": {
+        "mean": 0.4665799832431836,
+        "standard_deviation": 0.21620040101226212,
+        "values": [
+          0.7133546850620021,
+          0.37589275931422983,
+          0.31049250535331907
+        ]
+      },
+      "internal_macro_f1": {
+        "mean": 0.42909959813185616,
+        "standard_deviation": 0.06009757551752557,
+        "values": [
+          0.3890909090909091,
+          0.39999999999999997,
+          0.4982078853046595
+        ]
+      },
+      "internal_to_external_macro_f1_drop": {
+        "mean": -0.03748038511132747,
+        "standard_deviation": 0.26148698010274685,
+        "values": [
+          -0.32426377597109296,
+          0.024107240685770137,
+          0.1877153799513404
+        ]
+      }
+    },
+    "unconfirmed_genes": {
+      "external_idh_mutation_auroc": {
+        "mean": 0.32904589764126096,
+        "standard_deviation": 0.0872670440123507,
+        "values": [
+          0.2993224668268502,
+          0.26052341061107864,
+          0.4272918154858541
+        ]
+      },
+      "external_macro_f1": {
+        "mean": 0.31032833690221273,
+        "standard_deviation": 0.00028434809831609834,
+        "values": [
+          0.31049250535331907,
+          0.31049250535331907,
+          0.31
+        ]
+      },
+      "internal_macro_f1": {
+        "mean": 0.47497576710845407,
+        "standard_deviation": 0.04794726193563964,
+        "values": [
+          0.49483352468427094,
+          0.5098039215686274,
+          0.42028985507246375
+        ]
+      },
+      "internal_to_external_macro_f1_drop": {
+        "mean": 0.1646474302062413,
+        "standard_deviation": 0.04766642084882179,
+        "values": [
+          0.18434101933095187,
+          0.19931141621530835,
+          0.11028985507246375
+        ]
+      }
+    }
+  },
+  "blockers": [
+    "CGGA has zero AC/MES/NPC/OPC labels, so external four-state macro-F1 cannot be calculated.",
+    "Variant-effect AUROC needs independent positive and negative labels plus variant scores; these are absent.",
+    "Abstention accuracy needs independent gold verdicts; reusing validator outputs as truth would be circular.",
+    "GRN holdout contains one unique positive edge, so its AUROC is only a software sanity check.",
+    "Only TP53 and IDH1 are confirmed; the headline comparison is exploratory and underpowered.",
+    "The confirmed pair did not beat the seeded size-matched shuffled control, so the required call is no_result.",
+    "The all-on/validator-off/GRN-off/MC-off scGPT arms still require CUDA and an external endpoint compatible with CGGA labels."
+  ],
+  "data": {
+    "cgga_labeled_samples": 966,
+    "common_genes": 1721,
+    "confirmed_genes": [
+      "IDH1",
+      "TP53"
+    ],
+    "neftel_pseudobulk_samples": 27,
+    "tcga_samples": 160,
+    "unconfirmed_gene_count": 90
+  },
+  "endpoint": "patient_level_IDH_mutation_status",
+  "external_test": "966 labeled CGGA patients never used for fitting",
+  "headline": {
+    "confirmed_beats_shuffled": false,
+    "confirmed_drop_advantage": 0.11473327993406113,
+    "confirmed_gene_drop": 0.04991415027218018,
+    "interpretation": "Positive means the confirmed-gene model lost less performance externally.",
+    "result_call": "no_result",
+    "shuffled_control_drop": -0.03748038511132747,
+    "unconfirmed_gene_drop": 0.1646474302062413
+  },
+  "internal_test": "stratified held-out TCGA patients",
+  "next_actions": [
+    "Add authoritative CGGA state labels if the intended endpoint is AC/MES/NPC/OPC.",
+    "Add ClinVar/DMS-labeled benign and pathogenic variants with model scores for variant AUROC.",
+    "Add independently adjudicated validator outcomes for abstention accuracy.",
+    "Replace the one-edge GRN holdout with a frozen larger positive set and matched negatives.",
+    "Expand confirmed protein evidence beyond TP53 and IDH1 before treating the headline number as paper-ready.",
+    "Do not make the paper claim unless the confirmed arm beats the prespecified shuffled control."
+  ],
+  "normalization": "within-sample percentile ranks fixed without labels",
+  "proposal_metrics": {
+    "abstention_accuracy": "blocked: no independent gold abstain/non-abstain verdicts",
+    "grn_edge_auroc": {
+      "auroc": 1.0,
+      "held_out_edges": 1,
+      "limitation": "This is a prior-confidence sanity check with one unique held-out positive, not a learned GRN result.",
+      "negative_edges": 144,
+      "status": "completed"
+    },
+    "internal_to_external_performance_drop": "completed for the IDH endpoint",
+    "macro_f1": "completed for the IDH endpoint",
+    "variant_auroc": "blocked: no independent benign/pathogenic variant-effect labels and scores"
+  },
+  "provenance": {
+    "config_sha256": "bbb731c5a2a47d228c22da302b2343c36ca1461737db70b578e87f38fe0d7729",
+    "full_cohort_sha256": "2dae279547ec170501bc363c02e4234682b06388ac60ea12a51436701a765fac",
+    "grn_holdout_sha256": "1e597a3d371c77d15159553a5434300e11cc0f3cd4b79bd0368eacf032348ec7",
+    "grn_train_sha256": "c734cbb6b0fb0c159b17beafa20947dd06f5f8c86a4a779955f1e713d08c3841",
+    "tcga_sha256": "d9542ce4fc71bdd196aa111f83061041c53ef7ec26590a37cd76b0b0380cf132",
+    "verdicts_sha256": "0def98a4301a48f9052dca386167ae97554af42abd9780c54532871c5b26a8af"
+  },
+  "scope": "CPU tabular feature-mask analysis; not the blocked scGPT ablation matrix",
+  "seeds": [
+    17,
+    42,
+    101
+  ],
+  "status": "completed_with_blockers",
+  "training": "TCGA training split plus 27 IDH-wildtype Neftel patient pseudobulks"
+}

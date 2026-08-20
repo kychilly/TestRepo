@@ -1,0 +1,17 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/cross_cohort_combined/checkpoint.json
+
+WHAT HAPPENED
+- The job finished and saved its result.
+
+WHY
+- The JSON file did not give a special reason.
+
+WHAT IS IMPORTANT
+- Runs that finished: 12
+
+WHAT IS CONCERNING
+- No blocking problem was recorded in this file.
+
+NEXT ACTIONS
+- Use a new output directory if any input, seed, or configuration changes.

@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-import scanpy as sc
 
 from baselines.base import (
     BaselineError,
@@ -27,6 +26,7 @@ from baselines.base import (
 from baselines.harmony_knn import HarmonyKNN
 from baselines.pca_logreg import PCALogReg
 from baselines.scvi_probe import ScVIProbe
+from gbm_study.plain_english import write_json_with_explanation, write_jsonl_explanation
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
@@ -54,7 +54,7 @@ def subset_cell_data(data: CellData, mask: np.ndarray) -> CellData:
     )
 
 
-def load_data(path: Path, config: dict[str, Any]) -> CellData:
+def load_data(path: Path, config: dict[str, Any], method: str | None = None) -> CellData:
     """Load data from .h5ad or .npz format into a CellData instance."""
     if "cgga" in str(path).lower():
         raise BaselineError("CGGA data are prohibited for the Neftel baseline track")
@@ -62,7 +62,14 @@ def load_data(path: Path, config: dict[str, Any]) -> CellData:
     path_str = str(path).lower()
     if path_str.endswith(".h5ad"):
         try:
-            adata = sc.read_h5ad(path)
+            try:
+                import scanpy as sc  # type: ignore[import-not-found]
+
+                adata = sc.read_h5ad(path)
+            except ImportError:
+                import anndata as ad  # type: ignore[import-not-found]
+
+                adata = ad.read_h5ad(path)
 
             # Use dynamic config keys with fallbacks
             patient_key = config.get("patient_id_key", "patient_id")
@@ -95,7 +102,7 @@ def load_data(path: Path, config: dict[str, Any]) -> CellData:
                 raw_counts = layer.toarray() if hasattr(layer, "toarray") else np.asarray(layer)
 
             data = CellData(X, patient_id, cell_id, state, gene_ids, batch, raw_counts)
-        except OSError as exc:
+        except (ImportError, OSError) as exc:
             raise BaselineError(f"Cannot read h5ad file {path}: {exc}") from exc
     else:
         try:
@@ -118,6 +125,8 @@ def load_data(path: Path, config: dict[str, Any]) -> CellData:
     if any("cgga" in str(value).lower() for value in data.patient_id.tolist()):
         raise BaselineError("CGGA patients are prohibited for the Neftel baseline track")
 
+    if method == "scvi_probe" and data.raw_counts is None:
+        raise BaselineError("scVI requires raw integer counts in the configured count layer")
     return data
 
 
@@ -179,7 +188,7 @@ def main(argv: list[str] | None = None) -> int:
     args.output.mkdir(parents=True, exist_ok=True)
 
     try:
-        data = load_data(args.adata, config)
+        data = load_data(args.adata, config, args.method)
 
         # Enforce Path object conversion to prevent AttributeError
         splits_path = Path(args.splits)
@@ -255,31 +264,27 @@ def main(argv: list[str] | None = None) -> int:
             "".join(json.dumps(row, sort_keys=True) + "\n" for row in predictions),
             encoding="utf-8",
         )
-        (args.output / "patient_summary.json").write_text(
-            json.dumps(patients, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        write_json_with_explanation(args.output / "patient_summary.json", {"status": "completed", "patients": patients})
+        write_json_with_explanation(
+            args.output / "run_metadata.json",
+            {
+                **run,
+                "status": "completed",
+                "baseline": baseline.get_run_metadata(),
+                "validation_selection": validation_selection,
+                "runtime": runtime_metadata(),
+            },
         )
-        (args.output / "run_metadata.json").write_text(
-            json.dumps(
-                {
-                    **run,
-                    "status": "completed",
-                    "baseline": baseline.get_run_metadata(),
-                    "validation_selection": validation_selection,
-                    "runtime": runtime_metadata(),
-                },
-                indent=2,
-                sort_keys=True,
-            )
-            + "\n",
-            encoding="utf-8",
+        write_jsonl_explanation(
+            args.output / "predictions.jsonl",
+            row_count=len(predictions),
+            description="Cell-level held-out predictions from the requested patient split.",
         )
         return 0
 
     except (BaselineError, MethodNotApplicable, OSError, ValueError) as exc:
         record = failure_record(args.method, args.fold, args.seed, str(exc), config)
-        (args.output / "run_error.json").write_text(
-            json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-        )
+        write_json_with_explanation(args.output / "run_error.json", record)
         print(json.dumps(record, sort_keys=True), file=sys.stderr)
         return 2
 

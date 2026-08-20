@@ -1,0 +1,8 @@
+{
+  "cell_prediction_file": "reports/baselines_combined/final_seed101/harmony_knn/predictions.jsonl",
+  "idh_prediction_file": null,
+  "status": "completed",
+  "tasks": [
+    "cell_state"
+  ]
+}

@@ -1,0 +1,20 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/adit_week_audit/current.json
+
+WHAT HAPPENED
+- The job finished and saved its result.
+
+WHY
+- The JSON file did not give a special reason.
+
+WHAT IS IMPORTANT
+- The JSON file is the exact machine-readable record.
+
+WHAT IS CONCERNING
+- No blocking problem was recorded in this file.
+
+NEXT ACTIONS
+- Update configs to the verified checkpoint and model arguments.
+- Run the A100 preflight and exactly 1,000-cell benchmark.
+- Run the complete Week 3 matrix with persistent checkpoints.
+- Add an external single-cell state endpoint and independent variant/abstention truth.

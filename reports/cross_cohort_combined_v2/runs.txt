@@ -1,0 +1,17 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/cross_cohort_combined_v2/runs.jsonl
+
+WHAT HAPPENED
+- The job finished and saved its result.
+
+WHY
+- One completed cross-cohort model arm per seed; this is the resumable ledger.
+
+WHAT IS IMPORTANT
+- The JSON file is the exact machine-readable record.
+
+WHAT IS CONCERNING
+- One completed cross-cohort model arm per seed; this is the resumable ledger.
+
+NEXT ACTIONS
+- Use these rows only with the matching run manifest, seed, and provenance.

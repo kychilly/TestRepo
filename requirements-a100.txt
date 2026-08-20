@@ -12,3 +12,4 @@ PyYAML==6.0.3
 jsonschema==4.25.0
 matplotlib==3.10.8
 pytest==9.0.2
+gdown==6.1.0

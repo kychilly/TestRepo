@@ -16,6 +16,7 @@ from typing import Any
 
 from models.grn import file_sha256, load_edges, score_held_out_edges
 from models.mc_dropout import blocked_result
+from gbm_study.plain_english import write_json_with_explanation
 
 
 def _config(path: Path) -> dict[str, Any]:
@@ -39,6 +40,11 @@ def _grn(config: dict[str, Any], root: Path) -> dict[str, Any]:
         }
     train, held = load_edges(train_path), load_edges(held_path)
     result = score_held_out_edges(train, held, lambda edge: float(edge["confidence"]))
+    if result.get("held_out_edges", 0) < 10:
+        result["status"] = "completed_with_limitations"
+        result["scientific_limitation"] = (
+            "Only one unique held-out positive edge is available; AUROC is a software sanity check, not evidence of GRN performance."
+        )
     result["provenance"] = {
         "train_prior": str(train_path),
         "held_out": str(held_path),
@@ -137,7 +143,7 @@ def run(config_path: Path, output: Path) -> dict[str, Any]:
         "blockers": blockers,
     }
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_json_with_explanation(output, result)
     return result
 
 

@@ -1,0 +1,17 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/cross_cohort_combined_v2/predictions/unconfirmed_genes_seed101.jsonl
+
+WHAT HAPPENED
+- The job finished and saved its result.
+
+WHY
+- Internal TCGA and never-fit CGGA IDH predictions for one arm and seed.
+
+WHAT IS IMPORTANT
+- The JSON file is the exact machine-readable record.
+
+WHAT IS CONCERNING
+- Internal TCGA and never-fit CGGA IDH predictions for one arm and seed.
+
+NEXT ACTIONS
+- Use these rows only with the matching run manifest, seed, and provenance.

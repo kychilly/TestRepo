@@ -1,0 +1,17 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/baselines_combined/final_seed17/harmony_knn/predictions.jsonl
+
+WHAT HAPPENED
+- The job finished and saved its result.
+
+WHY
+- Cell-level held-out predictions from the requested patient split.
+
+WHAT IS IMPORTANT
+- The JSON file is the exact machine-readable record.
+
+WHAT IS CONCERNING
+- Cell-level held-out predictions from the requested patient split.
+
+NEXT ACTIONS
+- Use these rows only with the matching run manifest, seed, and provenance.

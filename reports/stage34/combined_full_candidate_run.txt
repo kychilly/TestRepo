@@ -1,0 +1,17 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/stage34/combined_full_candidate_run.json
+
+WHAT HAPPENED
+- The job did the parts it could do, but some parts could not run.
+
+WHY
+- The JSON file did not give a special reason.
+
+WHAT IS IMPORTANT
+- The JSON file is the exact machine-readable record.
+
+WHAT IS CONCERNING
+- Read the JSON for details before using this result.
+
+NEXT ACTIONS
+- Fix the reason listed above, then run the same command again. The job can resume from its checkpoint.

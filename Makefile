@@ -1,4 +1,4 @@
-.PHONY: environment-check scgpt-smoke scgpt-shared-gpu baselines-smoke evaluate-smoke gpu-plan chat-report synthetic-smoke test week1-audit week2-adit stage34-fixture grn-sanity-current audit-current readiness repo-safety a100-preflight a100-run
+.PHONY: environment-check scgpt-smoke scgpt-shared-gpu baselines-smoke evaluate-smoke gpu-plan chat-report synthetic-smoke test week1-audit week2-adit stage34-fixture grn-sanity-current audit-current readiness imported-dataset-audit archive-audit mutation-join combine-dataset week3-adit week3-candidates week3-experiments repo-safety a100-preflight a100-run adit-week-audit
 
 PYTHON ?= python
 PYTHONPATH := src:.
@@ -58,8 +58,33 @@ audit-current: stage34-fixture grn-sanity-current week2-adit
 readiness:
 	PYTHONPATH=src:. $(PYTHON) scripts/readiness_audit.py --pilot "data/TP53 Dataset(preprocessed) 2/pilot/pilot_subsample.h5ad" --split splits/neftel_pilot_patient_splits.json --mutations "data/TP53 Dataset(preprocessed) 2/pilot/patient_gene_mutation_long.csv" --grn-train "data/TP53 Dataset(preprocessed) 2/prior/grn_pilot_train_prior.csv" --grn-holdout "data/TP53 Dataset(preprocessed) 2/prior/grn_pilot_adit_holdout_check.csv" --output reports/readiness/current.json
 
+imported-dataset-audit:
+	PYTHONPATH=src:. $(PYTHON) scripts/audit_imported_datasets.py --output reports/readiness/imported_dataset_audit.json || test -f reports/readiness/imported_dataset_audit.json
+
+archive-audit:
+	PYTHONPATH=src:. $(PYTHON) scripts/audit_dataset_archives.py --output reports/readiness/dataset_archives.json || test -f reports/readiness/dataset_archives.json
+
+mutation-join:
+	PYTHONPATH=src:. $(PYTHON) scripts/build_tcga_pilot_mutation_join.py
+
+combine-dataset:
+	PYTHONPATH=src:. $(PYTHON) scripts/merge_neftel_states_into_full_cohort.py
+	PYTHONPATH=src:. $(PYTHON) scripts/build_combined_dataset_archive.py
+
+week3-adit:
+	PYTHONPATH=src:. $(PYTHON) scripts/run_adit_week3.py --model-config config/model.yaml --adit-config config/week2_adit.yaml --output reports/week3_adit/report.json
+
+week3-experiments:
+	PYTHONPATH=src:. $(PYTHON) scripts/run_week3_experiments.py --config config/week3_adit.yaml --output reports/week3_adit/experiments
+
+week3-candidates:
+	PYTHONPATH=src:. $(PYTHON) scripts/build_internal_candidate_universe.py --adata "data/TP53 Dataset(preprocessed) 2/pilot/pilot_subsample.h5ad" --output data/pilot/internal_candidate_universe.jsonl
+
 repo-safety:
 	$(PYTHON) scripts/install_repo_safety.py
+
+adit-week-audit:
+	PYTHONPATH=src:. $(PYTHON) scripts/audit_adit_weeks.py --output reports/adit_week_audit/current.json
 
 a100-preflight:
 	test -n "$(A100_CONFIG)"

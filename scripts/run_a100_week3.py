@@ -7,17 +7,18 @@ import argparse
 import json
 import os
 import shutil
+import signal
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from gbm_study.plain_english import write_json_with_explanation
+
 
 def atomic_json(path: Path, value: dict[str, Any]) -> None:
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    temporary.replace(path)
+    write_json_with_explanation(path, value)
 
 
 def run_stage(
@@ -41,7 +42,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--scratch", type=Path, default=None)
     parser.add_argument("--results", type=Path, default=None)
-    parser.add_argument("--deadline-utc", default="2026-08-18T06:41:00Z")
+    parser.add_argument("--deadline-utc", default="2099-01-01T00:00:00Z")
+    parser.add_argument("--session-id", default=None)
+    parser.add_argument("--run-week3", action="store_true")
+    parser.add_argument("--week3-config", type=Path, default=Path("config/week3_adit.yaml"))
+    parser.add_argument("--week3-output", type=Path, default=None)
     args = parser.parse_args(argv)
 
     repo = Path(__file__).resolve().parents[1]
@@ -52,10 +57,11 @@ def main(argv: list[str] | None = None) -> int:
     results_root = (args.results or Path(persistent) if persistent else args.results) or (
         scratch / "results"
     )
-    session = Path(results_root).resolve() / datetime.now(timezone.utc).strftime(
+    session_name = args.session_id or datetime.now(timezone.utc).strftime(
         "week3-a100-%Y%m%dT%H%M%SZ"
     )
-    session.mkdir(parents=True, exist_ok=False)
+    session = Path(results_root).resolve() / session_name
+    session.mkdir(parents=True, exist_ok=True)
 
     env = dict(os.environ)
     env["PYTHONPATH"] = str(repo / "src")
@@ -67,14 +73,32 @@ def main(argv: list[str] | None = None) -> int:
     for path in (env["HF_HOME"], env["HF_DATASETS_CACHE"], env["TRANSFORMERS_CACHE"]):
         Path(path).mkdir(parents=True, exist_ok=True)
 
-    manifest: dict[str, Any] = {
-        "status": "running",
-        "session": str(session),
-        "config": str(args.config.resolve()),
-        "stages": {},
-    }
+    manifest_path = session / "run_manifest.json"
+    if manifest_path.is_file():
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if not isinstance(manifest, dict):
+            raise ValueError("Persistent A100 run manifest must be a JSON object")
+        manifest["status"] = "running"
+    else:
+        manifest = {
+            "status": "running",
+            "session": str(session),
+            "config": str(args.config.resolve()),
+            "stages": {},
+        }
     atomic_json(session / "run_manifest.json", manifest)
-    shutil.copy2(args.config, session / "model_config.yaml")
+
+    def checkpoint_on_stop(signum: int, _frame: Any) -> None:
+        manifest["status"] = "interrupted"
+        manifest["interrupted_signal"] = signum
+        manifest["interrupted_utc"] = datetime.now(timezone.utc).isoformat()
+        atomic_json(session / "run_manifest.json", manifest)
+        raise SystemExit(128 + signum)
+
+    signal.signal(signal.SIGTERM, checkpoint_on_stop)
+    signal.signal(signal.SIGINT, checkpoint_on_stop)
+    if not (session / "model_config.yaml").is_file():
+        shutil.copy2(args.config, session / "model_config.yaml")
 
     preflight_path = session / "preflight.json"
     stages = [
@@ -134,8 +158,35 @@ def main(argv: list[str] | None = None) -> int:
         ),
     ]
 
+    if args.run_week3:
+        week3_output = args.week3_output or (session / "week3_experiments")
+        week3_config = session / "week3_runtime_config.yaml"
+        import yaml  # type: ignore[import-untyped]
+
+        week3_payload = yaml.safe_load(args.week3_config.read_text(encoding="utf-8"))
+        if not isinstance(week3_payload, dict):
+            raise ValueError("Week 3 runtime config must be a YAML object")
+        week3_payload["week2_timing_path"] = str(session / "scgpt_benchmark.json")
+        week3_config.write_text(yaml.safe_dump(week3_payload, sort_keys=False), encoding="utf-8")
+        stages.append(
+            (
+                "week3_experiments",
+                [
+                    sys.executable,
+                    "scripts/run_week3_experiments.py",
+                    "--config",
+                    str(week3_config),
+                    "--output",
+                    str(week3_output),
+                ],
+            )
+        )
+
     exit_code = 0
     for name, command in stages:
+        prior = manifest.get("stages", {}).get(name, {})
+        if prior.get("status") == "completed":
+            continue
         stage = run_stage(name, command, repo, session, env)
         manifest["stages"][name] = stage
         atomic_json(session / "run_manifest.json", manifest)

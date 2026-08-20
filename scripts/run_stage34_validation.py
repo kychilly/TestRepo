@@ -12,6 +12,7 @@ from typing import Any
 
 import shuffled_validator
 import validator
+from gbm_study.plain_english import write_json_with_explanation
 from validator import GeneRecord, Outcome, Thresholds, Verdict
 
 OUTCOME_ORDER = tuple(outcome.value for outcome in Outcome)
@@ -329,9 +330,7 @@ def main(argv: list[str] | None = None) -> int:
     except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
         result = {"status": "failed", "scientifically_complete": False, "reason": str(exc)}
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    temporary = args.output.with_suffix(args.output.suffix + ".tmp")
-    temporary.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    temporary.replace(args.output)
+    write_json_with_explanation(args.output, result)
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result.get("status") in {"completed", "completed_with_blockers"} else 2
 

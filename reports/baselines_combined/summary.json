@@ -1,0 +1,246 @@
+{
+  "completed_runs": 3,
+  "next_actions": [
+    "Run scVI after installing scvi-tools and supplying true integer counts; run Harmony after supplying a valid batch column."
+  ],
+  "non_applicable_runs": 6,
+  "rows": [
+    {
+      "evaluation": {
+        "balanced_accuracy": 0.5349407054188885,
+        "confusion_matrix": {
+          "labels": [
+            "AC",
+            "MES",
+            "NPC",
+            "OPC"
+          ],
+          "values": [
+            [
+              529,
+              199,
+              12,
+              54
+            ],
+            [
+              125,
+              148,
+              2,
+              11
+            ],
+            [
+              27,
+              0,
+              108,
+              20
+            ],
+            [
+              14,
+              0,
+              26,
+              14
+            ]
+          ]
+        },
+        "macro_f1": 0.5185090865740508,
+        "multiclass_brier_score": 0.5373141796905174,
+        "multiclass_log_loss": 0.8654424419777502,
+        "per_state_f1": {
+          "AC": 0.7105439892545332,
+          "MES": 0.4676145339652449,
+          "NPC": 0.7128712871287128,
+          "OPC": 0.1830065359477124
+        },
+        "per_state_precision": {
+          "AC": 0.7611510791366907,
+          "MES": 0.4265129682997118,
+          "NPC": 0.7297297297297297,
+          "OPC": 0.1414141414141414
+        },
+        "per_state_recall": {
+          "AC": 0.6662468513853904,
+          "MES": 0.5174825174825175,
+          "NPC": 0.6967741935483871,
+          "OPC": 0.25925925925925924
+        }
+      },
+      "method": "pca_logreg",
+      "run": "reports/baselines_combined/fold0_seed101/pca_logreg/run_metadata.json",
+      "seed": 101,
+      "status": "completed"
+    },
+    {
+      "method": "scvi_probe",
+      "reason": "scvi-tools is not installed",
+      "run": "reports/baselines_combined/fold0_seed101/scvi_probe/run_error.json",
+      "seed": 101,
+      "status": "not_applicable"
+    },
+    {
+      "method": "harmony_knn",
+      "reason": "Harmony requires CellData.batch for the configured covariate",
+      "run": "reports/baselines_combined/fold0_seed101/harmony_knn/run_error.json",
+      "seed": 101,
+      "status": "not_applicable"
+    },
+    {
+      "evaluation": {
+        "balanced_accuracy": 0.5349407054188885,
+        "confusion_matrix": {
+          "labels": [
+            "AC",
+            "MES",
+            "NPC",
+            "OPC"
+          ],
+          "values": [
+            [
+              529,
+              199,
+              12,
+              54
+            ],
+            [
+              125,
+              148,
+              2,
+              11
+            ],
+            [
+              27,
+              0,
+              108,
+              20
+            ],
+            [
+              14,
+              0,
+              26,
+              14
+            ]
+          ]
+        },
+        "macro_f1": 0.5185090865740508,
+        "multiclass_brier_score": 0.5372698864960995,
+        "multiclass_log_loss": 0.865387456542231,
+        "per_state_f1": {
+          "AC": 0.7105439892545332,
+          "MES": 0.4676145339652449,
+          "NPC": 0.7128712871287128,
+          "OPC": 0.1830065359477124
+        },
+        "per_state_precision": {
+          "AC": 0.7611510791366907,
+          "MES": 0.4265129682997118,
+          "NPC": 0.7297297297297297,
+          "OPC": 0.1414141414141414
+        },
+        "per_state_recall": {
+          "AC": 0.6662468513853904,
+          "MES": 0.5174825174825175,
+          "NPC": 0.6967741935483871,
+          "OPC": 0.25925925925925924
+        }
+      },
+      "method": "pca_logreg",
+      "run": "reports/baselines_combined/fold0_seed17/pca_logreg/run_metadata.json",
+      "seed": 17,
+      "status": "completed"
+    },
+    {
+      "method": "scvi_probe",
+      "reason": "scvi-tools is not installed",
+      "run": "reports/baselines_combined/fold0_seed17/scvi_probe/run_error.json",
+      "seed": 17,
+      "status": "not_applicable"
+    },
+    {
+      "method": "harmony_knn",
+      "reason": "Harmony requires CellData.batch for the configured covariate",
+      "run": "reports/baselines_combined/fold0_seed17/harmony_knn/run_error.json",
+      "seed": 17,
+      "status": "not_applicable"
+    },
+    {
+      "evaluation": {
+        "balanced_accuracy": 0.5349407054188885,
+        "confusion_matrix": {
+          "labels": [
+            "AC",
+            "MES",
+            "NPC",
+            "OPC"
+          ],
+          "values": [
+            [
+              529,
+              199,
+              12,
+              54
+            ],
+            [
+              125,
+              148,
+              2,
+              11
+            ],
+            [
+              27,
+              0,
+              108,
+              20
+            ],
+            [
+              14,
+              0,
+              26,
+              14
+            ]
+          ]
+        },
+        "macro_f1": 0.5185090865740508,
+        "multiclass_brier_score": 0.5372617367616388,
+        "multiclass_log_loss": 0.8653773559469298,
+        "per_state_f1": {
+          "AC": 0.7105439892545332,
+          "MES": 0.4676145339652449,
+          "NPC": 0.7128712871287128,
+          "OPC": 0.1830065359477124
+        },
+        "per_state_precision": {
+          "AC": 0.7611510791366907,
+          "MES": 0.4265129682997118,
+          "NPC": 0.7297297297297297,
+          "OPC": 0.1414141414141414
+        },
+        "per_state_recall": {
+          "AC": 0.6662468513853904,
+          "MES": 0.5174825174825175,
+          "NPC": 0.6967741935483871,
+          "OPC": 0.25925925925925924
+        }
+      },
+      "method": "pca_logreg",
+      "run": "reports/baselines_combined/fold0_seed42/pca_logreg/run_metadata.json",
+      "seed": 42,
+      "status": "completed"
+    },
+    {
+      "method": "scvi_probe",
+      "reason": "scvi-tools is not installed",
+      "run": "reports/baselines_combined/fold0_seed42/scvi_probe/run_error.json",
+      "seed": 42,
+      "status": "not_applicable"
+    },
+    {
+      "method": "harmony_knn",
+      "reason": "Harmony requires CellData.batch for the configured covariate",
+      "run": "reports/baselines_combined/fold0_seed42/harmony_knn/run_error.json",
+      "seed": 42,
+      "status": "not_applicable"
+    }
+  ],
+  "scientific_note": "Only completed PCA runs have cell-state metrics; scVI/Harmony remain explicitly not applicable under their data contracts.",
+  "scope": "three requested baselines on combined Neftel analysis cohort",
+  "status": "completed_with_blockers"
+}

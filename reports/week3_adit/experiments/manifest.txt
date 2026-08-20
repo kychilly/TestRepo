@@ -1,0 +1,21 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/week3_adit/experiments/manifest.json
+
+WHAT HAPPENED
+- The job did the parts it could do, but some parts could not run.
+
+WHY
+- CUDA is unavailable
+
+WHAT IS IMPORTANT
+- Runs that finished: 0
+- Runs that stopped: 12
+- Seeds: [17, 42, 101]
+- Backbones selected: ['scGPT']
+- Scope decision: Week 2 measured scGPT timing is unavailable
+
+WHAT IS CONCERNING
+- CUDA is unavailable
+
+NEXT ACTIONS
+- Fix the reason listed above, then run the same command again. The job can resume from its checkpoint.

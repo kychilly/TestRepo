@@ -1,0 +1,284 @@
+{
+  "blockers": [
+    "cgga_pilot X contains non-finite values"
+  ],
+  "files": {
+    "cgga_pilot": "data/import_20260820/TP53 Dataset(preprocessed)/pilot/cgga_pilot_subsample.h5ad",
+    "full_cohort": "data/import_20260820/TP53 Dataset(preprocessed)/processed/full_cohort.h5ad",
+    "grn_holdout": "data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_adit_holdout_check.csv",
+    "grn_train": "data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv",
+    "mutations": "data/import_20260820/TP53 Dataset(preprocessed)/pilot/patient_gene_mutation_join.csv",
+    "pilot": "data/import_20260820/TP53 Dataset(preprocessed)/pilot/pilot_subsample.h5ad",
+    "tcga_pilot": "data/import_20260820/TP53 Dataset(preprocessed)/pilot/tcga_pilot_subsample.h5ad"
+  },
+  "inspected": {
+    "cgga_pilot": {
+      "layers": [],
+      "matrix_X": {
+        "integer_like": false,
+        "maximum": 1721032.75,
+        "minimum": 0.0,
+        "negative_values": 0,
+        "nonfinite_values": 15270,
+        "shape": [
+          1018,
+          1752
+        ]
+      },
+      "obs_columns": [
+        "GBMType",
+        "Sample",
+        "cgga_batch",
+        "cgga_batch_concat",
+        "derived_state"
+      ],
+      "path": "data/import_20260820/TP53 Dataset(preprocessed)/pilot/cgga_pilot_subsample.h5ad",
+      "required_genes_missing": [],
+      "required_genes_present": [
+        "EGFR",
+        "IDH1",
+        "RPRM",
+        "TP53"
+      ],
+      "sha256": "e1deb085584da89afb86f2a3bf4993fc3104f753cbf1254de90fa691a10fd122",
+      "shape": [
+        1018,
+        1752
+      ],
+      "state_counts": {
+        "Unknown": 1018
+      }
+    },
+    "full_cohort": {
+      "layers": [
+        "counts"
+      ],
+      "matrix_X": {
+        "integer_like": false,
+        "maximum": 7.435297050050268,
+        "minimum": 0.0,
+        "negative_values": 0,
+        "nonfinite_values": 0,
+        "shape": [
+          7245,
+          17268
+        ]
+      },
+      "matrix_counts": {
+        "integer_like": false,
+        "maximum": 1721032.69,
+        "minimum": 0.0,
+        "negative_values": 0,
+        "nonfinite_values": 0,
+        "shape": [
+          7245,
+          17268
+        ]
+      },
+      "obs_columns": [
+        "Bulk_subtype",
+        "Cohort",
+        "IDH_status",
+        "Sample",
+        "clean_id",
+        "n_genes",
+        "n_genes_by_counts",
+        "pct_counts_mito",
+        "total_counts",
+        "total_counts_mito"
+      ],
+      "path": "data/import_20260820/TP53 Dataset(preprocessed)/processed/full_cohort.h5ad",
+      "required_genes_missing": [],
+      "required_genes_present": [
+        "EGFR",
+        "IDH1",
+        "RPRM",
+        "TP53"
+      ],
+      "sha256": "047e1157e1bc7169405de116f2095978f587234fc2caa904642202ad9236585b",
+      "shape": [
+        7245,
+        17268
+      ],
+      "state_counts": {}
+    },
+    "grn_holdout": {
+      "columns": [
+        "source_tf",
+        "target_gene",
+        "mor",
+        "confidence",
+        "provenance_db",
+        "pubmed_id"
+      ],
+      "path": "data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_adit_holdout_check.csv",
+      "rows": 2,
+      "sha256": "1e597a3d371c77d15159553a5434300e11cc0f3cd4b79bd0368eacf032348ec7",
+      "unique_edges": null
+    },
+    "grn_train": {
+      "columns": [
+        "source_tf",
+        "target_gene",
+        "mor",
+        "confidence",
+        "provenance_db",
+        "pubmed_id"
+      ],
+      "path": "data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv",
+      "rows": 11,
+      "sha256": "c734cbb6b0fb0c159b17beafa20947dd06f5f8c86a4a779955f1e713d08c3841",
+      "unique_edges": null
+    },
+    "mutations": {
+      "alteration_type_counts": {
+        "amplification": 2823,
+        "deletion": 2337,
+        "missense": 632
+      },
+      "columns": [
+        "patient_id",
+        "gene_symbol",
+        "alteration_type",
+        "variant_classification",
+        "Variant_Type",
+        "Consequence",
+        "HGVSc",
+        "HGVSp",
+        "HGVSp_Short",
+        "Transcript_ID",
+        "Protein_Change",
+        "protein_change",
+        "IMPACT",
+        "genome_build",
+        "source_file"
+      ],
+      "genes": 4493,
+      "missing_values": {
+        "Consequence": 5160,
+        "HGVSc": 5160,
+        "HGVSp": 5160,
+        "HGVSp_Short": 5160,
+        "IMPACT": 5160,
+        "Protein_Change": 5160,
+        "Transcript_ID": 5160,
+        "Variant_Type": 5160,
+        "alteration_type": 0,
+        "gene_symbol": 0,
+        "genome_build": 0,
+        "patient_id": 0,
+        "protein_change": 5160,
+        "source_file": 0,
+        "variant_classification": 5160
+      },
+      "path": "data/import_20260820/TP53 Dataset(preprocessed)/pilot/patient_gene_mutation_join.csv",
+      "patients": 33,
+      "provenance_columns_present": [
+        "HGVSp",
+        "Transcript_ID",
+        "genome_build",
+        "protein_change",
+        "source_file"
+      ],
+      "rows": 5792,
+      "sha256": "d2fae6d00e4cdf9bdd090a190a4aa1010cfaceb21639e4bbd645ecc29ef1e9cf"
+    },
+    "pilot": {
+      "layers": [
+        "counts"
+      ],
+      "matrix_X": {
+        "integer_like": false,
+        "maximum": 6.770991634080737,
+        "minimum": 0.0,
+        "negative_values": 0,
+        "nonfinite_values": 0,
+        "shape": [
+          1939,
+          17268
+        ]
+      },
+      "matrix_counts": {
+        "integer_like": false,
+        "maximum": 1378446.12,
+        "minimum": 0.0,
+        "negative_values": 0,
+        "nonfinite_values": 0,
+        "shape": [
+          1939,
+          17268
+        ]
+      },
+      "obs_columns": [
+        "Bulk_subtype",
+        "Cohort",
+        "IDH_status",
+        "Sample",
+        "clean_id",
+        "n_genes",
+        "n_genes_by_counts",
+        "pct_counts_mito",
+        "total_counts",
+        "total_counts_mito"
+      ],
+      "path": "data/import_20260820/TP53 Dataset(preprocessed)/pilot/pilot_subsample.h5ad",
+      "required_genes_missing": [],
+      "required_genes_present": [
+        "EGFR",
+        "IDH1",
+        "RPRM",
+        "TP53"
+      ],
+      "sha256": "b5817b2f40a27036c54fdc651471195b9eb5b5188ff43e6c04ccc1ca88896289",
+      "shape": [
+        1939,
+        17268
+      ],
+      "state_counts": {}
+    },
+    "tcga_pilot": {
+      "layers": [],
+      "matrix_X": {
+        "integer_like": true,
+        "maximum": 80.0,
+        "minimum": 0.0,
+        "negative_values": 0,
+        "nonfinite_values": 0,
+        "shape": [
+          160,
+          2503
+        ]
+      },
+      "obs_columns": [
+        "Cohort",
+        "GBMType",
+        "IDH_status",
+        "MGMT_methylation",
+        "Sample"
+      ],
+      "path": "data/import_20260820/TP53 Dataset(preprocessed)/pilot/tcga_pilot_subsample.h5ad",
+      "required_genes_missing": [],
+      "required_genes_present": [
+        "EGFR",
+        "IDH1",
+        "RPRM",
+        "TP53"
+      ],
+      "sha256": "d9542ce4fc71bdd196aa111f83061041c53ef7ec26590a37cd76b0b0380cf132",
+      "shape": [
+        160,
+        2503
+      ],
+      "state_counts": {}
+    }
+  },
+  "next_actions": [
+    "Use the full cohort counts layer for scVI only after integer-like counts are confirmed.",
+    "Use a labeled single-cell external cohort for AC/MES/NPC/OPC external testing; CGGA bulk cannot supply those labels.",
+    "Use patient_gene_mutation_join.csv for mutation/CNA provenance; add a methylation source before claiming silencing labels.",
+    "Repair or regenerate the CGGA pilot H5AD from the raw CGGA expression files before external modeling."
+  ],
+  "root": "data/import_20260820/TP53 Dataset(preprocessed)",
+  "scope": "read-only audit of the newly imported TP53 dataset folder",
+  "status": "completed_with_blockers"
+}

@@ -1,0 +1,17 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/adit_week_audit/week2_current.json
+
+WHAT HAPPENED
+- The job did the parts it could do, but some parts could not run.
+
+WHY
+- mc_dropout: CUDA is unavailable; real MC-dropout timing was not substituted
+
+WHAT IS IMPORTANT
+- The JSON file is the exact machine-readable record.
+
+WHAT IS CONCERNING
+- mc_dropout: CUDA is unavailable; real MC-dropout timing was not substituted
+
+NEXT ACTIONS
+- Fix the reason listed above, then run the same command again. The job can resume from its checkpoint.

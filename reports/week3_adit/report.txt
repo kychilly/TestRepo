@@ -1,0 +1,19 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/week3_adit/report.json
+
+WHAT HAPPENED
+- The job did the parts it could do, but some parts could not run.
+
+WHY
+- benchmark: Missing real benchmark inputs: checkpoint_path, vocabulary_path
+- mc_dropout: scGPT checkpoint is missing
+
+WHAT IS IMPORTANT
+- The JSON file is the exact machine-readable record.
+
+WHAT IS CONCERNING
+- benchmark: Missing real benchmark inputs: checkpoint_path, vocabulary_path
+- mc_dropout: scGPT checkpoint is missing
+
+NEXT ACTIONS
+- Fix the reason listed above, then run the same command again. The job can resume from its checkpoint.

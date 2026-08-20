@@ -1,0 +1,17 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/baselines_combined/summary.json
+
+WHAT HAPPENED
+- The job did the parts it could do, but some parts could not run.
+
+WHY
+- The JSON file did not give a special reason.
+
+WHAT IS IMPORTANT
+- Runs that finished: 3
+
+WHAT IS CONCERNING
+- Read the JSON for details before using this result.
+
+NEXT ACTIONS
+- Run scVI after installing scvi-tools and supplying true integer counts; run Harmony after supplying a valid batch column.

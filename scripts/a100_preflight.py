@@ -14,6 +14,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from gbm_study.plain_english import write_json_with_explanation
+
 
 DATA_PATTERNS = ("*.h5ad", "*.h5", "*.loom", "*.zip", "*.tar", "*.tar.gz", "*.tgz")
 REQUIRED_STREAM_FIELDS = (
@@ -66,11 +68,20 @@ def inspect(
     blockers: list[str] = []
     warnings: list[str] = []
     config = _yaml(config_path)
-    if str(config.get("data_source")) != "huggingface_stream":
-        blockers.append("A100 runs require data_source=huggingface_stream")
-    missing_stream = [field for field in REQUIRED_STREAM_FIELDS if not config.get(field)]
-    if missing_stream:
-        blockers.append("Missing immutable Hugging Face fields: " + ", ".join(missing_stream))
+    data_source = str(config.get("data_source"))
+    if data_source not in {"huggingface_stream", "local_h5ad"}:
+        blockers.append("data_source must be huggingface_stream or local_h5ad")
+    if data_source == "huggingface_stream":
+        missing_stream = [field for field in REQUIRED_STREAM_FIELDS if not config.get(field)]
+        if missing_stream:
+            blockers.append("Missing immutable Hugging Face fields: " + ", ".join(missing_stream))
+    elif data_source == "local_h5ad":
+        value = config.get("cell_data_path")
+        data_path = Path(str(value)) if value else None
+        if data_path is not None and not data_path.is_absolute():
+            data_path = repo / data_path
+        if data_path is None or not data_path.is_file():
+            blockers.append(f"Missing local H5AD cell_data_path: {value!r}")
 
     asset_paths: dict[str, str | None] = {}
     for field in ("split_file", "checkpoint_path", "vocabulary_path"):
@@ -91,6 +102,8 @@ def inspect(
         if args_value
         else (checkpoint.parent / "args.json" if checkpoint else None)
     )
+    if args_path is not None and not args_path.is_absolute():
+        args_path = repo / args_path
     asset_paths["model_args_path"] = str(args_path) if args_path else None
     if args_path is None or not args_path.is_file():
         blockers.append(f"Missing checkpoint-matched args.json: {args_path}")
@@ -118,7 +131,7 @@ def inspect(
         for path in repo.glob(f"**/{pattern}")
         if ".git" not in path.parts and path.is_file()
     )
-    if local_data:
+    if local_data and data_source == "huggingface_stream":
         blockers.append(
             "Dataset/archive files are present inside the Git workspace; move them to scratch: "
             + ", ".join(local_data[:10])
@@ -191,7 +204,7 @@ def inspect(
         "blockers": blockers,
         "warnings": warnings,
         "config": str(config_path),
-        "data_source": config.get("data_source"),
+        "data_source": data_source,
         "assets": asset_paths,
         "local_dataset_files": local_data,
         "scratch": {
@@ -226,7 +239,7 @@ def main(argv: list[str] | None = None) -> int:
         )
     except (OSError, ValueError, TypeError) as exc:
         result = {"status": "blocked", "blockers": [str(exc)]}
-    _atomic_json(args.output, result)
+    write_json_with_explanation(args.output, result)
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result["status"] == "passed" else 2
 

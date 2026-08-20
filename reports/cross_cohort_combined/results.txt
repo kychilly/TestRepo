@@ -1,0 +1,51 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/cross_cohort_combined/results.json
+
+WHAT HAPPENED
+- The job did the parts it could do, but some parts could not run.
+
+WHY
+- CGGA has zero AC/MES/NPC/OPC labels, so external four-state macro-F1 cannot be calculated.
+- Variant-effect AUROC needs independent positive and negative labels plus variant scores; these are absent.
+- Abstention accuracy needs independent gold verdicts; reusing validator outputs as truth would be circular.
+- GRN holdout contains one unique positive edge, so its AUROC is only a software sanity check.
+- Only TP53 and IDH1 are confirmed; the headline comparison is exploratory and underpowered.
+- The confirmed pair did not beat the seeded size-matched shuffled control, so the required call is no_result.
+- The all-on/validator-off/GRN-off/MC-off scGPT arms still require CUDA and an external endpoint compatible with CGGA labels.
+
+WHAT IS IMPORTANT
+- Seeds: [17, 42, 101]
+- TCGA patients: 160
+- Neftel patient summaries: 27
+- Labeled CGGA patients: 531
+- Confirmed genes: ['IDH1', 'TP53']
+- Unconfirmed genes tested: 90
+- Confirmed-gene internal-to-external drop: 0.2581839676756539
+- Unconfirmed-gene internal-to-external drop: 0.47497576710845407
+- Confirmed-gene drop advantage: 0.2167917994328002
+- Shuffled-control drop: 0.2914748242709324
+- Did confirmed beat shuffled? True
+- Result call: candidate_result
+- Positive means the confirmed-gene model lost less performance externally.
+- macro_f1: completed for the IDH endpoint
+- variant_auroc: blocked: no independent benign/pathogenic variant-effect labels and scores
+- abstention_accuracy: blocked: no independent gold abstain/non-abstain verdicts
+- grn_edge_auroc: AUROC=1.0; This is a prior-confidence sanity check with one unique held-out positive, not a learned GRN result.
+- internal_to_external_performance_drop: completed for the IDH endpoint
+
+WHAT IS CONCERNING
+- CGGA has zero AC/MES/NPC/OPC labels, so external four-state macro-F1 cannot be calculated.
+- Variant-effect AUROC needs independent positive and negative labels plus variant scores; these are absent.
+- Abstention accuracy needs independent gold verdicts; reusing validator outputs as truth would be circular.
+- GRN holdout contains one unique positive edge, so its AUROC is only a software sanity check.
+- Only TP53 and IDH1 are confirmed; the headline comparison is exploratory and underpowered.
+- The confirmed pair did not beat the seeded size-matched shuffled control, so the required call is no_result.
+- The all-on/validator-off/GRN-off/MC-off scGPT arms still require CUDA and an external endpoint compatible with CGGA labels.
+
+NEXT ACTIONS
+- Add authoritative CGGA state labels if the intended endpoint is AC/MES/NPC/OPC.
+- Add ClinVar/DMS-labeled benign and pathogenic variants with model scores for variant AUROC.
+- Add independently adjudicated validator outcomes for abstention accuracy.
+- Replace the one-edge GRN holdout with a frozen larger positive set and matched negatives.
+- Expand confirmed protein evidence beyond TP53 and IDH1 before treating the headline number as paper-ready.
+- Do not make the paper claim unless the confirmed arm beats the prespecified shuffled control.

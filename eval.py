@@ -14,6 +14,7 @@ if str(_SRC_DIR) not in sys.path:
     sys.path.insert(0, str(_SRC_DIR))
 
 from evaluation.reporting import run_evaluation
+from gbm_study.plain_english import write_json_with_explanation
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -52,32 +53,21 @@ def main(argv: list[str] | None = None) -> int:
                 "metrics": idh_metrics,
                 "manifest": idh_manifest,
             }
-        (args.output / "metrics.json").write_text(
-            json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-        )
-        (args.output / "evaluation_manifest.json").write_text(
-            json.dumps(
-                {
-                    "status": "completed",
-                    "tasks": sorted(payload["tasks"]),
-                    "cell_prediction_file": str(cell_predictions) if cell_predictions else None,
-                    "idh_prediction_file": str(args.idh_predictions)
-                    if args.idh_predictions
-                    else None,
-                },
-                indent=2,
-                sort_keys=True,
-            )
-            + "\n",
-            encoding="utf-8",
+        write_json_with_explanation(args.output / "metrics.json", payload)
+        write_json_with_explanation(
+            args.output / "evaluation_manifest.json",
+            {
+                "status": "completed",
+                "tasks": sorted(payload["tasks"]),
+                "cell_prediction_file": str(cell_predictions) if cell_predictions else None,
+                "idh_prediction_file": str(args.idh_predictions) if args.idh_predictions else None,
+            },
         )
         print(json.dumps({"status": "completed", "output": str(args.output)}, sort_keys=True))
         return 0
     except (OSError, ValueError, TypeError, KeyError) as exc:
         error = {"status": "failed", "error": str(exc)}
-        (args.output / "evaluation_error.json").write_text(
-            json.dumps(error, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-        )
+        write_json_with_explanation(args.output / "evaluation_error.json", error)
         print(json.dumps(error, sort_keys=True))
         return 2
 

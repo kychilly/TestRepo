@@ -1,0 +1,17 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/baselines_combined/fold0_seed101/scvi_probe/run_error.json
+
+WHAT HAPPENED
+- The file says the job status is not_applicable.
+
+WHY
+- scvi-tools is not installed
+
+WHAT IS IMPORTANT
+- The JSON file is the exact machine-readable record.
+
+WHAT IS CONCERNING
+- scvi-tools is not installed
+
+NEXT ACTIONS
+- Fix the reason listed above, then run the same command again. The job can resume from its checkpoint.

@@ -1,0 +1,36 @@
+{
+  "benchmark_cells": 1000,
+  "mapping": {
+    "dropped": null,
+    "duplicated": null,
+    "genes_after": null,
+    "genes_before": null,
+    "retained": null,
+    "unmapped": null
+  },
+  "model": {
+    "batch_size": 32,
+    "precision": "float32",
+    "token_length": null
+  },
+  "provenance": {
+    "checkpoint_sha256": null,
+    "vocabulary_sha256": null
+  },
+  "reason": "Torch not compiled with CUDA enabled",
+  "selection": {
+    "patients_represented": null,
+    "seed": 20260802,
+    "training_patients_only": false
+  },
+  "status": "blocked",
+  "timing": {
+    "cells_per_second": null,
+    "gpu_seconds_per_1000_cells": null,
+    "gpu_synchronization": null,
+    "peak_allocated_bytes": null,
+    "peak_reserved_bytes": null,
+    "projected_gpu_seconds_per_10000_cells": null,
+    "wall_clock_seconds": null
+  }
+}

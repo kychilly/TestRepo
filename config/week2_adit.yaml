@@ -1,10 +1,11 @@
 seed: 17
-grn_train_prior_path: data/TP53 Dataset(preprocessed) 2/prior/grn_pilot_train_prior.csv
-grn_held_out_path: data/TP53 Dataset(preprocessed) 2/prior/grn_pilot_adit_holdout_check.csv
+grn_train_prior_path: data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv
+grn_held_out_path: data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_adit_holdout_check.csv
 mc_dropout_passes: 20
 mc_dropout_batch_size: 32
 mc_dropout_device: cuda
-checkpoint_path: null
-vocabulary_path: null
+checkpoint_path: artifacts/models/scGPT_pancancer/best_model.pt
+vocabulary_path: artifacts/models/scGPT_pancancer/vocab.json
+model_args_path: artifacts/models/scGPT_pancancer/args.json
 mc_dropout_runner: null
 validator: "off"

@@ -1,10 +1,11 @@
-cell_data_path: data/raw/neftel/neftel_qc.h5ad
+cell_data_path: TP53 Dataset(preprocessed) 2/pilot/pilot_subsample.h5ad
 patient_id_column: Sample
 gene_id_column: var_names
 gene_id_type: HGNC
-split_file: splits/patient_splits.json
-checkpoint_path: null
-vocabulary_path: null
+split_file: splits/neftel_pilot_patient_splits.json
+checkpoint_path: artifacts/models/scGPT_pancancer/best_model.pt
+vocabulary_path: artifacts/models/scGPT_pancancer/vocab.json
+model_args_path: artifacts/models/scGPT_pancancer/args.json
 requested_device: cuda
 mask_score_provider: null
 gene_metadata_path: null

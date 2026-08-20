@@ -1,13 +1,13 @@
 python: "3.11"
 modality: neftel
-cell_data_path: data/raw/neftel/neftel_qc.h5ad
+cell_data_path: data/import_20260820/TP53 Dataset(preprocessed)/processed/neftel_analysis_cohort.h5ad
 patient_id_column: Sample
 gene_id_column: var_names
 gene_id_type: HGNC
-split_file: splits/patient_splits.json
+split_file: splits/combined_full_cohort_neftel_patient_splits.json
 fold: 0
-checkpoint_path: null
-vocabulary_path: null
+checkpoint_path: artifacts/models/scGPT_pancancer/best_model.pt
+vocabulary_path: artifacts/models/scGPT_pancancer/vocab.json
 output_path: baseline_results/compute/week1_scgpt_benchmark.json
 seed: 20260802
 batch_size: 32
@@ -17,7 +17,7 @@ warmup_iterations: 2
 benchmark_cells: 1000
 requested_device: cuda
 data_source: local_h5ad
-model_args_path: null
+model_args_path: artifacts/models/scGPT_pancancer/args.json
 checkpoint_strict: true
 value_transform: rank_bin
 n_input_bins: 51

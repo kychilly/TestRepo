@@ -1,0 +1,6 @@
+tcga_path: data/import_20260820/TP53 Dataset(preprocessed)/pilot/tcga_pilot_subsample.h5ad
+full_cohort_path: data/import_20260820/TP53 Dataset(preprocessed)/processed/analysis_ready_combined.h5ad
+verdicts_path: reports/stage34/verdicts.csv
+grn_train_prior_path: data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv
+grn_holdout_path: data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_adit_holdout_check.csv
+seeds: [17, 42, 101]

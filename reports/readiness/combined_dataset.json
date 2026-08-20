@@ -1,0 +1,26 @@
+{
+  "archive": {
+    "bytes": 6864261791,
+    "path": "data/TP53_combined_old_new_20260820.zip",
+    "sha256": "165bfd955d1abae5bbb5c015bf0ca1c1606cb56d4add01bc6b817be975ec316b"
+  },
+  "contents": {
+    "analysis_ready_neftel_plus_clean_cgga": "combined/analysis_ready_combined.h5ad",
+    "clean_cgga_bulk": "combined/cgga_bulk_clean.h5ad",
+    "new_full_cohort_with_exact_neftel_states": "combined/full_cohort_with_states.h5ad",
+    "new_tcga_provenance_join": "combined/patient_gene_mutation_join.csv",
+    "older_dataset": "older/TP53 Dataset(preprocessed) 2/",
+    "older_neftel_full": "older/data/neftel_qc-002.h5ad"
+  },
+  "not_combined_blindly": [
+    "The old and new pilot H5ADs differ in shape and gene panel, so both are preserved rather than concatenated.",
+    "CGGA rows remain Unknown for cell state and are not used as state truth."
+  ],
+  "scope": "deduplicated useful old/new TP53 dataset bundle",
+  "status": "completed",
+  "why_combined": [
+    "The older Neftel file supplies 6,576 exact cell-state labels.",
+    "The new full cohort supplies the newer cohort annotations and CGGA rows.",
+    "All 6,576 Neftel cell IDs matched exactly before the merged H5AD was created."
+  ]
+}

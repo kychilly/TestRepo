@@ -5,6 +5,7 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .venv/
+.venv-scgpt/
 venv/
 .env
 baseline_results/
@@ -27,3 +28,4 @@ TP53 Dataset(preprocessed)*/
 *.pth
 *.ckpt
 *.safetensors
+artifacts/models/

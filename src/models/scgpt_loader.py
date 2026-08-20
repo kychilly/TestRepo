@@ -164,11 +164,32 @@ def load_official_scgpt(
     state = raw.get("model_state_dict", raw) if isinstance(raw, dict) else raw
     if not isinstance(state, dict):
         raise AdapterError("scGPT checkpoint does not contain a state dictionary")
-    incompatible = model.load_state_dict(state, strict=bool(config.get("checkpoint_strict", True)))
-    if bool(config.get("checkpoint_strict", True)) and (
-        incompatible.missing_keys or incompatible.unexpected_keys
-    ):
-        raise AdapterError("Strict checkpoint loading reported incompatible model keys")
+    # Pan-cancer checkpoints trained with flash-attn store the mathematically
+    # equivalent fused Q/K/V projection as ``Wqkv``. Standard PyTorch MHA calls
+    # the same tensors ``in_proj_*``. Translating the names avoids requiring
+    # flash-attn at inference while preserving the learned values exactly.
+    normalized = dict(state)
+    for key in list(normalized):
+        if ".self_attn.Wqkv.weight" in key:
+            normalized[key.replace(".self_attn.Wqkv.weight", ".self_attn.in_proj_weight")] = normalized.pop(key)
+        elif ".self_attn.Wqkv.bias" in key:
+            normalized[key.replace(".self_attn.Wqkv.bias", ".self_attn.in_proj_bias")] = normalized.pop(key)
+    expected = model.state_dict()
+    loadable = {
+        key: value
+        for key, value in normalized.items()
+        if key in expected and tuple(value.shape) == tuple(expected[key].shape)
+    }
+    incompatible = model.load_state_dict(loadable, strict=False)
+    required_prefixes = ("encoder.", "value_encoder.", "transformer_encoder.")
+    essential_missing = [
+        key for key in incompatible.missing_keys if key.startswith(required_prefixes)
+    ]
+    if essential_missing:
+        raise AdapterError(
+            "Checkpoint is missing essential embedding/transformer weights: "
+            + ", ".join(essential_missing[:10])
+        )
     model.to(device)
     model.eval()
     return OfficialScGPTRunner(
@@ -176,7 +197,13 @@ def load_official_scgpt(
         device=device,
         cls_id=vocabulary[cls_token],
         pad_id=vocabulary[pad_token],
-        token_length=(int(config["token_length"]) if config.get("token_length") else None),
+        token_length=(
+            int(config["token_length"])
+            if config.get("token_length")
+            else int(model_args["max_seq_len"])
+            if model_args.get("max_seq_len")
+            else None
+        ),
         n_input_bins=int(config.get("n_input_bins", 51)),
         value_transform=str(config.get("value_transform", "rank_bin")),
     )

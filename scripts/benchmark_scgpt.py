@@ -16,6 +16,7 @@ from baselines.base import BaselineError, load_patient_splits
 from gbm_study.storage_policy import StoragePolicyError, policy_from_config
 from models.scgpt_adapter import AdapterError, ScGPTAdapter, deterministic_indices
 from models.scgpt_loader import load_official_scgpt, load_vocabulary
+from gbm_study.plain_english import write_json_with_explanation
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
@@ -281,14 +282,14 @@ def main(argv: list[str] | None = None) -> int:
     try:
         result = run_benchmark(config)
         exit_code = 0 if result["status"] == "completed" else 2
-    except (AdapterError, OSError, ValueError) as exc:
+    except (AdapterError, OSError, RuntimeError, AssertionError, ValueError) as exc:
         result = _blocked(config, str(exc))
         exit_code = 2
     output = args.output or Path(
         str(config.get("output_path", "baseline_results/compute/week1_scgpt_benchmark.json"))
     )
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_json_with_explanation(output, result)
     print(
         json.dumps(result, indent=2, sort_keys=True),
         file=sys.stderr if exit_code else sys.stdout,

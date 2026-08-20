@@ -1,0 +1,55 @@
+{
+  "archives": [
+    {
+      "member_count": 15,
+      "members": [
+        "TP53 Dataset(preprocessed)/processed/full_cohort.h5ad",
+        "TP53 Dataset(preprocessed)/raw/cgga/CGGA.mRNAseq_325_clinical.20200506.txt.zip",
+        "TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv",
+        "TP53 Dataset(preprocessed)/raw/neftel/IDHwt.GBM.Hierarchy.SS2.txt",
+        "TP53 Dataset(preprocessed)/prior/grn_pilot_full_edges.csv",
+        "TP53 Dataset(preprocessed)/pilot/tcga_pilot_subsample.h5ad",
+        "TP53 Dataset(preprocessed)/prior/grn_pilot_adit_holdout_check.csv",
+        "TP53 Dataset(preprocessed)/raw/neftel/IDHwt.GBM.Metadata.SS2.txt",
+        "TP53 Dataset(preprocessed)/raw/tcga/data_clinical_sample.txt",
+        "TP53 Dataset(preprocessed)/pilot/patient_gene_mutation_table.csv",
+        "TP53 Dataset(preprocessed)/pilot/cgga_pilot_subsample.h5ad",
+        "TP53 Dataset(preprocessed)/raw/cgga/CGGA.mRNAseq_693_clinical.20200506.txt.zip",
+        "TP53 Dataset(preprocessed)/raw/cgga/CGGA.mRNAseq_325.RSEM-genes.20200506.txt.zip",
+        "TP53 Dataset(preprocessed)/raw/cgga/CGGA.WEseq_286.20200506.txt",
+        "TP53 Dataset(preprocessed)/raw/tcga/data_cna.txt"
+      ],
+      "path": "data/TP53 Dataset(preprocessed)-20260820T001259Z-1-001.zip",
+      "sha256": "22f01ac7999222ccd225c8160913b1c749e2b689f7a748a4673c7213cdf5f729"
+    },
+    {
+      "member_count": 5,
+      "members": [
+        "TP53 Dataset(preprocessed)/raw/cgga/CGGA.mRNAseq_693.RSEM-genes.20200506.txt.zip",
+        "TP53 Dataset(preprocessed)/raw/tcga/data_mutations.txt",
+        "TP53 Dataset(preprocessed)/raw/neftel/IDHwtGBM.processed.SS2.logTPM.txt.gz",
+        "TP53 Dataset(preprocessed)/pilot/pilot_subsample.h5ad",
+        "TP53 Dataset(preprocessed)/processed/neftel.npz"
+      ],
+      "path": "data/TP53 Dataset(preprocessed)-20260820T001259Z-1-003.zip",
+      "sha256": "a2eff46998020606f6e9aa7b2380828f052342463431b40fd7e52db29111456b"
+    }
+  ],
+  "archives_found": 2,
+  "expected_parts": [
+    "001",
+    "002",
+    "003"
+  ],
+  "extracted_root": "data/import_20260820/TP53 Dataset(preprocessed)",
+  "interpretation": "The two present ZIPs are internally valid and their extracted members match; the top-level part 002 is absent.",
+  "mismatches": [],
+  "missing_parts": [
+    "002"
+  ],
+  "next_actions": [
+    "Obtain part 002 if it contains additional files; do not invent it from the extracted directory.",
+    "Use the raw TCGA files from part 003 to build the provenance-preserving mutation join."
+  ],
+  "status": "completed_with_blockers"
+}

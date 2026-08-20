@@ -1,0 +1,13 @@
+{
+  "train": [
+    "BT1187", "BT771", "BT786", "BT830", "BT920", "MGH100", "MGH101",
+    "MGH102", "MGH105", "MGH110", "MGH121", "MGH125", "MGH136", "MGH152",
+    "MGH66"
+  ],
+  "validation": [
+    "BT1160", "BT749", "MGH115", "MGH124", "MGH122", "MGH128"
+  ],
+  "test": [
+    "MGH104", "MGH106", "MGH143", "MGH151", "MGH113", "MGH129"
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "blockers": [
+    "benchmark: Missing real benchmark inputs: checkpoint_path, vocabulary_path",
+    "mc_dropout: scGPT checkpoint is missing"
+  ],
+  "components": {
+    "mc_dropout": {
+      "model": {
+        "batch_size": 32,
+        "device": "cuda",
+        "n_passes": 20
+      },
+      "reason": "scGPT checkpoint is missing",
+      "status": "blocked",
+      "timing": {
+        "compute_multiplier": null,
+        "representative": false,
+        "single_pass_seconds": null,
+        "total_seconds": null
+      }
+    },
+    "scgpt_1000_cell_benchmark": {
+      "benchmark_cells": 1000,
+      "mapping": {
+        "dropped": null,
+        "duplicated": null,
+        "genes_after": null,
+        "genes_before": null,
+        "retained": null,
+        "unmapped": null
+      },
+      "model": {
+        "batch_size": 32,
+        "precision": "float32",
+        "token_length": null
+      },
+      "provenance": {
+        "checkpoint_sha256": null,
+        "vocabulary_sha256": null
+      },
+      "reason": "Missing real benchmark inputs: checkpoint_path, vocabulary_path",
+      "selection": {
+        "patients_represented": null,
+        "seed": 20260802,
+        "training_patients_only": false
+      },
+      "status": "blocked",
+      "timing": {
+        "cells_per_second": null,
+        "gpu_seconds_per_1000_cells": null,
+        "gpu_synchronization": null,
+        "peak_allocated_bytes": null,
+        "peak_reserved_bytes": null,
+        "projected_gpu_seconds_per_10000_cells": null,
+        "wall_clock_seconds": null
+      }
+    }
+  },
+  "owner": "Adit",
+  "required_evidence": [
+    "1,000 real training-patient cells",
+    "synchronized CUDA timing and projected_gpu_seconds_per_10000_cells",
+    "20-50 active-dropout passes with per-gene mean and variance",
+    "checkpoint, vocabulary, split, and environment hashes"
+  ],
+  "status": "completed_with_blockers",
+  "week": 3
+}

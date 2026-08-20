@@ -1,0 +1,20 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/readiness/imported_dataset_audit.json
+
+WHAT HAPPENED
+- The job did the parts it could do, but some parts could not run.
+
+WHY
+- cgga_pilot X contains non-finite values
+
+WHAT IS IMPORTANT
+- The JSON file is the exact machine-readable record.
+
+WHAT IS CONCERNING
+- cgga_pilot X contains non-finite values
+
+NEXT ACTIONS
+- Use the full cohort counts layer for scVI only after integer-like counts are confirmed.
+- Use a labeled single-cell external cohort for AC/MES/NPC/OPC external testing; CGGA bulk cannot supply those labels.
+- Use patient_gene_mutation_join.csv for mutation/CNA provenance; add a methylation source before claiming silencing labels.
+- Repair or regenerate the CGGA pilot H5AD from the raw CGGA expression files before external modeling.

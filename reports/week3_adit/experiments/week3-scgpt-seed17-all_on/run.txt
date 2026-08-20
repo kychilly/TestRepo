@@ -1,0 +1,17 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/week3_adit/experiments/week3-scgpt-seed17-all_on/run.json
+
+WHAT HAPPENED
+- The job could not finish. It stopped instead of making up an answer.
+
+WHY
+- CUDA is unavailable
+
+WHAT IS IMPORTANT
+- The JSON file is the exact machine-readable record.
+
+WHAT IS CONCERNING
+- CUDA is unavailable
+
+NEXT ACTIONS
+- Fix the reason listed above, then run the same command again. The job can resume from its checkpoint.

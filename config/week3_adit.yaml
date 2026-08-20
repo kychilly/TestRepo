@@ -1,0 +1,31 @@
+cell_data_path: data/import_20260820/TP53 Dataset(preprocessed)/processed/neftel_analysis_cohort.h5ad
+split_file: splits/combined_full_cohort_neftel_patient_splits.json
+patient_id_column: Sample
+gene_id_column: var_names
+state_key: derived_state
+gene_id_type: HGNC
+fold: 0
+seed: 17
+target_states: [AC, MES, NPC, OPC]
+requested_device: cuda
+checkpoint_path: artifacts/models/scGPT_pancancer/best_model.pt
+vocabulary_path: artifacts/models/scGPT_pancancer/vocab.json
+model_args_path: artifacts/models/scGPT_pancancer/args.json
+candidate_genes_path: data/pilot/internal_candidate_universe.jsonl
+validator_outcomes_path: null
+grn_train_prior_path: data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv
+week2_timing_path: results/compute/current_scgpt_benchmark.json
+seeds: [17, 42, 101]
+batch_size: 32
+precision: float32
+checkpoint_strict: true
+use_fast_transformer: false
+mc_dropout_passes: 20
+checkpoint_every_genes: 10
+estimated_rank_genes: 2503
+# This is a compute cap for the pilot candidate universe. It does not create
+# biological ranks; the ranking JSONL records the actual mask scores.
+candidate_limit: 100
+backbone_budget_gpu_seconds: 86400
+cellfm_runner: null
+geneformer_runner: null
