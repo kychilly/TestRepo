@@ -1,4 +1,4 @@
-.PHONY: environment-check scgpt-smoke scgpt-shared-gpu baselines-smoke evaluate-smoke gpu-plan chat-report synthetic-smoke test week1-audit week2-adit stage34-fixture grn-sanity-current audit-current readiness imported-dataset-audit archive-audit mutation-join combine-dataset week3-adit week3-candidates week3-experiments repo-safety a100-preflight a100-run adit-week-audit
+.PHONY: environment-check scgpt-smoke scgpt-shared-gpu baselines-smoke evaluate-smoke gpu-plan chat-report synthetic-smoke test week1-audit week2-adit stage34-fixture grn-sanity-current audit-current readiness imported-dataset-audit archive-audit mutation-join combine-dataset week3-adit week3-candidates week3-validator-input week3-verdicts week3-experiments repo-safety a100-preflight a100-run adit-week-audit
 
 PYTHON ?= python
 PYTHONPATH := src:.
@@ -79,6 +79,12 @@ week3-experiments:
 
 week3-candidates:
 	PYTHONPATH=src:. $(PYTHON) scripts/build_internal_candidate_universe.py --adata "data/TP53 Dataset(preprocessed) 2/pilot/pilot_subsample.h5ad" --output data/pilot/internal_candidate_universe.jsonl
+
+week3-validator-input:
+	PYTHONPATH=src:. $(PYTHON) scripts/build_week3_validator_outcomes.py
+
+week3-verdicts:
+	PYTHONPATH=src:. $(PYTHON) scripts/build_cross_cohort_verdicts.py
 
 repo-safety:
 	$(PYTHON) scripts/install_repo_safety.py

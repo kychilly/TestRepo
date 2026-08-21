@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -49,6 +50,23 @@ def classify(path: Path, *, stale: bool = False) -> dict[str, Any]:
     }
 
 
+def branch_status(root: Path, ref: str) -> dict[str, Any]:
+    """Record whether an available team ref is already in the current HEAD."""
+    present = subprocess.run(
+        ["git", "show-ref", "--verify", "--quiet", f"refs/remotes/{ref}"],
+        cwd=root,
+        check=False,
+    ).returncode == 0
+    integrated = False
+    if present:
+        integrated = subprocess.run(
+            ["git", "merge-base", "--is-ancestor", ref, "HEAD"],
+            cwd=root,
+            check=False,
+        ).returncode == 0
+    return {"ref": ref, "present": present, "integrated_into_head": integrated}
+
+
 def run() -> dict[str, Any]:
     root = Path(__file__).resolve().parents[1]
     assets = root / "artifacts/models/scGPT_pancancer"
@@ -70,12 +88,47 @@ def run() -> dict[str, Any]:
             "model_args": assets / "args.json",
         }.items()
     }
+    team_refs = {
+        "jeffrey_week2": branch_status(root, "origin/Jeffrey-week2"),
+        "alexis_week2": branch_status(root, "origin/alexis-week2"),
+        "ishaan_week2": branch_status(root, "origin/ishaan-week2"),
+        "ishaan_week1": branch_status(root, "origin/ishaan-week1"),
+    }
     return {
         "status": "completed",
         "scope": "Adit Week 1-4 evidence inventory",
         "generated_from": str(root),
         "artifacts": artifacts,
         "model_assets": model_assets,
+        "team_week2_integration": {
+            "refs": team_refs,
+            "jeffrey_inputs": {
+                "dataset_archive_audit": str(root / "reports/readiness/dataset_archives.json"),
+                "mutation_join": str(root / "data/import_20260820/TP53 Dataset(preprocessed)/pilot/patient_gene_mutation_join.csv"),
+                "grn_train_prior": str(root / "data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv"),
+                "grn_holdout": str(root / "data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_adit_holdout_check.csv"),
+            },
+            "ishaan_inputs": {
+                "validator": str(root / "validator.py"),
+                "shuffled_validator": str(root / "shuffled_validator.py"),
+                "stage34_report": str(root / "reports/stage34/combined_full_candidate_run.json"),
+            },
+            "alexis_inputs": {
+                "baselines": str(root / "scripts/run_baseline.py"),
+                "evaluation": str(root / "eval.py"),
+                "baseline_summary": str(root / "reports/baselines_combined/final_summary.json"),
+            },
+            "week3_consumers": [
+                "config/week3_adit.yaml",
+                "scripts/run_week3_experiments.py",
+                "src/experiments/week3.py",
+                "src/models/scgpt_internal.py",
+            ],
+            "week4_consumers": [
+                "scripts/run_cross_cohort.py",
+                "reports/cross_cohort_combined_v2/results.json",
+            ],
+        },
         "current_scientific_call": "no_result_until_real_scGPT_and_external_endpoint_runs_complete",
         "known_issues": [
             "Historical benchmark and Week 2 reports are stale relative to the downloaded official model assets.",
@@ -85,7 +138,7 @@ def run() -> dict[str, Any]:
             "The GRN holdout has one unique positive edge and cannot support a paper claim.",
         ],
         "next_actions": [
-            "Update configs to the verified checkpoint and model arguments.",
+            "Run the A100 preflight with config/model_a100_local.yaml.",
             "Run the A100 preflight and exactly 1,000-cell benchmark.",
             "Run the complete Week 3 matrix with persistent checkpoints.",
             "Add an external single-cell state endpoint and independent variant/abstention truth.",

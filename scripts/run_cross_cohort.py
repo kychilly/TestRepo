@@ -59,7 +59,41 @@ def run(config_path: Path, output: Path) -> dict[str, Any]:
         if prior_fingerprint is not None and prior_fingerprint != fingerprint:
             raise ValueError("Checkpoint fingerprint changed; use a new output directory")
     data = load_cohorts(tcga_path, full_path)
-    groups = feature_groups(data["genes"], verdicts_path)
+    try:
+        groups = feature_groups(data["genes"], verdicts_path)
+    except ValueError as exc:
+        result = {
+            "status": "completed_with_blockers",
+            "endpoint": "patient_level_IDH_mutation_status",
+            "scope": "Week 4 integration preflight; no model arm was fit",
+            "data": {
+                "tcga_samples": int(len(data["tcga"][1])),
+                "neftel_pseudobulk_samples": int(len(data["neftel"][1])),
+                "cgga_labeled_samples": int(len(data["cgga"][1])),
+                "common_genes": int(len(data["genes"])),
+            },
+            "proposal_metrics": {
+                "macro_f1": "blocked: confirmed feature group is unavailable",
+                "variant_auroc": "blocked: no independent variant-effect labels and scores",
+                "abstention_accuracy": "blocked: no independent abstention gold labels",
+                "grn_edge_auroc": "not_run",
+                "internal_to_external_performance_drop": "blocked: no confirmed arm",
+            },
+            "provenance": fingerprint_payload,
+            "blockers": [
+                str(exc),
+                "Current Stage 3/4 evidence has zero confirmed genes because protein/AlphaFold evidence is absent.",
+                "Do not substitute the stale reports/stage34/verdicts.csv file.",
+            ],
+            "next_actions": [
+                "Add independent AlphaFold/protein evidence and rerun Stage 3/4.",
+                "Run this same Week 4 command after the current verdict CSV is regenerated.",
+            ],
+        }
+        output.mkdir(parents=True, exist_ok=True)
+        write_json_with_explanation(output / "results.json", result)
+        return result
+
     runs_path = output / "runs.jsonl"
     completed = load_completed_jsonl(runs_path)
     done = {(str(row["arm"]), int(row["seed"])) for row in completed}

@@ -110,11 +110,61 @@
     }
   },
   "next_actions": [
-    "Update configs to the verified checkpoint and model arguments.",
+    "Run the A100 preflight with config/model_a100_local.yaml.",
     "Run the A100 preflight and exactly 1,000-cell benchmark.",
     "Run the complete Week 3 matrix with persistent checkpoints.",
     "Add an external single-cell state endpoint and independent variant/abstention truth."
   ],
   "scope": "Adit Week 1-4 evidence inventory",
-  "status": "completed"
+  "status": "completed",
+  "team_week2_integration": {
+    "alexis_inputs": {
+      "baseline_summary": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/baselines_combined/final_summary.json",
+      "baselines": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/scripts/run_baseline.py",
+      "evaluation": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/eval.py"
+    },
+    "ishaan_inputs": {
+      "shuffled_validator": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/shuffled_validator.py",
+      "stage34_report": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/stage34/combined_full_candidate_run.json",
+      "validator": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/validator.py"
+    },
+    "jeffrey_inputs": {
+      "dataset_archive_audit": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/readiness/dataset_archives.json",
+      "grn_holdout": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_adit_holdout_check.csv",
+      "grn_train_prior": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv",
+      "mutation_join": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/data/import_20260820/TP53 Dataset(preprocessed)/pilot/patient_gene_mutation_join.csv"
+    },
+    "refs": {
+      "alexis_week2": {
+        "integrated_into_head": true,
+        "present": true,
+        "ref": "origin/alexis-week2"
+      },
+      "ishaan_week1": {
+        "integrated_into_head": true,
+        "present": true,
+        "ref": "origin/ishaan-week1"
+      },
+      "ishaan_week2": {
+        "integrated_into_head": false,
+        "present": false,
+        "ref": "origin/ishaan-week2"
+      },
+      "jeffrey_week2": {
+        "integrated_into_head": true,
+        "present": true,
+        "ref": "origin/Jeffrey-week2"
+      }
+    },
+    "week3_consumers": [
+      "config/week3_adit.yaml",
+      "scripts/run_week3_experiments.py",
+      "src/experiments/week3.py",
+      "src/models/scgpt_internal.py"
+    ],
+    "week4_consumers": [
+      "scripts/run_cross_cohort.py",
+      "reports/cross_cohort_combined_v2/results.json"
+    ]
+  }
 }

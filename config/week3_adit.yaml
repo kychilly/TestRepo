@@ -12,7 +12,7 @@ checkpoint_path: artifacts/models/scGPT_pancancer/best_model.pt
 vocabulary_path: artifacts/models/scGPT_pancancer/vocab.json
 model_args_path: artifacts/models/scGPT_pancancer/args.json
 candidate_genes_path: data/pilot/internal_candidate_universe.jsonl
-validator_outcomes_path: null
+validator_outcomes_path: data/pilot/week3_validator_outcomes.jsonl
 grn_train_prior_path: data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv
 week2_timing_path: results/compute/current_scgpt_benchmark.json
 seeds: [17, 42, 101]
