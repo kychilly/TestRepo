@@ -306,10 +306,15 @@ def build_full_cohort(
 
     try:
         adata_neftel = load_neftel(os.path.join(raw_dir, "neftel"), output_dir)
+        neftel_states = None
+        if "state" in adata_neftel.obs.columns:
+            neftel_states = adata_neftel.obs[["Sample", "state"]].copy()
+            neftel_states["cell_id"] = adata_neftel.obs.index
         adata_neftel = process_single_matrix(adata_neftel, qc_cfg, "Neftel")
         adatas.append(adata_neftel)
     except Exception as e:
         print(f"[Warning] Could not load Neftel: {e}")
+        neftel_states = None
 
     try:
         adata_cgga = load_cgga(os.path.join(raw_dir, "cgga"))
@@ -337,6 +342,14 @@ def build_full_cohort(
     print("\n[Merging] Combining all datasets into full cohort...")
     adata_full = ad.concat(adatas, merge="unique", join="inner")
     adata_full.obs_names_make_unique()
+
+    if neftel_states is not None:
+        adata_full.obs["state"] = adata_full.obs.index.map(
+            neftel_states.set_index("cell_id")["state"]
+        )
+        n_with_state = adata_full.obs["state"].notna().sum()
+        print(f"[State Rejoin] state resolved for {n_with_state}/{adata_full.n_obs} cells "
+              f"(non-Neftel cells correctly have no state).")
 
     # NEW: join clinical metadata (IDH status, TCGA bulk subtype) BEFORE HVG
     # selection so downstream pilot stratification has something to work with.
