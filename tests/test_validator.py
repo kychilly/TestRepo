@@ -45,10 +45,7 @@ def test_four_gene_gate_matches_requested_outcomes_without_threshold_tuning() ->
 
 
 def test_shuffled_control_preserves_exact_bucket_counts_and_seed() -> None:
-    records = [
-        GeneRecord(f"G{i}", f"V{i}", "missense", 90.0, -11.0, 0.0)
-        for i in range(10)
-    ]
+    records = [GeneRecord(f"G{i}", f"V{i}", "missense", 90.0, -11.0, 0.0) for i in range(10)]
     outcomes = list(Outcome) * 2
     real = [
         __import__("validator").Verdict(record.gene, record.mutation, outcome, "real")
@@ -122,7 +119,5 @@ def test_stage34_counts_only_candidates_and_marks_missing_evidence_data_deficien
     )
     assert result["candidate_count"] == 1
     assert result["bucket_counts"]["data_deficient"] == 1
-    assert result["candidate_alignment"]["primary"]["missing_evidence_candidate_ids"] == [
-        "c1"
-    ]
+    assert result["candidate_alignment"]["primary"]["missing_evidence_candidate_ids"] == ["c1"]
     assert result["comparison"]["result_call"] == "no_result"

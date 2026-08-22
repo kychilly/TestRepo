@@ -1,43 +1,58 @@
-# Standardize .obs column names
+#!/usr/bin/env python3
+"""Safely standardize patient and real Neftel-state columns in an H5AD copy."""
 
-import scanpy as sc
+from __future__ import annotations
 
-import scanpy as sc
-import numpy as np
+import argparse
+import json
+from pathlib import Path
 
-h5ad_path = "data/pilot/pilot_subsample.h5ad"
-adata = sc.read_h5ad(h5ad_path)
+from gbm_study.plain_english import write_json_with_explanation
 
-# 1. Ensure patient_id is present
-if "patient_id" not in adata.obs.columns:
-    if "Sample" in adata.obs.columns:
-        adata.obs["patient_id"] = adata.obs["Sample"].astype(str)
-    else:
-        raise KeyError("Could not find 'Sample' or 'patient_id' in adata.obs")
+VALID_STATES = {"AC", "MES", "NPC", "OPC"}
 
-# 2. Map cell states to valid Neftel labels: ['AC', 'MES', 'NPC', 'OPC']
-VALID_LABELS = ["AC", "MES", "NPC", "OPC"]
 
-# Look for an existing cell-type annotation column in metadata
-found_mapping = False
-for candidate in ["cell_type", "cell_state", "annotation", "Neftel_state", "Characteristics"]:
-    if candidate in adata.obs.columns and adata.obs[candidate].dropna().shape[0] > 0:
-        # Check if values overlap with allowed labels
-        unique_vals = set(adata.obs[candidate].dropna().astype(str).unique())
-        if any(v in VALID_LABELS for v in unique_vals):
-            adata.obs["state"] = adata.obs[candidate].astype(str)
-            print(f"[Schema Fix] Successfully mapped existing column '{candidate}' -> 'state'")
-            found_mapping = True
-            break
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--patient-source", default="Sample")
+    parser.add_argument("--state-source", default="derived_state")
+    parser.add_argument("--report", type=Path, default=Path("reports/schema_fix.json"))
+    args = parser.parse_args(argv)
+    if args.input.resolve() == args.output.resolve():
+        raise ValueError("Refusing to overwrite the input H5AD; choose a new --output path")
 
-# 3. Fallback: If no Neftel state annotations exist in the pilot file, assign valid dummy labels
-if not found_mapping:
-    print("[Schema Fix] No Neftel state column found. Randomly assigning valid baseline labels [AC, MES, NPC, OPC] for pilot validation...")
-    np.random.seed(42)
-    adata.obs["state"] = np.random.choice(VALID_LABELS, size=len(adata.obs))
+    import anndata as ad  # type: ignore[import-untyped]
 
-print("Final unique values in adata.obs['state']:", adata.obs["state"].unique().tolist())
+    data = ad.read_h5ad(args.input)
+    if args.patient_source not in data.obs:
+        raise ValueError(f"Missing real patient column: {args.patient_source}")
+    if args.state_source not in data.obs:
+        raise ValueError(f"Missing real state column: {args.state_source}")
+    states = data.obs[args.state_source].astype(str)
+    unknown = sorted(set(states) - VALID_STATES)
+    if unknown:
+        raise ValueError(f"State column contains values outside AC/MES/NPC/OPC: {unknown}")
+    data.obs["patient_id"] = data.obs[args.patient_source].astype(str).to_numpy()
+    data.obs["state"] = states.to_numpy()
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    data.write_h5ad(args.output)
+    result = {
+        "status": "completed",
+        "input": str(args.input),
+        "output": str(args.output),
+        "rows": int(data.n_obs),
+        "patients": int(data.obs["patient_id"].nunique()),
+        "state_counts": {
+            str(key): int(value) for key, value in data.obs["state"].value_counts().items()
+        },
+        "reason": "Copied existing patient and state labels; no labels were inferred or randomized.",
+    }
+    write_json_with_explanation(args.report, result)
+    print(json.dumps(result, indent=2, sort_keys=True))
+    return 0
 
-# Save updated H5AD file
-adata.write_h5ad(h5ad_path)
-print("[Success] H5AD schema successfully updated!")
+
+if __name__ == "__main__":
+    raise SystemExit(main())

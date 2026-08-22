@@ -10,6 +10,7 @@ from pathlib import Path
 
 from evaluation.metrics import EvaluationError
 from evaluation.reporting import run_evaluation
+from gbm_study.plain_english import write_json_with_explanation, write_jsonl_explanation
 from gbm_study.stage5_masking import (
     PassthroughStubOutcomeSource,
     load_outcome_source,
@@ -60,16 +61,20 @@ def main(argv: list[str] | None = None) -> int:
             provenance["outcome_source_provenance"] = source_provenance(source)
             args.output.mkdir(parents=True, exist_ok=True)
             write_jsonl(args.output / "masked_candidates.jsonl", masked)
-            (args.output / "validator_provenance.json").write_text(
-                json.dumps(provenance, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+            write_jsonl_explanation(
+                args.output / "masked_candidates.jsonl",
+                row_count=len(masked),
+                description="Stage 5 candidate rows after the requested validator mask.",
+            )
+            write_json_with_explanation(
+                args.output / "validator_provenance.json",
+                {"status": "completed", **provenance},
             )
         manifest = run_evaluation(args.predictions, args.splits, args.config, args.output)
     except (EvaluationError, OSError, ValueError, ImportError) as exc:
         error = {"status": "failed", "error": str(exc)}
         args.output.mkdir(parents=True, exist_ok=True)
-        (args.output / "evaluation_error.json").write_text(
-            json.dumps(error, indent=2) + "\n", encoding="utf-8"
-        )
+        write_json_with_explanation(args.output / "evaluation_error.json", error)
         print(json.dumps(error, sort_keys=True), file=sys.stderr)
         return 2
     print(json.dumps({"status": "completed", "manifest": manifest}, sort_keys=True))

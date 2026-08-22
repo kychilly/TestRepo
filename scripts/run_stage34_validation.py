@@ -109,11 +109,16 @@ def _align(
             )
         control_records.append(record)
         verdicts.append(verdict)
-    return candidate_ids, control_records, verdicts, {
-        "missing_evidence_candidate_ids": missing,
-        "ambiguous_evidence_candidate_ids": ambiguous,
-        "unused_evidence_genes": sorted(set(by_gene) - used_genes),
-    }
+    return (
+        candidate_ids,
+        control_records,
+        verdicts,
+        {
+            "missing_evidence_candidate_ids": missing,
+            "ambiguous_evidence_candidate_ids": ambiguous,
+            "unused_evidence_genes": sorted(set(by_gene) - used_genes),
+        },
+    )
 
 
 def _confirmable(records: list[GeneRecord], thresholds: Thresholds) -> int:
@@ -155,12 +160,16 @@ def _compare(
     real_labels = [verdict.outcome.value for verdict in real]
     shuffled_labels = [verdict.outcome.value for verdict in shuffled]
     real_accuracy = sum(a == b for a, b in zip(real_labels, truth, strict=True)) / len(truth)
-    shuffled_accuracy = sum(a == b for a, b in zip(shuffled_labels, truth, strict=True)) / len(truth)
+    shuffled_accuracy = sum(a == b for a, b in zip(shuffled_labels, truth, strict=True)) / len(
+        truth
+    )
     confirmed_names = {item.value for item in CONFIRMED}
     real_confirmed = [label in confirmed_names for label in real_labels]
     shuffled_confirmed = [label in confirmed_names for label in shuffled_labels]
     truth_confirmed = [label in confirmed_names for label in truth]
-    real_binary = sum(a == b for a, b in zip(real_confirmed, truth_confirmed, strict=True)) / len(truth)
+    real_binary = sum(a == b for a, b in zip(real_confirmed, truth_confirmed, strict=True)) / len(
+        truth
+    )
     shuffled_binary = sum(
         a == b for a, b in zip(shuffled_confirmed, truth_confirmed, strict=True)
     ) / len(truth)
@@ -193,7 +202,9 @@ def run(
     config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
     if not isinstance(config, dict):
         raise ValueError("Stage 3/4 config must be a YAML object")
-    thresholds = Thresholds.from_yaml(Path(str(config.get("validator_config", "config/validator.yaml"))))
+    thresholds = Thresholds.from_yaml(
+        Path(str(config.get("validator_config", "config/validator.yaml")))
+    )
     evidence = [_record(row) for row in _read_jsonl(records_path)]
     primary_candidates = _read_jsonl(candidates_path)
     primary_ids, primary_records, primary_real, primary_audit = _align(
@@ -236,8 +247,10 @@ def run(
     comparison = _compare(candidate_ids, real, shuffled, gold_outcomes_path)
     fixture = _is_fixture(primary_candidates)
     pooling_status = (
-        "completed" if pooling_triggered and pooled_candidates
-        else "blocked_missing_pool_candidates" if pooling_triggered
+        "completed"
+        if pooling_triggered and pooled_candidates
+        else "blocked_missing_pool_candidates"
+        if pooling_triggered
         else "not_needed"
     )
     scientifically_complete = (
@@ -331,8 +344,22 @@ def main(argv: list[str] | None = None) -> int:
         result = {"status": "failed", "scientifically_complete": False, "reason": str(exc)}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     write_json_with_explanation(args.output, result)
-    print(json.dumps(result, indent=2, sort_keys=True))
-    return 0 if result.get("status") in {"completed", "completed_with_blockers"} else 2
+    console_summary = {
+        key: result.get(key)
+        for key in (
+            "status",
+            "scientifically_complete",
+            "candidate_count",
+            "bucket_counts",
+            "confirmable_count_primary",
+            "feasibility",
+            "comparison",
+        )
+        if key in result
+    }
+    console_summary["full_report"] = str(args.output)
+    print(json.dumps(console_summary, indent=2, sort_keys=True))
+    return 0 if result.get("status") == "completed" else 2
 
 
 if __name__ == "__main__":

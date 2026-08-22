@@ -33,14 +33,22 @@ def explain(payload: Mapping[str, Any], *, source: str) -> str:
 
     reasons = _items(payload.get("reason")) + _items(payload.get("blockers"))
     reasons += _items(payload.get("failures"))
+    reasons += _items(payload.get("known_issues"))
+    reasons += [
+        f"Method did not complete: {name}" for name in _items(payload.get("methods_not_completed"))
+    ]
     runs = payload.get("runs")
     if isinstance(runs, list):
         run_reasons = {
-            str(run.get("reason"))
-            for run in runs
-            if isinstance(run, Mapping) and run.get("reason")
+            str(run.get("reason")) for run in runs if isinstance(run, Mapping) and run.get("reason")
         }
         reasons += sorted(run_reasons)
+    for key in ("feasibility", "comparison"):
+        component = payload.get(key)
+        if isinstance(component, Mapping) and str(component.get("status", "")).startswith(
+            "blocked"
+        ):
+            reasons.append(f"{key}: {component.get('reason', component.get('status'))}")
     why = reasons or ["The JSON file did not give a special reason."]
 
     important: list[str] = []
@@ -85,9 +93,47 @@ def explain(payload: Mapping[str, Any], *, source: str) -> str:
     if isinstance(proposal, Mapping):
         for name, value in proposal.items():
             if isinstance(value, Mapping):
-                important.append(f"{name}: AUROC={value.get('auroc')}; {value.get('limitation', '')}")
+                important.append(
+                    f"{name}: AUROC={value.get('auroc')}; {value.get('limitation', '')}"
+                )
             else:
                 important.append(f"{name}: {value}")
+    if payload.get("scientific_note"):
+        important.append(str(payload["scientific_note"]))
+    bucket_counts = payload.get("bucket_counts")
+    if isinstance(bucket_counts, Mapping):
+        important.append(
+            "Outcome buckets: "
+            + ", ".join(f"{name}={value}" for name, value in bucket_counts.items())
+        )
+    feasibility = payload.get("feasibility")
+    if isinstance(feasibility, Mapping):
+        important.append(
+            f"Feasibility branch: {feasibility.get('branch')} "
+            f"(decision count {feasibility.get('decision_count')}, "
+            f"minimum {feasibility.get('minimum_required')})"
+        )
+    for key, label in (
+        ("code_contract_ready", "Is the code/data contract runnable?"),
+        ("full_scientific_matrix_ready", "Is the full scientific matrix ready?"),
+    ):
+        if key in payload:
+            important.append(f"{label} {payload[key]}")
+    rows = payload.get("rows")
+    if isinstance(rows, list):
+        for row in rows:
+            if not isinstance(row, Mapping) or "method" not in row:
+                continue
+            message = f"{row['method']}: {row.get('status')}"
+            evaluation = row.get("evaluation")
+            if isinstance(evaluation, Mapping):
+                message += (
+                    f"; macro-F1={evaluation.get('macro_f1')}; "
+                    f"balanced accuracy={evaluation.get('balanced_accuracy')}"
+                )
+            if row.get("reason"):
+                message += f"; reason={row['reason']}"
+            important.append(message)
     if not important:
         important.append("The JSON file is the exact machine-readable record.")
 
@@ -102,21 +148,26 @@ def explain(payload: Mapping[str, Any], *, source: str) -> str:
         if status == "completed":
             actions = ["Check the saved files, then continue to the next planned step."]
         else:
-            actions = ["Fix the reason listed above, then run the same command again. The job can resume from its checkpoint."]
+            actions = [
+                "Fix the reason listed above, then run the same command again. The job can resume from its checkpoint."
+            ]
 
     def section(title: str, lines: list[str]) -> str:
         return title + "\n" + "\n".join(f"- {line}" for line in lines)
 
-    return "\n\n".join(
-        (
-            f"PLAIN-ENGLISH EXPLANATION\nJSON file: {source}",
-            section("WHAT HAPPENED", [happened]),
-            section("WHY", why),
-            section("WHAT IS IMPORTANT", important),
-            section("WHAT IS CONCERNING", concerns),
-            section("NEXT ACTIONS", actions),
+    return (
+        "\n\n".join(
+            (
+                f"PLAIN-ENGLISH EXPLANATION\nJSON file: {source}",
+                section("WHAT HAPPENED", [happened]),
+                section("WHY", why),
+                section("WHAT IS IMPORTANT", important),
+                section("WHAT IS CONCERNING", concerns),
+                section("NEXT ACTIONS", actions),
+            )
         )
-    ) + "\n"
+        + "\n"
+    )
 
 
 def write_json_with_explanation(path: Path, payload: Mapping[str, Any]) -> None:
@@ -145,6 +196,4 @@ def write_jsonl_explanation(
         "next_actions": next_actions
         or ["Use these rows only with the matching run manifest, seed, and provenance."],
     }
-    companion_path(path).write_text(
-        explain(payload, source=str(path)), encoding="utf-8"
-    )
+    companion_path(path).write_text(explain(payload, source=str(path)), encoding="utf-8")

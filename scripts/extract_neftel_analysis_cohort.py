@@ -23,8 +23,20 @@ def sha256(path: Path) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", type=Path, default=Path("data/import_20260820/TP53 Dataset(preprocessed)/processed/full_cohort_with_states.h5ad"))
-    parser.add_argument("--output", type=Path, default=Path("data/import_20260820/TP53 Dataset(preprocessed)/processed/neftel_analysis_cohort.h5ad"))
+    parser.add_argument(
+        "--input",
+        type=Path,
+        default=Path(
+            "data/import_20260820/TP53 Dataset(preprocessed)/processed/full_cohort_with_states.h5ad"
+        ),
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path(
+            "data/import_20260820/TP53 Dataset(preprocessed)/processed/neftel_analysis_cohort.h5ad"
+        ),
+    )
     args = parser.parse_args(argv)
     if hasattr(ad.settings, "allow_write_nullable_strings"):
         ad.settings.allow_write_nullable_strings = True
@@ -36,9 +48,15 @@ def main(argv: list[str] | None = None) -> int:
         "status": "completed",
         "scope": "Neftel-only analysis input extracted from verified combined H5AD",
         "input": {"path": str(args.input), "sha256": sha256(args.input)},
-        "output": {"path": str(args.output), "sha256": sha256(args.output), "shape": list(selected.shape)},
+        "output": {
+            "path": str(args.output),
+            "sha256": sha256(args.output),
+            "shape": list(selected.shape),
+        },
         "patients": int(selected.obs["Sample"].astype(str).nunique()),
-        "state_counts": {str(k): int(v) for k, v in selected.obs["derived_state"].value_counts().items()},
+        "state_counts": {
+            str(k): int(v) for k, v in selected.obs["derived_state"].value_counts().items()
+        },
         "next_actions": ["Use the matching 27-patient split for the three baseline runs."],
     }
     write_json_with_explanation(args.output.with_suffix(".json"), result)

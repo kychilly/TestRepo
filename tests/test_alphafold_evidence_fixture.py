@@ -6,6 +6,8 @@ Ishaan's validator, choose thresholds, register cohorts, or compute pLDDT.
 
 from __future__ import annotations
 
+from typing import cast
+
 
 def synthetic_alphafold_record(gene: str) -> dict[str, object]:
     return {
@@ -19,11 +21,11 @@ def synthetic_alphafold_record(gene: str) -> dict[str, object]:
 
 
 def test_alphafold_fixture_preserves_per_residue_confidence_and_provenance() -> None:
-    records = [
-        synthetic_alphafold_record(gene) for gene in ("TP53", "IDH1", "EGFR", "RPRM")
-    ]
+    records = [synthetic_alphafold_record(gene) for gene in ("TP53", "IDH1", "EGFR", "RPRM")]
     for record in records:
         assert record["source"] == "AlphaFold Protein Structure Database"
         assert record["source_version"]
-        assert len(record["residue_numbers"]) == len(record["plddt"])
-        assert all(0.0 <= value <= 100.0 for value in record["plddt"])
+        residue_numbers = cast(list[int], record["residue_numbers"])
+        plddt = cast(list[float], record["plddt"])
+        assert len(residue_numbers) == len(plddt)
+        assert all(0.0 <= value <= 100.0 for value in plddt)

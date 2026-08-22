@@ -1,0 +1,17 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/pilot_baselines_verified/seed42/scvi_probe/run_error.json
+
+WHAT HAPPENED
+- The file says the job status is not_applicable.
+
+WHY
+- scVI input must be finite, non-negative, integer-like raw counts
+
+WHAT IS IMPORTANT
+- The JSON file is the exact machine-readable record.
+
+WHAT IS CONCERNING
+- scVI input must be finite, non-negative, integer-like raw counts
+
+NEXT ACTIONS
+- Fix the reason listed above, then run the same command again. The job can resume from its checkpoint.

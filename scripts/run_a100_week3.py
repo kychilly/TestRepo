@@ -100,6 +100,14 @@ def main(argv: list[str] | None = None) -> int:
     if not (session / "model_config.yaml").is_file():
         shutil.copy2(args.config, session / "model_config.yaml")
 
+    import yaml  # type: ignore[import-untyped]
+
+    model_payload = yaml.safe_load(args.config.read_text(encoding="utf-8"))
+    if not isinstance(model_payload, dict):
+        raise ValueError("A100 model config must be a YAML object")
+    token_length = int(model_payload.get("token_length", 1200))
+    batch_size = int(model_payload.get("batch_size", 32))
+
     preflight_path = session / "preflight.json"
     stages = [
         (
@@ -136,11 +144,11 @@ def main(argv: list[str] | None = None) -> int:
                 sys.executable,
                 "scripts/plan_gpu.py",
                 "--token-length",
-                "2048",
+                str(token_length),
                 "--cells",
                 "10000",
                 "--batch-size",
-                "32",
+                str(batch_size),
                 "--output",
                 str(session / "gpu_plan.json"),
             ],
@@ -161,8 +169,6 @@ def main(argv: list[str] | None = None) -> int:
     if args.run_week3:
         week3_output = args.week3_output or (session / "week3_experiments")
         week3_config = session / "week3_runtime_config.yaml"
-        import yaml  # type: ignore[import-untyped]
-
         week3_payload = yaml.safe_load(args.week3_config.read_text(encoding="utf-8"))
         if not isinstance(week3_payload, dict):
             raise ValueError("Week 3 runtime config must be a YAML object")

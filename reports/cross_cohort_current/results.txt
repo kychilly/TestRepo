@@ -1,0 +1,29 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/cross_cohort_current/results.json
+
+WHAT HAPPENED
+- The job did the parts it could do, but some parts could not run.
+
+WHY
+- Both confirmed and unconfirmed feature groups must be non-empty
+- Current Stage 3/4 evidence has zero confirmed genes because protein/AlphaFold evidence is absent.
+- Do not substitute the stale reports/stage34/verdicts.csv file.
+
+WHAT IS IMPORTANT
+- TCGA patients: 160
+- Neftel patient summaries: 27
+- Labeled CGGA patients: 966
+- abstention_accuracy: blocked: no independent abstention gold labels
+- grn_edge_auroc: not_run
+- internal_to_external_performance_drop: blocked: no confirmed arm
+- macro_f1: blocked: confirmed feature group is unavailable
+- variant_auroc: blocked: no independent variant-effect labels and scores
+
+WHAT IS CONCERNING
+- Both confirmed and unconfirmed feature groups must be non-empty
+- Current Stage 3/4 evidence has zero confirmed genes because protein/AlphaFold evidence is absent.
+- Do not substitute the stale reports/stage34/verdicts.csv file.
+
+NEXT ACTIONS
+- Add independent AlphaFold/protein evidence and rerun Stage 3/4.
+- Run this same Week 4 command after the current verdict CSV is regenerated.

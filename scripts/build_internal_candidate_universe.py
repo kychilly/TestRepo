@@ -38,12 +38,16 @@ def main() -> int:
         for gene in genes
     ]
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in rows), encoding="utf-8")
+    args.output.write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows), encoding="utf-8"
+    )
     write_jsonl_explanation(
         args.output,
         row_count=len(rows),
         description="These are the real genes present in the internal pilot panel. They are not ranked yet.",
-        next_actions=["Rank these genes with the real scGPT run, then join real validator evidence."],
+        next_actions=[
+            "Rank these genes with the real scGPT run, then join real validator evidence."
+        ],
     )
     print(json.dumps({"status": "completed", "genes": len(rows), "output": str(args.output)}))
     return 0

@@ -1,0 +1,18 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/stage34/coverage_audit.json
+
+WHAT HAPPENED
+- The job finished and saved its result.
+
+WHY
+- The JSON file did not give a special reason.
+
+WHAT IS IMPORTANT
+- The JSON file is the exact machine-readable record.
+
+WHAT IS CONCERNING
+- No blocking problem was recorded in this file.
+
+NEXT ACTIONS
+- Report this coverage rather than silently dropping deficient candidates.
+- Add independent protein evidence and rerun Stage 3/4 to improve coverage.

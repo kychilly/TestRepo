@@ -23,8 +23,14 @@ def sha256_stream(stream: Any) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-dir", type=Path, default=Path("data"))
-    parser.add_argument("--extracted-root", type=Path, default=Path("data/import_20260820/TP53 Dataset(preprocessed)"))
-    parser.add_argument("--output", type=Path, default=Path("reports/readiness/dataset_archives.json"))
+    parser.add_argument(
+        "--extracted-root",
+        type=Path,
+        default=Path("data/import_20260820/TP53 Dataset(preprocessed)"),
+    )
+    parser.add_argument(
+        "--output", type=Path, default=Path("reports/readiness/dataset_archives.json")
+    )
     args = parser.parse_args(argv)
     archives = sorted(args.data_dir.glob("TP53 Dataset(preprocessed)-*.zip"))
     parts = {path.name.rsplit("-", 1)[-1].removesuffix(".zip") for path in archives}
@@ -54,9 +60,18 @@ def main(argv: list[str] | None = None) -> int:
                     mismatches.append(f"Extracted member differs: {relative}")
         with archive.open("rb") as stream:
             archive_hash = sha256_stream(stream)
-        results.append({"path": str(archive), "sha256": archive_hash, "member_count": entry_count, "members": members})
+        results.append(
+            {
+                "path": str(archive),
+                "sha256": archive_hash,
+                "member_count": entry_count,
+                "members": members,
+            }
+        )
     result = {
-        "status": "completed" if not missing_parts and not mismatches else "completed_with_blockers",
+        "status": "completed"
+        if not missing_parts and not mismatches
+        else "completed_with_blockers",
         "archives_found": len(archives),
         "expected_parts": sorted(expected),
         "missing_parts": missing_parts,

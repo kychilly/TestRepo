@@ -14,6 +14,7 @@ from typing import Any, Mapping
 from models.candidate_generation import build_candidate_records
 from models.candidate_scoring import aggregate_mask_delta_scores
 from models.scgpt_adapter import AdapterError
+from gbm_study.plain_english import write_json_with_explanation
 
 INTERPRETATION_LABEL = "candidate/suspect gene ranking — not a confirmed driver"
 
@@ -136,7 +137,7 @@ def run_pilot(config: dict[str, Any]) -> dict[str, Any]:
             "n_cells": len({(str(row["patient_id"]), str(row["cell_id"])) for row in scores}),
         }
     )
-    return build_from_scores(completed_config, aggregated, metadata)
+    return build_from_scores(completed_config, list(aggregated), metadata)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -150,10 +151,7 @@ def main(argv: list[str] | None = None) -> int:
     except (AdapterError, OSError, ValueError, KeyError) as exc:
         result = _blocked(config, str(exc))
     output = args.output or Path(str(config.get("output_path", "results/compute/pilot_scgpt.json")))
-    output.parent.mkdir(parents=True, exist_ok=True)
-    temporary = output.with_suffix(output.suffix + ".tmp")
-    temporary.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    temporary.replace(output)
+    write_json_with_explanation(output, result)
     print(
         json.dumps(result, indent=2, sort_keys=True),
         file=sys.stderr if result["status"] == "blocked" else sys.stdout,

@@ -13,10 +13,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, cast
 
+from gbm_study.plain_english import write_json_with_explanation
+
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "baseline_results"
 COMPUTE = RESULTS / "compute"
-NEFTEL = ROOT / "data/raw/neftel/neftel_qc.h5ad"
+NEFTEL = (
+    ROOT / "data/import_20260820/TP53 Dataset(preprocessed)/processed/neftel_analysis_cohort.h5ad"
+)
 
 
 def package_version(name: str) -> str | None:
@@ -35,9 +39,7 @@ def read_json(path: Path) -> dict[str, Any]:
 def command_status(command: list[str]) -> dict[str, Any]:
     environment = os.environ.copy()
     environment["PYTHONPATH"] = str(ROOT / "src")
-    completed = subprocess.run(
-        command, cwd=ROOT, capture_output=True, text=True, env=environment
-    )
+    completed = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, env=environment)
     return {
         "returncode": completed.returncode,
         "stdout": completed.stdout[-2000:],
@@ -49,12 +51,11 @@ def main() -> int:
     benchmark = read_json(COMPUTE / "week1_scgpt_benchmark.json")
     environment = read_json(COMPUTE / "week1_environment_check.json")
     donor_audit = read_json(RESULTS / "week1_data_audit/donor_batch_audit.json")
-    baseline_tests = command_status(
-        [sys.executable, "-m", "pytest", "tests/test_baselines.py"]
-    )
-    evaluation_tests = command_status(
-        [sys.executable, "-m", "pytest", "tests/test_evaluation.py"]
-    )
+    baseline_bar = read_json(ROOT / "reports/pilot_baselines_verified/baseline_bar.json")
+    checkpoint = ROOT / "artifacts/models/scGPT_pancancer/best_model.pt"
+    vocabulary = ROOT / "artifacts/models/scGPT_pancancer/vocab.json"
+    baseline_tests = command_status([sys.executable, "-m", "pytest", "tests/test_baselines.py"])
+    evaluation_tests = command_status([sys.executable, "-m", "pytest", "tests/test_evaluation.py"])
     contract_tests = command_status(
         [
             sys.executable,
@@ -64,11 +65,9 @@ def main() -> int:
             "tests/test_contracts.py",
         ]
     )
-    static_cgga = command_status(
-        ["rg", "--files-with-matches", "CGGA", "src", "scripts"]
-    )
+    static_cgga = command_status(["rg", "--files-with-matches", "CGGA", "src", "scripts"])
     manifest = {
-        "status": "completed",
+        "status": "completed_with_blockers",
         "week": 1,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "environment": {
@@ -87,28 +86,11 @@ def main() -> int:
         },
         "gpu_and_checkpoint": {
             "environment_report": environment,
-            "checkpoint_sha256": benchmark.get("provenance", {}).get(
-                "checkpoint_sha256"
-            ),
-            "vocabulary_sha256": benchmark.get("provenance", {}).get(
-                "vocabulary_sha256"
-            ),
+            "checkpoint_sha256": benchmark.get("provenance", {}).get("checkpoint_sha256"),
+            "vocabulary_sha256": benchmark.get("provenance", {}).get("vocabulary_sha256"),
         },
         "benchmark": benchmark,
-        "baseline_arms": {
-            "pca_logreg": {
-                "status": "completed_on_synthetic_fixture",
-                "fold_safety": "training-only transform fit verified",
-            },
-            "scvi_probe": {
-                "status": "blocked",
-                "reason": "scVI/AnnData runtime and verified loader are unavailable",
-            },
-            "harmony_knn": {
-                "status": "blocked",
-                "reason": "No valid unseen-cell transform is available without transductive leakage",
-            },
-        },
+        "baseline_arms": baseline_bar,
         "checks": {
             "shared_patient_split_contract": {
                 "status": "passed_on_disk_contract",
@@ -124,8 +106,8 @@ def main() -> int:
                 "static_scan": static_cgga,
             },
             "training_only_transforms": {
-                "status": "passed_for_applicable_arm",
-                "evidence": "PCA pipeline is fit on train subset; scVI/Harmony remain blocked",
+                "status": "passed_for_applicable_arms",
+                "evidence": "PCA and Harmony are fit on training patients; Harmony uses a frozen train-learned query projection; scVI is blocked by non-integer input data",
             },
             "prediction_row_provenance": {
                 "status": "passed",
@@ -145,8 +127,9 @@ def main() -> int:
             },
             "donor_batch_audit": donor_audit,
             "checkpoint_vocabulary_hashes": {
-                "status": "blocked",
-                "reason": "real assets absent; fields are null in blocked benchmark",
+                "status": "passed" if checkpoint.is_file() and vocabulary.is_file() else "blocked",
+                "checkpoint": str(checkpoint),
+                "vocabulary": str(vocabulary),
             },
             "candidate_variant_explicit_join": {
                 "status": "passed",
@@ -179,36 +162,29 @@ def main() -> int:
         },
         "week1_complete": False,
         "completion_blockers": [
-            "No real scGPT checkpoint or vocabulary is available; TCGA/CGGA and canonical four-state labels are also absent from the supplied data.",
-            "The current runtime has no CUDA GPU and scGPT/AnnData/scVI/Harmony are unavailable.",
-            "Validator Lead sign-off on the versioned contract is still required.",
+            "The real 1,000-cell scGPT timing benchmark still needs the A100 runtime.",
+            "scVI needs original raw integer Neftel counts; the supplied counts layer is log-scale.",
         ],
     }
     RESULTS.mkdir(parents=True, exist_ok=True)
-    (RESULTS / "week1_audit.json").write_text(
-        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
-    (RESULTS / "week1_manifest.json").write_text(
-        json.dumps(
-            {
-                "week": 1,
-                "status": "infrastructure_complete_scientific_run_blocked",
-                "audit": "baseline_results/week1_audit.json",
-                "report": "docs/week1_adit.md",
-                "reproduction": [
-                    "make environment-check",
-                    "make scgpt-smoke",
-                    "make baselines-smoke",
-                    "make evaluate-smoke",
-                    "make test",
-                    "make week1-audit",
-                ],
-            },
-            indent=2,
-            sort_keys=True,
-        )
-        + "\n",
-        encoding="utf-8",
+    write_json_with_explanation(RESULTS / "week1_audit.json", manifest)
+    write_json_with_explanation(
+        RESULTS / "week1_manifest.json",
+        {
+            "week": 1,
+            "status": "completed_with_blockers",
+            "audit": "baseline_results/week1_audit.json",
+            "report": "docs/week1_adit.md",
+            "blockers": manifest["completion_blockers"],
+            "reproduction": [
+                "make environment-check",
+                "make scgpt-smoke",
+                "make baselines-smoke",
+                "make evaluate-smoke",
+                "make test",
+                "make week1-audit",
+            ],
+        },
     )
     return 0
 

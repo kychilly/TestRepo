@@ -27,13 +27,19 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=Path("reports/week3_adit/experiments"))
     args = parser.parse_args()
     result = run_matrix(_config(args.config), run_internal_cohort, args.output)
-    print(json.dumps({
-        "status": result["status"],
-        "completed_runs": result["completed_runs"],
-        "blocked_runs": result["blocked_runs"],
-        "backbone_scope": result["backbone_scope"],
-        "manifest": str(args.output / "manifest.json"),
-    }, indent=2, sort_keys=True))
+    print(
+        json.dumps(
+            {
+                "status": result["status"],
+                "completed_runs": result["completed_runs"],
+                "blocked_runs": result["blocked_runs"],
+                "backbone_scope": result["backbone_scope"],
+                "manifest": str(args.output / "manifest.json"),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
     return 0 if result["status"] == "completed" else 2
 
 

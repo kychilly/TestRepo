@@ -47,6 +47,7 @@ CONFIG_PATH = Path(__file__).parent / "config" / "validator.yaml"
 # Outcomes
 # ---------------------------------------------------------------------------
 
+
 class Outcome(str, Enum):
     DESTABILIZING_DRIVER = "destabilizing_driver"
     FUNCTIONAL_DRIVER = "functional_driver"
@@ -62,6 +63,7 @@ COUNTS_TOWARD_PREDICTION = {Outcome.DESTABILIZING_DRIVER, Outcome.FUNCTIONAL_DRI
 # ---------------------------------------------------------------------------
 # Data shapes
 # ---------------------------------------------------------------------------
+
 
 @dataclass(frozen=True)
 class Thresholds:
@@ -93,9 +95,9 @@ class GeneRecord:
     gene: str
     mutation: str
     alteration_type: str  # "missense" | "amplification" | "silencing" | "other"
-    plddt: Optional[float] = None      # AlphaFold per-residue confidence, 0-100
-    esm1b: Optional[float] = None      # ESM1b variant-effect score
-    ddg: Optional[float] = None        # ddG stability score, kcal/mol
+    plddt: Optional[float] = None  # AlphaFold per-residue confidence, 0-100
+    esm1b: Optional[float] = None  # ESM1b variant-effect score
+    ddg: Optional[float] = None  # ddG stability score, kcal/mol
 
 
 @dataclass(frozen=True)
@@ -112,6 +114,7 @@ class Verdict:
 # ---------------------------------------------------------------------------
 # The decision tree itself
 # ---------------------------------------------------------------------------
+
 
 def classify(record: GeneRecord, thresholds: Thresholds) -> Verdict:
     """Sort one candidate gene into one of the five outcomes.

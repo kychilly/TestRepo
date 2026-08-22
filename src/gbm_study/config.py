@@ -32,9 +32,7 @@ class StudyConfig:
         try:
             payload: Any = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
-            raise ConfigurationError(
-                f"Cannot read configuration {path}: {exc}"
-            ) from exc
+            raise ConfigurationError(f"Cannot read configuration {path}: {exc}") from exc
         if not isinstance(payload, dict):
             raise ConfigurationError("Configuration root must be a JSON object")
 
@@ -45,17 +43,13 @@ class StudyConfig:
         required = {"modality", "output_dir", "seed", "week", "uses_cgga"}
         missing = sorted(required - payload.keys())
         if missing:
-            raise ConfigurationError(
-                f"Missing configuration keys: {', '.join(missing)}"
-            )
+            raise ConfigurationError(f"Missing configuration keys: {', '.join(missing)}")
 
         config = cls(
             modality=str(payload["modality"]),
             data_manifest=optional_path("data_manifest"),
             split_file=optional_path("split_file"),
-            checkpoint=None
-            if payload.get("checkpoint") is None
-            else str(payload["checkpoint"]),
+            checkpoint=None if payload.get("checkpoint") is None else str(payload["checkpoint"]),
             vocabulary=optional_path("vocabulary"),
             output_dir=Path(str(payload["output_dir"])),
             seed=int(payload["seed"]),
@@ -78,9 +72,7 @@ class StudyConfig:
         if self.modality == "neftel" and self.uses_cgga:
             raise ConfigurationError("Neftel runs cannot access CGGA")
         if self.modality == "tcga" and self.week == 1:
-            raise ConfigurationError(
-                "TCGA modeling is not enabled by the Week 1 design"
-            )
+            raise ConfigurationError("TCGA modeling is not enabled by the Week 1 design")
 
     def require_run_inputs(self) -> None:
         """Require Data Lead inputs for an executable run, without inventing defaults."""
@@ -108,6 +100,4 @@ class StudyConfig:
             if not path.is_file()
         ]
         if missing_files:
-            raise ConfigurationError(
-                "Configured input does not exist: " + ", ".join(missing_files)
-            )
+            raise ConfigurationError("Configured input does not exist: " + ", ".join(missing_files))

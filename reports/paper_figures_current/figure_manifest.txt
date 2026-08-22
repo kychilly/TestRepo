@@ -1,0 +1,20 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: /Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/paper_figures_current/figure_manifest.json
+
+WHAT HAPPENED
+- The job finished and saved its result.
+
+WHY
+- All plotted values were loaded from current run artifacts; no readiness or performance value was hard-coded.
+
+WHAT IS IMPORTANT
+- The JSON file is the exact machine-readable record.
+
+WHAT IS CONCERNING
+- H5AD layers['counts'] contains sampled non-integer values; scVI is data-blocked
+- Validator evidence has zero confirmed genes; validator-on arms are data-blocked
+- GRN holdout has fewer than 20 unique positive edges
+- All plotted values were loaded from current run artifacts; no readiness or performance value was hard-coded.
+
+NEXT ACTIONS
+- Check the saved files, then continue to the next planned step.

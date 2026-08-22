@@ -13,8 +13,8 @@ _SRC_DIR = Path(__file__).resolve().parent / "src"
 if str(_SRC_DIR) not in sys.path:
     sys.path.insert(0, str(_SRC_DIR))
 
-from evaluation.reporting import run_evaluation
-from gbm_study.plain_english import write_json_with_explanation
+from evaluation.reporting import run_evaluation  # noqa: E402
+from gbm_study.plain_english import write_json_with_explanation  # noqa: E402
 
 
 def main(argv: list[str] | None = None) -> int:

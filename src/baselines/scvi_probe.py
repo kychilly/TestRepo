@@ -38,25 +38,20 @@ class ScVIProbe(Baseline):
         self.applicability: str | None = None
 
     def fit(self, train_data: CellData, train_metadata: dict[str, Any]) -> "ScVIProbe":
+        counts_to_check = train_data.X if self.count_layer == "X" else train_data.raw_counts
+        if (
+            counts_to_check is None
+            or not np.isfinite(counts_to_check).all()
+            or not np.allclose(counts_to_check, np.rint(counts_to_check))
+            or np.any(counts_to_check < 0)
+        ):
+            raise BaselineError("scVI input must be finite, non-negative, integer-like raw counts")
         try:
             import scvi  # type: ignore[import-not-found]
         except ImportError as exc:
             self.applicability = "scvi-tools is not installed"
             raise MethodNotApplicable(self.applicability) from exc
         self.applicability = f"scvi-tools {scvi.__version__}"
-        counts_to_check = train_data.X if self.count_layer == "X" else train_data.raw_counts
-        if (
-                counts_to_check is None
-                or not np.allclose(counts_to_check, np.floor(counts_to_check))
-                or np.any(counts_to_check < 0)
-        ):
-            raise BaselineError("scVI input must be non-negative integer-like raw counts")
-        if not np.allclose(train_data.X, np.floor(train_data.X)) or np.any(
-            train_data.X < 0
-        ):
-            raise BaselineError(
-                "scVI input must be non-negative integer-like raw counts"
-            )
         try:
             import anndata as ad  # type: ignore[import-not-found]
 
@@ -73,19 +68,13 @@ class ScVIProbe(Baseline):
                 early_stopping=bool(train_metadata.get("early_stopping", True)),
             )
             self._scvi = scvi
-            latent = np.asarray(
-                self.model.get_latent_representation(), dtype=np.float64
-            )
+            latent = np.asarray(self.model.get_latent_representation(), dtype=np.float64)
         except (ImportError, AttributeError, RuntimeError, ValueError) as exc:
             raise MethodNotApplicable(f"scVI training failed: {exc}") from exc
         if latent.ndim != 2 or not np.isfinite(latent).all():
-            raise BaselineError(
-                "scVI latent representation is not finite and two-dimensional"
-            )
+            raise BaselineError("scVI latent representation is not finite and two-dimensional")
         self.gene_ids = train_data.gene_ids
-        self.latent_gene_ids = tuple(
-            f"scvi_latent_{index}" for index in range(latent.shape[1])
-        )
+        self.latent_gene_ids = tuple(f"scvi_latent_{index}" for index in range(latent.shape[1]))
         latent_data = self._latent_data(train_data, latent)
         components = min(8, latent_data.X.shape[0], latent_data.X.shape[1])
         if components < 1:
@@ -139,9 +128,7 @@ class ScVIProbe(Baseline):
         )
         if self.count_layer != "X":
             if data.raw_counts is None:
-                raise BaselineError(
-                    f"Configured count layer {self.count_layer!r} was not supplied"
-                )
+                raise BaselineError(f"Configured count layer {self.count_layer!r} was not supplied")
             adata.layers[self.count_layer] = np.asarray(data.raw_counts, dtype=np.float32)
         return adata
 
@@ -166,9 +153,7 @@ class ScVIProbe(Baseline):
             query = self._to_anndata(ad, data)
             self._scvi.model.SCVI.prepare_query_anndata(query, self.model)
             query_model = self._scvi.model.SCVI.load_query_data(query, self.model)
-            latent = np.asarray(
-                query_model.get_latent_representation(), dtype=np.float64
-            )
+            latent = np.asarray(query_model.get_latent_representation(), dtype=np.float64)
         except (ImportError, AttributeError, RuntimeError, ValueError) as exc:
             raise MethodNotApplicable(f"scVI query transform failed: {exc}") from exc
         return self._latent_data(data, latent)

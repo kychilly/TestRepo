@@ -26,17 +26,12 @@ def patient_bootstrap(
         raise EvaluationError("Cannot bootstrap an empty prediction table")
     rng = np.random.default_rng(seed)
     true_column = "true_label" if "true_label" in rows.columns else "true_state"
-    predicted_column = (
-        "predicted_label" if "predicted_label" in rows.columns else "predicted_state"
-    )
+    predicted_column = "predicted_label" if "predicted_label" in rows.columns else "predicted_state"
     records: list[dict[str, Any]] = []
     for replicate in range(replicates):
         sampled = rng.choice(patients, size=len(patients), replace=True)
         sampled_rows = pd.concat(
-            [
-                rows.loc[rows["patient_id"].astype(str) == patient]
-                for patient in sampled
-            ],
+            [rows.loc[rows["patient_id"].astype(str) == patient] for patient in sampled],
             ignore_index=True,
         )
         represented = set(sampled_rows[true_column].astype(str).tolist())

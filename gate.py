@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -13,6 +12,7 @@ import yaml  # type: ignore[import-untyped]
 from jsonschema import Draft202012Validator, FormatChecker  # type: ignore[import-untyped]
 
 from validator import GeneRecord, Outcome, Thresholds, classify
+from gbm_study.plain_english import write_json_with_explanation
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_INPUT = ROOT / "examples/validator_gate_input.jsonl"
@@ -122,14 +122,7 @@ def run_gate(
 
 
 def _atomic_write(path: Path, payload: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.NamedTemporaryFile(
-        "w", encoding="utf-8", dir=path.parent, delete=False
-    ) as stream:
-        json.dump(payload, stream, indent=2, sort_keys=True)
-        stream.write("\n")
-        temporary = Path(stream.name)
-    temporary.replace(path)
+    write_json_with_explanation(path, payload)
 
 
 def main(argv: list[str] | None = None) -> int:

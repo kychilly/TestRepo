@@ -5,16 +5,24 @@ WHAT HAPPENED
 - The job finished and saved its result.
 
 WHY
-- The JSON file did not give a special reason.
+- The A100 benchmark and Week 3 matrix have not been rerun with the current checkpoint-compatible environment and code fingerprint.
+- Stage 3/4 has zero confirmed genes because independent protein evidence is absent; only three validator-off GPU runs are currently runnable.
+- scVI is data-blocked because the supplied counts layer contains non-integer log-scale values.
+- CGGA bulk rows do not contain AC/MES/NPC/OPC truth.
+- The GRN holdout has one unique positive edge and cannot support a paper claim.
 
 WHAT IS IMPORTANT
 - The JSON file is the exact machine-readable record.
 
 WHAT IS CONCERNING
-- No blocking problem was recorded in this file.
+- The A100 benchmark and Week 3 matrix have not been rerun with the current checkpoint-compatible environment and code fingerprint.
+- Stage 3/4 has zero confirmed genes because independent protein evidence is absent; only three validator-off GPU runs are currently runnable.
+- scVI is data-blocked because the supplied counts layer contains non-integer log-scale values.
+- CGGA bulk rows do not contain AC/MES/NPC/OPC truth.
+- The GRN holdout has one unique positive edge and cannot support a paper claim.
 
 NEXT ACTIONS
-- Run the A100 preflight with config/model_a100_local.yaml.
 - Run the A100 preflight and exactly 1,000-cell benchmark.
-- Run the complete Week 3 matrix with persistent checkpoints.
+- Run the currently runnable validator-off seeds with persistent checkpoints.
+- Add independent protein evidence, rerun Stage 3/4, then complete all 12 ablations.
 - Add an external single-cell state endpoint and independent variant/abstention truth.

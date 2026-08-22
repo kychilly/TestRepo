@@ -14,6 +14,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from gbm_study.plain_english import write_json_with_explanation
+
 
 class EnvironmentError(RuntimeError):
     """Raised for a required environment or model-contract violation."""
@@ -88,15 +90,11 @@ def _load_vocabulary(path: Path) -> dict[str, int]:
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise EnvironmentError(
-            f"Vocabulary must be a JSON gene-to-token mapping: {exc}"
-        ) from exc
+        raise EnvironmentError(f"Vocabulary must be a JSON gene-to-token mapping: {exc}") from exc
     if not isinstance(payload, dict) or not all(
         isinstance(k, str) and isinstance(v, int) for k, v in payload.items()
     ):
-        raise EnvironmentError(
-            "Vocabulary must map string identifiers to integer token IDs"
-        )
+        raise EnvironmentError("Vocabulary must map string identifiers to integer token IDs")
     return payload
 
 
@@ -151,12 +149,8 @@ def inspect_environment(config: dict[str, Any], config_path: Path) -> dict[str, 
         failures.append(f"vocabulary is missing: {vocabulary_value!r}")
     else:
         vocabulary_mapping = _load_vocabulary(vocabulary)
-        required_tokens = [
-            str(token) for token in config.get("required_special_tokens", [])
-        ]
-        missing_tokens = [
-            token for token in required_tokens if token not in vocabulary_mapping
-        ]
+        required_tokens = [str(token) for token in config.get("required_special_tokens", [])]
+        missing_tokens = [token for token in required_tokens if token not in vocabulary_mapping]
         report["vocabulary"] = {
             "path": str(vocabulary),
             "sha256": sha256_file(vocabulary),
@@ -175,9 +169,7 @@ def inspect_environment(config: dict[str, Any], config_path: Path) -> dict[str, 
         }
         report["checkpoint"]["incompatible_shapes"] = incompatible
         if incompatible:
-            failures.append(
-                f"incompatible checkpoint tensor shapes: {sorted(incompatible)}"
-            )
+            failures.append(f"incompatible checkpoint tensor shapes: {sorted(incompatible)}")
     report["scgpt"] = {
         "version": _version("scgpt"),
         "git_commit": config.get("scgpt_git_commit"),
@@ -202,15 +194,13 @@ def _export_environment(path: Path) -> None:
         text=True,
     ).stdout.splitlines()
     payload = {
+        "status": "completed",
         "python": sys.version,
         "platform": platform.platform(),
         "pip_freeze": sorted(freeze),
         "environment": dict(os.environ).get("CONDA_PREFIX") or "venv/system",
     }
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    write_json_with_explanation(path, payload)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -228,20 +218,14 @@ def main(argv: list[str] | None = None) -> int:
         except json.JSONDecodeError:
             report = {"status": "failed", "error": str(exc)}
         if args.json_out:
-            args.json_out.parent.mkdir(parents=True, exist_ok=True)
-            args.json_out.write_text(
-                json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-            )
+            write_json_with_explanation(args.json_out, report)
         print(json.dumps(report, indent=2, sort_keys=True), file=sys.stderr)
         return 2
     if args.environment_export:
         _export_environment(args.environment_export)
         report["environment_export"] = str(args.environment_export)
     if args.json_out:
-        args.json_out.parent.mkdir(parents=True, exist_ok=True)
-        args.json_out.write_text(
-            json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-        )
+        write_json_with_explanation(args.json_out, report)
     print(json.dumps(report, indent=2, sort_keys=True))
     return 0
 

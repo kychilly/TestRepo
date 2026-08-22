@@ -22,6 +22,7 @@ from baselines.pca_logreg import PCALogReg
 from baselines.scvi_probe import ScVIProbe
 from evaluation.metrics import binary_metrics, cell_metrics
 from gbm_study.gpu_planner import GPUPlanningError, plan_cuda_work
+from gbm_study.plain_english import write_json_with_explanation
 
 
 def synthetic_data() -> CellData:
@@ -78,9 +79,7 @@ def main(argv: list[str] | None = None) -> int:
             probability = model.predict_proba(test, {"split": "test"})
             report["baseline_results"][name] = {
                 "status": "completed",
-                "macro_f1": cell_metrics(test.state, prediction, probability)[
-                    "macro_f1"
-                ],
+                "macro_f1": cell_metrics(test.state, prediction, probability)["macro_f1"],
             }
         except (MethodNotApplicable, ValueError, RuntimeError, ImportError) as exc:
             report["baseline_results"][name] = {
@@ -114,10 +113,7 @@ def main(argv: list[str] | None = None) -> int:
         "producer": "implemented_and_schema_validated",
         "validator_consumer": "held_for_Ishaan_signoff",
     }
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(
-        json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    write_json_with_explanation(args.output, report)
     print(json.dumps(report, indent=2, sort_keys=True))
     return 0
 

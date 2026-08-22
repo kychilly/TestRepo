@@ -1,0 +1,106 @@
+{
+  "status": "completed",
+  "tasks": {
+    "cell_state": {
+      "manifest": {
+        "bootstrap_replicates": 1000,
+        "bootstrap_seed": 17,
+        "evaluation_split": "test",
+        "evaluator_git_commit": "4ad2dd0ac597758edb65cc1b106187c2f922f500",
+        "input_file_sha256": "c603d04b984811df95c5be6f8067a30a52de42c35957901245e8a44773d642d3",
+        "metric_config_hash": "f52c48c00056e6b78a151fde5b02a781b0f3e940d942335702cc7bb266ac6d14",
+        "package_versions": {
+          "jsonschema": "4.25.0",
+          "numpy": "1.26.4",
+          "pandas": "2.1.3",
+          "pyarrow": "21.0.0",
+          "scikit-learn": "1.3.2",
+          "scipy": "1.16.1"
+        },
+        "split_file_sha256": "bdc5fc757544b2e1153fba26e6b1d675eb3371311949c0caf9ca44772bc2a4c1",
+        "split_hash": "bdc5fc757544b2e1153fba26e6b1d675eb3371311949c0caf9ca44772bc2a4c1",
+        "timestamp_utc": "2026-08-22T00:40:45.340830+00:00"
+      },
+      "metrics": {
+        "bootstrap": {
+          "balanced_accuracy": {
+            "bootstrap_median": 0.45453067297754113,
+            "ci_2_5": 0.4163228902252637,
+            "ci_97_5": 0.47333976369642794,
+            "non_estimable_replicates": 0,
+            "point_estimate": 0.4601694551337031,
+            "valid_replicates": 1000
+          },
+          "macro_f1": {
+            "bootstrap_median": 0.4254118136053426,
+            "ci_2_5": 0.3757946706155161,
+            "ci_97_5": 0.45970725387184996,
+            "non_estimable_replicates": 0,
+            "point_estimate": 0.43385467212957507,
+            "valid_replicates": 1000
+          }
+        },
+        "metric_units": "cell_state",
+        "point_estimate": {
+          "balanced_accuracy": 0.4601694551337031,
+          "confusion_matrix": {
+            "labels": [
+              "AC",
+              "MES",
+              "NPC",
+              "OPC"
+            ],
+            "values": [
+              [
+                376,
+                382,
+                25,
+                11
+              ],
+              [
+                112,
+                165,
+                7,
+                2
+              ],
+              [
+                19,
+                15,
+                111,
+                10
+              ],
+              [
+                7,
+                14,
+                29,
+                4
+              ]
+            ]
+          },
+          "macro_f1": 0.43385467212957507,
+          "multiclass_brier_score": 0.5728137561382542,
+          "multiclass_log_loss": 1.503777458861707,
+          "per_state_f1": {
+            "AC": 0.5749235474006116,
+            "MES": 0.382830626450116,
+            "NPC": 0.6788990825688074,
+            "OPC": 0.09876543209876543
+          },
+          "per_state_precision": {
+            "AC": 0.7315175097276264,
+            "MES": 0.2864583333333333,
+            "NPC": 0.6453488372093024,
+            "OPC": 0.14814814814814814
+          },
+          "per_state_recall": {
+            "AC": 0.473551637279597,
+            "MES": 0.5769230769230769,
+            "NPC": 0.7161290322580646,
+            "OPC": 0.07407407407407407
+          }
+        },
+        "status": "completed"
+      }
+    }
+  }
+}

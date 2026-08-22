@@ -6,7 +6,7 @@ import hashlib
 import importlib.metadata
 import json
 import subprocess
-import tempfile
+from collections.abc import Mapping
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -18,6 +18,7 @@ from .bootstrap import patient_bootstrap, summarize_bootstrap
 from .calibration import binary_calibration
 from .metrics import CELL_LABELS, EvaluationError, binary_metrics, cell_metrics
 from gbm_study.leakage import LeakageError, normalize_split_keys
+from gbm_study.plain_english import write_json_with_explanation
 
 CELL_REQUIRED = {
     "run_id",
@@ -189,15 +190,8 @@ def _validate_binary(frame: pd.DataFrame) -> None:
         raise EvaluationError("probability_positive must be within [0, 1]")
 
 
-def _atomic_json(path: Path, payload: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.NamedTemporaryFile(
-        "w", encoding="utf-8", dir=path.parent, delete=False
-    ) as stream:
-        json.dump(payload, stream, indent=2, sort_keys=True)
-        stream.write("\n")
-        temporary = Path(stream.name)
-    temporary.replace(path)
+def _atomic_json(path: Path, payload: Mapping[str, Any]) -> None:
+    write_json_with_explanation(path, payload)
 
 
 def _write_parquet(path: Path, frame: pd.DataFrame) -> None:
@@ -333,8 +327,9 @@ def run_evaluation(
         )
     _write_parquet(output / "bootstrap_distribution.parquet", distribution)
     _write_parquet(output / "per_patient_metrics.parquet", patient_summary)
-    _atomic_json(output / "warnings.json", {"warnings": []})
+    _atomic_json(output / "warnings.json", {"status": "completed", "warnings": []})
     manifest = {
+        "status": "completed",
         "evaluator_git_commit": _git_commit(),
         "input_file_sha256": sha256_file(prediction_path),
         "split_file_sha256": sha256_file(split_path),

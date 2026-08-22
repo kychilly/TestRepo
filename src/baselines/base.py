@@ -38,7 +38,7 @@ class CellData:
     state: NDArray[Any]
     gene_ids: tuple[str, ...]
     batch: NDArray[Any] | None = None
-    raw_counts: NDArray[Any] | None = None # Please work bro
+    raw_counts: NDArray[Any] | None = None  # Please work bro
 
     def __post_init__(self) -> None:
         if self.X.ndim != 2:
@@ -50,14 +50,10 @@ class CellData:
             "state": self.state,
         }
         if any(array.ndim != 1 or len(array) != n_cells for array in arrays.values()):
-            raise BaselineError(
-                "patient_id, cell_id, and state must map one value to every cell"
-            )
+            raise BaselineError("patient_id, cell_id, and state must map one value to every cell")
         if self.X.shape[1] != len(self.gene_ids):
             raise BaselineError("X columns must equal the number of gene_ids")
-        if self.batch is not None and (
-            self.batch.ndim != 1 or len(self.batch) != n_cells
-        ):
+        if self.batch is not None and (self.batch.ndim != 1 or len(self.batch) != n_cells):
             raise BaselineError("batch must map one value to every cell")
         if self.raw_counts is not None and self.raw_counts.shape != self.X.shape:
             raise BaselineError("raw_counts must match the shape of X")
@@ -78,7 +74,7 @@ class CellData:
             self.state[indices],
             self.gene_ids,
             None if self.batch is None else self.batch[indices],
-            None if self.raw_counts is None else self.raw_counts[indices], # Please work bro pt 2
+            None if self.raw_counts is None else self.raw_counts[indices],  # Please work bro pt 2
         )
 
 
@@ -133,9 +129,7 @@ def load_patient_splits(path: Path, fold: int) -> PatientSplits:
             raise BaselineError(f"Split {name} contains duplicate patient IDs")
         sets[name] = frozenset(values)
     assert_zero_patient_overlap(sets)
-    return PatientSplits(
-        sets["train"], sets["validation"], sets["test"], sha256_file(path), fold
-    )
+    return PatientSplits(sets["train"], sets["validation"], sets["test"], sha256_file(path), fold)
 
 
 def assert_zero_patient_overlap(splits: dict[str, frozenset[str]]) -> None:
@@ -159,8 +153,7 @@ def assign_cells(data: CellData, splits: PatientSplits) -> dict[str, NDArray[Any
         raise BaselineError(f"Cells contain patients absent from split: {missing}")
     assignments: dict[str, NDArray[Any]] = {}
     masks = {
-        name: np.isin(patient_values, list(values))
-        for name, values in splits.as_dict().items()
+        name: np.isin(patient_values, list(values)) for name, values in splits.as_dict().items()
     }
     combined = sum(mask.astype(np.int8) for mask in masks.values())
     if not np.all(combined == 1):
@@ -256,12 +249,7 @@ def evaluate_predictions(
                 "split": split,
                 "n_cells": len(patient_cells),
                 "accuracy": float(
-                    np.mean(
-                        [
-                            row["true_state"] == row["predicted_state"]
-                            for row in patient_cells
-                        ]
-                    )
+                    np.mean([row["true_state"] == row["predicted_state"] for row in patient_cells])
                 ),
             }
         )

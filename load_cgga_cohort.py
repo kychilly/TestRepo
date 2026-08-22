@@ -1,26 +1,35 @@
-import os
-import zipfile
 import numpy as np
+import os
 import pandas as pd
-import scanpy as sc
+import zipfile
 import anndata as ad
 
 
 def _load_cgga_clinical_zip(zip_path: str) -> pd.DataFrame:
     """
-    Parses a CGGA clinical zip using the same CRC-bypass / bare-\\r handling
-    already validated in build_pilot_mutation_table.py's cgga_lookup loader,
-    but returns a full DataFrame (all columns) instead of just an IDH1 dict.
+    Parse a CGGA clinical ZIP and return all well-formed tabular rows.
+
+    CRC failures are treated as data-integrity failures. Silently bypassing the
+    archive checksum can turn damaged expression or labels into plausible-looking
+    scientific results.
     """
     if not os.path.exists(zip_path):
         raise FileNotFoundError(f"CGGA clinical file not found: {zip_path}")
 
     with zipfile.ZipFile(zip_path) as z:
-        real_names = [n for n in z.namelist()
-                      if not n.startswith("__MACOSX") and not os.path.basename(n).startswith(".")]
-        with z.open(real_names[0]) as zf:
-            zf._expected_crc = None  # same documented bypass as build_pilot_mutation_table.py
-            raw = zf.read()
+        real_names = [
+            n
+            for n in z.namelist()
+            if not n.startswith("__MACOSX") and not os.path.basename(n).startswith(".")
+        ]
+        if not real_names:
+            raise ValueError(f"No usable file found inside {zip_path}")
+        try:
+            raw = z.read(real_names[0])
+        except zipfile.BadZipFile as exc:
+            raise zipfile.BadZipFile(
+                f"CRC/integrity failure in {zip_path}; re-download or replace the archive"
+            ) from exc
 
     lines = [ln for ln in raw.decode("utf-8", errors="replace").split("\r") if ln.strip()]
     header = lines[0].split("\t")
@@ -36,8 +45,10 @@ def _load_cgga_clinical_zip(zip_path: str) -> pd.DataFrame:
         records.append(fields)
 
     if skipped:
-        print(f"CGGA clinical ({os.path.basename(zip_path)}): skipped {len(skipped)} "
-              f"malformed row(s): {[r.split(chr(9))[0] for r in skipped]}")
+        print(
+            f"CGGA clinical ({os.path.basename(zip_path)}): skipped {len(skipped)} "
+            f"malformed row(s): {[r.split(chr(9))[0] for r in skipped]}"
+        )
 
     return pd.DataFrame(records, columns=header)
 
@@ -58,22 +69,20 @@ def _load_cgga_expression(expr_path: str) -> pd.DataFrame:
 
     if expr_path.endswith(".zip"):
         with zipfile.ZipFile(expr_path) as z:
-            real_names = [n for n in z.namelist()
-                          if not n.startswith("__MACOSX") and not os.path.basename(n).startswith(".")]
+            real_names = [
+                n
+                for n in z.namelist()
+                if not n.startswith("__MACOSX") and not os.path.basename(n).startswith(".")
+            ]
             if not real_names:
                 raise ValueError(f"No usable file found inside {expr_path}")
             try:
                 with z.open(real_names[0]) as zf:
                     expr = pd.read_csv(zf, sep="\t", index_col=0)
-            except zipfile.BadZipFile as e:
-                # Same class of bad-CRC issue as the clinical zips (see
-                # build_pilot_mutation_table.py) - bypass rather than guess,
-                # and only after confirming this is actually a CRC mismatch,
-                # not some other corruption.
-                with z.open(real_names[0]) as zf:
-                    zf._expected_crc = None
-                    import io
-                    expr = pd.read_csv(io.BytesIO(zf.read()), sep="\t", index_col=0)
+            except zipfile.BadZipFile as exc:
+                raise zipfile.BadZipFile(
+                    f"CRC/integrity failure in {expr_path}; re-download or replace the archive"
+                ) from exc
     else:
         expr = pd.read_csv(expr_path, sep="\t", index_col=0)
 
@@ -96,12 +105,16 @@ def load_cgga_cohort(data_dir: str = "data/raw/cgga") -> ad.AnnData:
     look at IDH_mutation_status through different paths for the same patient.
     """
     batches = [
-        ("mRNAseq_325",
-         os.path.join(data_dir, "CGGA.mRNAseq_325.RSEM-genes.20200506.txt.zip"),
-         os.path.join(data_dir, "CGGA.mRNAseq_325_clinical.20200506.txt.zip")),
-        ("mRNAseq_693",
-         os.path.join(data_dir, "CGGA.mRNAseq_693.RSEM-genes.20200506.txt.zip"),
-         os.path.join(data_dir, "CGGA.mRNAseq_693_clinical.20200506.txt.zip")),
+        (
+            "mRNAseq_325",
+            os.path.join(data_dir, "CGGA.mRNAseq_325.RSEM-genes.20200506.txt.zip"),
+            os.path.join(data_dir, "CGGA.mRNAseq_325_clinical.20200506.txt.zip"),
+        ),
+        (
+            "mRNAseq_693",
+            os.path.join(data_dir, "CGGA.mRNAseq_693.RSEM-genes.20200506.txt.zip"),
+            os.path.join(data_dir, "CGGA.mRNAseq_693_clinical.20200506.txt.zip"),
+        ),
     ]
 
     adatas = []
@@ -121,9 +134,11 @@ def load_cgga_cohort(data_dir: str = "data/raw/cgga") -> ad.AnnData:
         shared_ids = expr_df.index.intersection(clinical_df.index)
         dropped = expr_df.index.difference(clinical_df.index)
         if len(dropped) > 0:
-            print(f"CGGA {batch_name}: {len(dropped)} patient(s) in expression matrix "
-                  f"have no clinical record and are excluded: {list(dropped)[:5]}"
-                  f"{'...' if len(dropped) > 5 else ''}")
+            print(
+                f"CGGA {batch_name}: {len(dropped)} patient(s) in expression matrix "
+                f"have no clinical record and are excluded: {list(dropped)[:5]}"
+                f"{'...' if len(dropped) > 5 else ''}"
+            )
 
         expr_df = expr_df.loc[shared_ids]
         clinical_df = clinical_df.loc[shared_ids]

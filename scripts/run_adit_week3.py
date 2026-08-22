@@ -29,25 +29,42 @@ def _mc(config: dict[str, Any], root: Path) -> dict[str, Any]:
     checkpoint = config.get("checkpoint_path")
     vocabulary = config.get("vocabulary_path")
     if not checkpoint or not (root / str(checkpoint)).is_file():
-        return blocked_result("scGPT checkpoint is missing", n_passes=passes, batch_size=batch, device=device)
+        return blocked_result(
+            "scGPT checkpoint is missing", n_passes=passes, batch_size=batch, device=device
+        )
     if not vocabulary or not (root / str(vocabulary)).is_file():
-        return blocked_result("scGPT vocabulary is missing", n_passes=passes, batch_size=batch, device=device)
+        return blocked_result(
+            "scGPT vocabulary is missing", n_passes=passes, batch_size=batch, device=device
+        )
     try:
         import torch
     except ImportError:
-        return blocked_result("PyTorch is unavailable", n_passes=passes, batch_size=batch, device=device)
+        return blocked_result(
+            "PyTorch is unavailable", n_passes=passes, batch_size=batch, device=device
+        )
     if device.startswith("cuda") and not torch.cuda.is_available():
-        return blocked_result("CUDA is unavailable", n_passes=passes, batch_size=batch, device=device)
+        return blocked_result(
+            "CUDA is unavailable", n_passes=passes, batch_size=batch, device=device
+        )
     spec = config.get("mc_dropout_runner")
     if not spec:
-        return blocked_result("mc_dropout_runner is not configured", n_passes=passes, batch_size=batch, device=device)
+        return blocked_result(
+            "mc_dropout_runner is not configured", n_passes=passes, batch_size=batch, device=device
+        )
     try:
         module_name, function_name = str(spec).split(":", 1)
         result = getattr(importlib.import_module(module_name), function_name)(config)
     except (ValueError, ImportError, AttributeError, RuntimeError) as exc:
-        return blocked_result(f"MC-dropout runner failed: {exc}", n_passes=passes, batch_size=batch, device=device)
+        return blocked_result(
+            f"MC-dropout runner failed: {exc}", n_passes=passes, batch_size=batch, device=device
+        )
     if not isinstance(result, dict) or result.get("status") != "completed":
-        return blocked_result("MC-dropout runner returned no measured completed artifact", n_passes=passes, batch_size=batch, device=device)
+        return blocked_result(
+            "MC-dropout runner returned no measured completed artifact",
+            n_passes=passes,
+            batch_size=batch,
+            device=device,
+        )
     return result
 
 

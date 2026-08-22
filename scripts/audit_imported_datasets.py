@@ -53,7 +53,10 @@ def matrix_check(matrix: Any, rows: int, cols: int, chunk: int = 128) -> dict[st
 
 def inspect_h5ad(path: Path, *, state_column: str = "derived_state") -> dict[str, Any]:
     data = ad.read_h5ad(path, backed="r")
-    obs = {str(column): data.obs[column].astype(str).value_counts().head(20).to_dict() for column in data.obs.columns}
+    obs = {
+        str(column): data.obs[column].astype(str).value_counts().head(20).to_dict()
+        for column in data.obs.columns
+    }
     genes = {str(gene).upper() for gene in data.var_names}
     required = {"TP53", "IDH1", "EGFR", "RPRM"}
     result: dict[str, Any] = {
@@ -83,9 +86,15 @@ def inspect_mutations(path: Path) -> dict[str, Any]:
         "columns": [str(column) for column in table.columns],
         "patients": int(table[patient_column].nunique()) if patient_column in table else None,
         "genes": int(table[gene_column].nunique()) if gene_column in table else None,
-        "alteration_type_counts": {str(k): int(v) for k, v in table.get("alteration_type", pd.Series(dtype=str)).value_counts().items()},
+        "alteration_type_counts": {
+            str(k): int(v)
+            for k, v in table.get("alteration_type", pd.Series(dtype=str)).value_counts().items()
+        },
         "missing_values": {str(k): int(v) for k, v in table.isna().sum().items()},
-        "provenance_columns_present": sorted(set(table.columns) & {"Transcript_ID", "HGVSp", "protein_change", "genome_build", "source", "source_file"}),
+        "provenance_columns_present": sorted(
+            set(table.columns)
+            & {"Transcript_ID", "HGVSp", "protein_change", "genome_build", "source", "source_file"}
+        ),
     }
 
 
@@ -94,13 +103,23 @@ def inspect_edges(path: Path) -> dict[str, Any]:
     source = next((c for c in ("source_gene", "source", "tf") if c in table), None)
     target = next((c for c in ("target_gene", "target", "gene") if c in table), None)
     unique = int(table[[source, target]].drop_duplicates().shape[0]) if source and target else None
-    return {"path": str(path), "sha256": sha256(path), "rows": int(len(table)), "unique_edges": unique, "columns": [str(c) for c in table.columns]}
+    return {
+        "path": str(path),
+        "sha256": sha256(path),
+        "rows": int(len(table)),
+        "unique_edges": unique,
+        "columns": [str(c) for c in table.columns],
+    }
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--root", type=Path, default=Path("data/import_20260820/TP53 Dataset(preprocessed)"))
-    parser.add_argument("--output", type=Path, default=Path("reports/readiness/imported_dataset_audit.json"))
+    parser.add_argument(
+        "--root", type=Path, default=Path("data/import_20260820/TP53 Dataset(preprocessed)")
+    )
+    parser.add_argument(
+        "--output", type=Path, default=Path("reports/readiness/imported_dataset_audit.json")
+    )
     args = parser.parse_args(argv)
     root = args.root
     files = {
@@ -125,7 +144,9 @@ def main(argv: list[str] | None = None) -> int:
         inspected["mutations"] = inspect_mutations(files["mutations"])
         required_provenance = {"Transcript_ID", "HGVSp", "genome_build", "source_file"}
         if not required_provenance.issubset(set(inspected["mutations"]["columns"])):
-            blockers.append("Derived mutation join is missing transcript/protein/build/source provenance fields")
+            blockers.append(
+                "Derived mutation join is missing transcript/protein/build/source provenance fields"
+            )
     else:
         blockers.append(f"Missing mutations: {files['mutations']}")
     for name in ("grn_train", "grn_holdout"):

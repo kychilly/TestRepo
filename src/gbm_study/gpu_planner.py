@@ -56,9 +56,7 @@ class CUDAPlan:
         }
 
 
-def weighted_shards(
-    cells: int, workers: Iterable[tuple[str, int]]
-) -> tuple[dict[str, Any], ...]:
+def weighted_shards(cells: int, workers: Iterable[tuple[str, int]]) -> tuple[dict[str, Any], ...]:
     """Assign cells proportional to currently free CUDA memory."""
     workers = tuple(workers)
     if cells <= 0 or not workers or any(weight <= 0 for _, weight in workers):
@@ -67,9 +65,9 @@ def weighted_shards(
     raw = [cells * weight / total_weight for _, weight in workers]
     counts = [math.floor(value) for value in raw]
     remainder = cells - sum(counts)
-    for index in sorted(
-        range(len(raw)), key=lambda i: raw[i] - counts[i], reverse=True
-    )[:remainder]:
+    for index in sorted(range(len(raw)), key=lambda i: raw[i] - counts[i], reverse=True)[
+        :remainder
+    ]:
         counts[index] += 1
     return tuple(
         {"device": name, "cells": count, "free_memory_weight": weight}
@@ -93,14 +91,8 @@ def build_plan(
     if precision not in {"auto", "float16", "bfloat16", "float32"}:
         raise GPUPlanningError("precision must be auto, float16, bfloat16, or float32")
     if precision == "auto":
-        precision = (
-            "bfloat16"
-            if all(device.supports_bfloat16 for device in devices)
-            else "float16"
-        )
-    if precision == "bfloat16" and not all(
-        device.supports_bfloat16 for device in devices
-    ):
+        precision = "bfloat16" if all(device.supports_bfloat16 for device in devices) else "float16"
+    if precision == "bfloat16" and not all(device.supports_bfloat16 for device in devices):
         raise GPUPlanningError(
             "bfloat16 was requested but at least one CUDA device does not support it"
         )
@@ -111,9 +103,7 @@ def build_plan(
     return CUDAPlan(cells, token_length, batch_size, precision, devices, shards)
 
 
-def discover_cuda_devices(
-    device_ids: tuple[int, ...] | None = None
-) -> tuple[CUDADevice, ...]:
+def discover_cuda_devices(device_ids: tuple[int, ...] | None = None) -> tuple[CUDADevice, ...]:
     """Discover actual visible CUDA devices and their current free memory."""
     try:
         import torch
@@ -129,13 +119,15 @@ def discover_cuda_devices(
     for index in selected:
         properties = torch.cuda.get_device_properties(index)
         free_bytes, total_bytes = torch.cuda.mem_get_info(index)
+        with torch.cuda.device(index):
+            supports_bfloat16 = bool(torch.cuda.is_bf16_supported())
         devices.append(
             CUDADevice(
                 index=index,
                 name=str(properties.name),
                 total_memory_bytes=int(total_bytes),
                 free_memory_bytes=int(free_bytes),
-                supports_bfloat16=bool(torch.cuda.is_bf16_supported(index)),
+                supports_bfloat16=supports_bfloat16,
             )
         )
     return tuple(devices)

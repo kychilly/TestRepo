@@ -20,9 +20,7 @@ def main(argv: list[str] | None = None) -> int:
         [
             "REPORT_TYPE=week3_scgpt_compute",
             f"STATUS={args.status}",
-            "ACTION=DO_NOT_POST"
-            if args.status == "blocked"
-            else "ACTION=READY_FOR_REVIEW",
+            "ACTION=DO_NOT_POST" if args.status == "blocked" else "ACTION=READY_FOR_REVIEW",
             "PROVIDER=huggingface_jobs",
             "GPU_PROFILE=UNMEASURED",
             "CELLS_MEASURED=0",

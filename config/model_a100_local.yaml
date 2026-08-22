@@ -10,11 +10,12 @@ fold: 0
 checkpoint_path: artifacts/models/scGPT_pancancer/best_model.pt
 vocabulary_path: artifacts/models/scGPT_pancancer/vocab.json
 model_args_path: artifacts/models/scGPT_pancancer/args.json
+checkpoint_strict: true
 output_path: results/compute/a100_local_scgpt_benchmark.json
 seed: 20260802
 batch_size: 32
-token_length: null
-precision: float32
+token_length: 1200
+precision: bfloat16
 warmup_iterations: 2
 benchmark_cells: 1000
 requested_device: cuda

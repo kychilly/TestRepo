@@ -16,7 +16,7 @@ PYTHONPATH=src:. python scripts/audit_week2_datasets.py \
   --cgga "TP53 Dataset(preprocessed) 2/pilot/cgga_pilot_subsample.h5ad" \
   --tcga-clinical \
     "TP53 Dataset(preprocessed) 2/tcga(raw data)/gbm_tcga_clinical_data.tsv" \
-  --neftel-split splits/neftel_pilot_patient_splits.json \
+  --neftel-split splits/combined_full_cohort_neftel_patient_splits.json \
   --output /tmp/tp53-week2-dataset-audit.json
 ```
 

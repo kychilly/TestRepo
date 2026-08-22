@@ -27,19 +27,13 @@ def main(argv: list[str] | None = None) -> int:
         help="Precomputed protein evidence JSONL; use an explicit empty file when none exists",
     )
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument(
-        "--join-output", type=Path, help="Optional rich provenance/join JSONL"
-    )
+    parser.add_argument("--join-output", type=Path, help="Optional rich provenance/join JSONL")
     parser.add_argument("--validator-config-version", required=True)
     parser.add_argument("--aliases", type=Path)
     parser.add_argument("--forbidden-patients", type=Path)
     args = parser.parse_args(argv)
     try:
-        aliases = (
-            json.loads(args.aliases.read_text(encoding="utf-8"))
-            if args.aliases
-            else None
-        )
+        aliases = json.loads(args.aliases.read_text(encoding="utf-8")) if args.aliases else None
         forbidden = (
             json.loads(args.forbidden_patients.read_text(encoding="utf-8"))
             if args.forbidden_patients

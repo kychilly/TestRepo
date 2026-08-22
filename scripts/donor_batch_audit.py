@@ -9,11 +9,14 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from numpy.typing import NDArray
 from sklearn.decomposition import PCA
 from sklearn.metrics import silhouette_score
 
+from gbm_study.plain_english import write_json_with_explanation
 
-def _categorical(group: Any) -> np.ndarray[str]:
+
+def _categorical(group: Any) -> NDArray[np.str_]:
     categories = np.asarray(group["categories"][...]).astype(str)
     codes = np.asarray(group["codes"][...])
     return np.asarray([categories[int(code)] if int(code) >= 0 else "missing" for code in codes])
@@ -34,13 +37,20 @@ def run_audit(path: Path, output: Path, *, seed: int = 17) -> dict[str, Any]:
     if not path.is_file():
         return {"status": "blocked", "reason": f"H5AD does not exist: {path}"}
     with h5py.File(path, "r") as handle:
-        if "Sample" not in handle["obs"] or "CellAssignment" not in handle["obs"]:
+        state_key = (
+            "derived_state"
+            if "derived_state" in handle["obs"]
+            else "CellAssignment"
+            if "CellAssignment" in handle["obs"]
+            else None
+        )
+        if "Sample" not in handle["obs"] or state_key is None:
             return {
                 "status": "blocked",
-                "reason": "H5AD requires obs/Sample and obs/CellAssignment",
+                "reason": "H5AD requires obs/Sample and a real derived_state/CellAssignment column",
             }
         donor = _categorical(handle["obs"]["Sample"])
-        cell_assignment = _categorical(handle["obs"]["CellAssignment"])
+        cell_assignment = _categorical(handle["obs"][state_key])
         hvg = np.asarray(handle["var"]["highly_variable"][...], dtype=bool)
         matrix = np.asarray(handle["X"][:, hvg], dtype=np.float32)
     if len(np.unique(donor)) < 2 or len(np.unique(cell_assignment)) < 2:
@@ -83,17 +93,26 @@ def run_audit(path: Path, output: Path, *, seed: int = 17) -> dict[str, Any]:
         "n_cell_assignment_groups": int(len(set(cell_assignment))),
         "silhouette": {"donor": donor_silhouette, "cell_assignment_proxy": state_silhouette},
         "batch_risk_interpretation": risk,
-        "state_label_warning": "CellAssignment is not the agreed AC/MES/NPC/OPC state label.",
+        "state_column": state_key,
+        "state_label_warning": (
+            None
+            if state_key == "derived_state"
+            else "CellAssignment is only a proxy, not the agreed AC/MES/NPC/OPC state label."
+        ),
     }
-    (output / "donor_batch_audit.json").write_text(
-        json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    write_json_with_explanation(output / "donor_batch_audit.json", result)
     return result
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--adata", type=Path, default=Path("data/raw/neftel/neftel_qc.h5ad"))
+    parser.add_argument(
+        "--adata",
+        type=Path,
+        default=Path(
+            "data/import_20260820/TP53 Dataset(preprocessed)/processed/neftel_analysis_cohort.h5ad"
+        ),
+    )
     parser.add_argument("--output", type=Path, default=Path("results/week1_data_audit"))
     args = parser.parse_args()
     result = run_audit(args.adata, args.output)

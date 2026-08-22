@@ -17,15 +17,15 @@ grn_train_prior_path: data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_
 week2_timing_path: results/compute/current_scgpt_benchmark.json
 seeds: [17, 42, 101]
 batch_size: 32
-precision: float32
+token_length: 1200
+precision: bfloat16
+value_transform: rank_bin
+n_input_bins: 51
 checkpoint_strict: true
 use_fast_transformer: false
 mc_dropout_passes: 20
 checkpoint_every_genes: 10
 estimated_rank_genes: 2503
-# This is a compute cap for the pilot candidate universe. It does not create
-# biological ranks; the ranking JSONL records the actual mask scores.
-candidate_limit: 100
 backbone_budget_gpu_seconds: 86400
 cellfm_runner: null
 geneformer_runner: null

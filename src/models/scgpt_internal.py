@@ -8,7 +8,7 @@ import json
 import os
 import time
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, cast
 
 import numpy as np
 from sklearn.linear_model import LogisticRegression
@@ -25,12 +25,18 @@ from models.scgpt_loader import load_official_scgpt, load_vocabulary
 
 
 def _rows(path: Path) -> list[dict[str, Any]]:
-    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    return [
+        json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()
+    ]
 
 
 def _candidate_genes(config: Mapping[str, Any], available: list[str], validator: bool) -> list[str]:
     value = config.get("candidate_genes_path")
-    candidates = available if not value else [str(row.get("gene", "")).upper() for row in _rows(Path(str(value)))]
+    candidates = (
+        available
+        if not value
+        else [str(row.get("gene", "")).upper() for row in _rows(Path(str(value)))]
+    )
     candidates = list(dict.fromkeys(gene for gene in candidates if gene))
     if not validator:
         limit = config.get("candidate_limit")
@@ -76,7 +82,9 @@ def _with_grn_neighbors(genes: list[str], config: Mapping[str, Any], enabled: bo
     return sorted(selected)
 
 
-def _decision_column(probe: LogisticRegression, embeddings: np.ndarray[Any, Any], state: str) -> np.ndarray[Any, Any]:
+def _decision_column(
+    probe: LogisticRegression, embeddings: np.ndarray[Any, Any], state: str
+) -> np.ndarray[Any, Any]:
     if state not in probe.classes_:
         raise ValueError(f"target state {state!r} is absent from training labels")
     decision = np.asarray(probe.decision_function(embeddings))
@@ -104,7 +112,9 @@ def _infer(
     passes = int(config.get("mc_dropout_passes", 20))
     if not 20 <= passes <= 50:
         raise ValueError("mc_dropout_passes must be between 20 and 50")
-    result = infer_mc_dropout(adapter, prepared, n_passes=passes, batch_size=batch, precision=precision)
+    result = infer_mc_dropout(
+        adapter, prepared, n_passes=passes, batch_size=batch, precision=precision
+    )
     return result.mean, result.variance, result.compute_multiplier, result.samples
 
 
@@ -174,8 +184,18 @@ def run_internal_cohort(
         if not spec:
             raise ValueError(f"{backbone} was compute-approved but no real runner is configured")
         module, function = str(spec).split(":", 1)
-        return getattr(importlib.import_module(module), function)(config, ablation, seed, backbone)
-    required = ("cell_data_path", "split_file", "checkpoint_path", "vocabulary_path", "patient_id_column", "state_key")
+        external_result = getattr(importlib.import_module(module), function)(
+            config, ablation, seed, backbone
+        )
+        return cast(Mapping[str, Any], external_result)
+    required = (
+        "cell_data_path",
+        "split_file",
+        "checkpoint_path",
+        "vocabulary_path",
+        "patient_id_column",
+        "state_key",
+    )
     missing = [key for key in required if not config.get(key)]
     if missing:
         raise ValueError("Missing scGPT experiment inputs: " + ", ".join(missing))
@@ -213,14 +233,16 @@ def run_internal_cohort(
     patients = data.obs[patient_key].astype(str).to_numpy()
     states = data.obs[state_key].astype(str).to_numpy()
     split = load_patient_splits(Path(str(config["split_file"])), int(config.get("fold", 0)))
-    train_mask = np.isin(patients, split.train)
-    test_mask = np.isin(patients, split.test)
+    train_mask = np.isin(patients, list(split.train))
+    test_mask = np.isin(patients, list(split.test))
     if not train_mask.any() or not test_mask.any():
         raise ValueError("Patient split has no train or test cells in the cohort")
     vocabulary = load_vocabulary(vocabulary_path)
     model = load_official_scgpt(checkpoint, vocabulary_path, device, dict(config))
     adapter = ScGPTAdapter(model, vocabulary, checkpoint, vocabulary_path, device=device)
-    prepared = adapter.prepare_inputs({"X": matrix, "var_names": gene_ids}, str(config.get("gene_id_type", "HGNC")))
+    prepared = adapter.prepare_inputs(
+        {"X": matrix, "var_names": gene_ids}, str(config.get("gene_id_type", "HGNC"))
+    )
     retained = list(prepared.report.retained)
     final_genes = [gene for gene in final_genes if gene in retained]
     if not final_genes:
@@ -231,9 +253,7 @@ def run_internal_cohort(
     embedding_path = run_dir / "embedding_checkpoint.npz"
     ranking_path = run_dir / "ranking_checkpoint.jsonl"
     provenance = adapter.provenance()
-    resume_fingerprint = _fingerprint(
-        config, ablation, seed, backbone, provenance, final_genes
-    )
+    resume_fingerprint = _fingerprint(config, ablation, seed, backbone, provenance, final_genes)
     existing_status = (
         json.loads(status_path.read_text(encoding="utf-8")) if status_path.is_file() else None
     )
@@ -247,14 +267,19 @@ def run_internal_cohort(
             embeddings = np.asarray(saved["embeddings"], dtype=np.float32)
             embedding_samples = (
                 np.asarray(saved["embedding_samples"], dtype=np.float32)
-                if "embedding_samples" in saved.files else None
+                if "embedding_samples" in saved.files
+                else None
             )
             variance = (
                 np.asarray(saved["embedding_variance"], dtype=np.float32)
                 if "embedding_variance" in saved.files
                 else None
             )
-            multiplier_value = float(saved["mc_compute_multiplier"]) if "mc_compute_multiplier" in saved.files else float("nan")
+            multiplier_value = (
+                float(saved["mc_compute_multiplier"])
+                if "mc_compute_multiplier" in saved.files
+                else float("nan")
+            )
             multiplier = multiplier_value if np.isfinite(multiplier_value) else None
     else:
         embeddings, variance, multiplier, embedding_samples = _infer(
@@ -262,9 +287,7 @@ def run_internal_cohort(
         )
         arrays: dict[str, Any] = {
             "embeddings": embeddings,
-            "mc_compute_multiplier": np.asarray(
-                multiplier if multiplier is not None else np.nan
-            ),
+            "mc_compute_multiplier": np.asarray(multiplier if multiplier is not None else np.nan),
         }
         if variance is not None:
             arrays["embedding_variance"] = variance
@@ -282,18 +305,16 @@ def run_internal_cohort(
     probe.fit(embeddings[train_mask], states[train_mask])
     probabilities = probe.predict_proba(embeddings[test_mask])
     predicted = probe.classes_[np.argmax(probabilities, axis=1)]
-    target_states = [str(value) for value in config.get("target_states", [config.get("target_state", "MES")])]
+    target_states = [
+        str(value) for value in config.get("target_states", [config.get("target_state", "MES")])
+    ]
     if not target_states:
         raise ValueError("target_states must be non-empty")
     baseline_logits = {state: _decision_column(probe, embeddings, state) for state in target_states}
     saved_rankings = _rows(ranking_path) if ranking_path.is_file() else []
-    ranking_map = {
-        (str(row["state"]), str(row["gene"])): dict(row) for row in saved_rankings
-    }
+    ranking_map = {(str(row["state"]), str(row["gene"])): dict(row) for row in saved_rankings}
     completed_genes = {
-        gene
-        for gene in final_genes
-        if all((state, gene) in ranking_map for state in target_states)
+        gene for gene in final_genes if all((state, gene) in ranking_map for state in target_states)
     }
     retained_index = {gene: index for index, gene in enumerate(retained)}
     for gene in final_genes:
@@ -302,30 +323,42 @@ def run_internal_cohort(
         masked_values = prepared.values.copy()
         masked_values[:, retained_index[gene]] = 0.0
         masked_prepared = PreparedInputs(masked_values, prepared.token_ids, prepared.report)
-        masked_embeddings, _, _, masked_samples = _infer(adapter, masked_prepared, config, ablation.mc_dropout)
+        masked_embeddings, _, _, masked_samples = _infer(
+            adapter, masked_prepared, config, ablation.mc_dropout
+        )
         gene_results: list[dict[str, Any]] = []
         for state in target_states:
             masked_logits = _decision_column(probe, masked_embeddings, state)
             cell_rows: list[dict[str, Any]] = []
             for index in np.flatnonzero(train_mask & (states == state)):
-                cell_rows.append({
-                    "gene": gene,
-                    "patient_id": str(patients[index]),
-                    "cell_id": str(data.obs_names[index]),
-                    "state": state,
-                    "baseline_logit": float(baseline_logits[state][index]),
-                    "masked_logit": float(masked_logits[index]),
-                })
+                cell_rows.append(
+                    {
+                        "gene": gene,
+                        "patient_id": str(patients[index]),
+                        "cell_id": str(data.obs_names[index]),
+                        "state": state,
+                        "baseline_logit": float(baseline_logits[state][index]),
+                        "masked_logit": float(masked_logits[index]),
+                    }
+                )
             aggregated = aggregate_mask_delta_scores(cell_rows, state=state)
             if aggregated:
                 row = dict(aggregated[0])
-                if ablation.mc_dropout and embedding_samples is not None and masked_samples is not None:
+                if (
+                    ablation.mc_dropout
+                    and embedding_samples is not None
+                    and masked_samples is not None
+                ):
                     sample_deltas = []
                     for sample_index in range(embedding_samples.shape[0]):
-                        base_sample = _decision_column(probe, embedding_samples[sample_index], state)
+                        base_sample = _decision_column(
+                            probe, embedding_samples[sample_index], state
+                        )
                         masked_sample = _decision_column(probe, masked_samples[sample_index], state)
                         selected = np.flatnonzero(train_mask & (states == state))
-                        sample_deltas.append(float(np.mean(base_sample[selected] - masked_sample[selected])))
+                        sample_deltas.append(
+                            float(np.mean(base_sample[selected] - masked_sample[selected]))
+                        )
                     row["mc_score_mean"] = float(np.mean(sample_deltas))
                     row["mc_score_variance"] = float(np.var(sample_deltas))
                     row["mc_passes"] = len(sample_deltas)
@@ -365,9 +398,7 @@ def run_internal_cohort(
     rankings: list[dict[str, Any]] = []
     for state in target_states:
         state_rankings = [
-            dict(ranking_map[(state, gene)])
-            for gene in final_genes
-            if (state, gene) in ranking_map
+            dict(ranking_map[(state, gene)]) for gene in final_genes if (state, gene) in ranking_map
         ]
         state_rankings.sort(key=lambda row: (-float(row["score"]), str(row["gene"])))
         for rank, row in enumerate(state_rankings, 1):
@@ -376,14 +407,19 @@ def run_internal_cohort(
     predictions = []
     test_indices = np.flatnonzero(test_mask)
     for local, index in enumerate(test_indices):
-        predictions.append({
-            "cell_id": str(data.obs_names[index]),
-            "patient_id": str(patients[index]),
-            "true_state": str(states[index]),
-            "predicted_state": str(predicted[local]),
-            "probabilities": {str(label): float(probabilities[local, pos]) for pos, label in enumerate(probe.classes_)},
-            "seed": seed,
-        })
+        predictions.append(
+            {
+                "cell_id": str(data.obs_names[index]),
+                "patient_id": str(patients[index]),
+                "true_state": str(states[index]),
+                "predicted_state": str(predicted[local]),
+                "probabilities": {
+                    str(label): float(probabilities[local, pos])
+                    for pos, label in enumerate(probe.classes_)
+                },
+                "seed": seed,
+            }
+        )
     _checkpoint_status(
         status_path,
         fingerprint=resume_fingerprint,
@@ -402,7 +438,10 @@ def run_internal_cohort(
             "macro_f1": float(f1_score(states[test_mask], predicted, average="macro")),
             "balanced_accuracy": float(balanced_accuracy_score(states[test_mask], predicted)),
         },
-        "timing": {"wall_seconds": time.perf_counter() - started, "mc_compute_multiplier": multiplier},
+        "timing": {
+            "wall_seconds": time.perf_counter() - started,
+            "mc_compute_multiplier": multiplier,
+        },
         "provenance": provenance,
         "resume_fingerprint": resume_fingerprint,
         "n_input_genes": len(prepared.report.retained),

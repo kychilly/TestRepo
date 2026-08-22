@@ -8,12 +8,16 @@ import json
 from pathlib import Path
 from typing import Any
 
+from gbm_study.plain_english import write_json_with_explanation
+
 
 def _split(path: Path) -> dict[str, list[str]]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if "folds" in payload:
         payload = payload["folds"][0]
-    return {key: [str(x) for x in value] for key, value in payload.items() if isinstance(value, list)}
+    return {
+        key: [str(x) for x in value] for key, value in payload.items() if isinstance(value, list)
+    }
 
 
 def audit(
@@ -27,8 +31,13 @@ def audit(
     blockers: list[str] = []
     warnings: list[str] = []
     checks: dict[str, Any] = {}
-    for label, path in (("pilot_h5ad", pilot), ("split", split), ("mutation_table", mutations),
-                        ("grn_train", grn_train), ("grn_holdout", grn_holdout)):
+    for label, path in (
+        ("pilot_h5ad", pilot),
+        ("split", split),
+        ("mutation_table", mutations),
+        ("grn_train", grn_train),
+        ("grn_holdout", grn_holdout),
+    ):
         checks[label] = {"path": str(path), "exists": path.is_file()}
         if not path.is_file():
             blockers.append(f"Missing {label}: {path}")
@@ -52,11 +61,15 @@ def audit(
                 "required_genes_missing": sorted(required_genes - genes),
             }
             if required_genes - genes:
-                blockers.append("Pilot is missing required genes: " + ", ".join(sorted(required_genes - genes)))
+                blockers.append(
+                    "Pilot is missing required genes: " + ", ".join(sorted(required_genes - genes))
+                )
             if "derived_state" not in obs_columns:
                 blockers.append("Pilot has no derived_state labels for the requested state model")
             elif "IDH" not in " ".join(obs_columns).upper():
-                blockers.append("Pilot has no explicit IDH-status column; derived cell states are not a substitute for both IDH statuses")
+                blockers.append(
+                    "Pilot has no explicit IDH-status column; derived cell states are not a substitute for both IDH statuses"
+                )
             if "Sample" not in obs_columns:
                 blockers.append("Pilot has no Sample patient identifier column")
             if "counts" not in data.layers:
@@ -65,7 +78,9 @@ def audit(
                 values = data.obs["CrossSection"].astype(str).dropna().unique().tolist()
                 checks["expression"]["cross_section_values"] = sorted(values)
                 if len(values) < 2:
-                    warnings.append("Pilot has fewer than two CrossSection batches; Harmony baseline is not applicable")
+                    warnings.append(
+                        "Pilot has fewer than two CrossSection batches; Harmony baseline is not applicable"
+                    )
         except Exception as exc:  # dependency or malformed-file failure is actionable
             blockers.append(f"Could not inspect pilot H5AD: {exc}")
 
@@ -79,8 +94,11 @@ def audit(
             checks["mutations"] = {
                 "rows": int(len(table)),
                 "columns": [str(x) for x in table.columns],
-                "status_counts": {str(k): int(v) for k, v in table["variant_status"].value_counts().items()}
-                if "variant_status" in table else {},
+                "status_counts": {
+                    str(k): int(v) for k, v in table["variant_status"].value_counts().items()
+                }
+                if "variant_status" in table
+                else {},
             }
             if missing:
                 blockers.append("Mutation table is missing columns: " + ", ".join(sorted(missing)))
@@ -88,7 +106,9 @@ def audit(
                 if column not in table.columns:
                     blockers.append(f"Mutation table lacks provenance/mapping field: {column}")
             if "silencing" not in set(table.get("variant_status", [])):
-                blockers.append("Mutation table has no silencing calls; add methylation/CNV-derived silencing evidence or mark unavailable")
+                blockers.append(
+                    "Mutation table has no silencing calls; add methylation/CNV-derived silencing evidence or mark unavailable"
+                )
         except Exception as exc:
             blockers.append(f"Could not inspect mutation table: {exc}")
 
@@ -100,7 +120,9 @@ def audit(
             holdout = pd.read_csv(grn_holdout)
             checks["grn"]["heldout_rows"] = int(len(holdout))
             if len(holdout) < 10:
-                warnings.append("GRN held-out set is very small; AUROC is a sanity check, not a powered result")
+                warnings.append(
+                    "GRN held-out set is very small; AUROC is a sanity check, not a powered result"
+                )
         except Exception as exc:
             blockers.append(f"Could not inspect GRN holdout: {exc}")
 
@@ -118,8 +140,7 @@ def audit(
             "Run scripts/run_pilot_scgpt.py, then scripts/run_stage34_validation.py with its real candidate output.",
         ],
     }
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_json_with_explanation(output, result)
     return result
 
 
@@ -132,7 +153,9 @@ def main() -> int:
     parser.add_argument("--grn-holdout", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    result = audit(args.pilot, args.split, args.mutations, args.grn_train, args.grn_holdout, args.output)
+    result = audit(
+        args.pilot, args.split, args.mutations, args.grn_train, args.grn_holdout, args.output
+    )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result["status"] == "ready" else 2
 

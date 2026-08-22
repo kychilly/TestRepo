@@ -32,9 +32,7 @@ def test_plan_uses_real_device_metadata_and_safe_precision() -> None:
 
 def test_bfloat16_requires_support_on_every_selected_device() -> None:
     with pytest.raises(GPUPlanningError, match="bfloat16"):
-        build_plan(
-            devices(), cells=100, token_length=128, batch_size=4, precision="bfloat16"
-        )
+        build_plan(devices(), cells=100, token_length=128, batch_size=4, precision="bfloat16")
 
 
 def test_empty_cuda_inventory_is_rejected() -> None:

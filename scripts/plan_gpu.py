@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 
 from gbm_study.gpu_planner import GPUPlanningError, plan_cuda_work
+from gbm_study.plain_english import write_json_with_explanation
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -42,10 +43,7 @@ def main(argv: list[str] | None = None) -> int:
             "measured_gpu_seconds_per_10000_cells": None,
         }
         code = 2
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(
-        json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    write_json_with_explanation(args.output, result)
     print(json.dumps(result, indent=2, sort_keys=True))
     return code
 

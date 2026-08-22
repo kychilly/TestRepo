@@ -1,48 +1,66 @@
-import anndata as ad
-from validator import GeneRecord, Thresholds, classify, Outcome
+#!/usr/bin/env python3
+"""Report candidate-level validator coverage from the current Stage 3/4 run."""
 
-# 1. We put the EXACT name of your file from the screenshot here
-file_path = "pilot_subsample.h5ad"
-data = ad.read_h5ad(file_path)
+from __future__ import annotations
 
-# 2. We explicitly tell the script to look for validator.yaml right here in the main folder
-# (This bypasses the error where it searches for a non-existent 'config' folder)
-thresholds = Thresholds.from_yaml("validator.yaml")
+import argparse
+import json
+from pathlib import Path
+from typing import Any
 
-# 3. Pull out the table of genes from the binder
-gene_table = data.var
+from gbm_study.plain_english import write_json_with_explanation
 
-total_genes = 0
-data_deficient_count = 0
 
-# 4. Look at every single gene in the binder
-for gene_name, row in gene_table.iterrows():
-    total_genes += 1
-    
-    # Extract protein scores if present in the columns (defaults to None if missing)
-    record = GeneRecord(
-        gene=str(gene_name),
-        mutation=row.get("mutation", "unknown"),
-        alteration_type=row.get("alteration_type", "missense"),
-        plddt=row.get("plddt", None),
-        esm1b=row.get("esm1b", None),
-        ddg=row.get("ddg", None)
+def run(stage34_report: Path) -> dict[str, Any]:
+    source = json.loads(stage34_report.read_text(encoding="utf-8"))
+    assignments = source.get("assignments")
+    if not isinstance(assignments, list) or not assignments:
+        raise ValueError("Stage 3/4 report has no candidate assignments")
+    total = len(assignments)
+    deficient = sum(
+        isinstance(row, dict) and row.get("real_outcome") == "data_deficient" for row in assignments
     )
-    
-    # Pass the gene through validator.py
-    verdict = classify(record, thresholds)
-    
-    # Check if it landed in the data_deficient bucket
-    if verdict.outcome == Outcome.DATA_DEFICIENT:
-        data_deficient_count += 1
+    abstain = sum(
+        isinstance(row, dict) and row.get("real_outcome") == "abstain" for row in assignments
+    )
+    return {
+        "status": "completed",
+        "scope": "candidate_level_stage34_assignments",
+        "source_report": str(stage34_report),
+        "candidate_count": total,
+        "data_deficient_count": deficient,
+        "data_deficient_fraction": deficient / total,
+        "abstain_count": abstain,
+        "abstain_fraction": abstain / total,
+        "usable_non_abstain_non_deficient_count": total - deficient - abstain,
+        "next_actions": [
+            "Report this coverage rather than silently dropping deficient candidates.",
+            "Add independent protein evidence and rerun Stage 3/4 to improve coverage.",
+        ],
+    }
 
-# 5. Calculate and print the percentage safely
-if total_genes > 0:
-    percent_deficient = (data_deficient_count / total_genes) * 100
-else:
-    percent_deficient = 0
 
-print("--- COVERAGE AUDIT RESULTS ---")
-print(f"Total candidate genes: {total_genes}")
-print(f"Data-deficient genes: {data_deficient_count}")
-print(f"Deficiency percentage: {percent_deficient:.2f}%")
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--stage34-report",
+        type=Path,
+        default=Path("reports/stage34/combined_full_candidate_run.json"),
+    )
+    parser.add_argument("--output", type=Path, default=Path("reports/stage34/coverage_audit.json"))
+    args = parser.parse_args()
+    try:
+        result = run(args.stage34_report)
+    except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+        result = {
+            "status": "failed",
+            "reason": str(exc),
+            "next_actions": ["Regenerate the real Stage 3/4 report and rerun."],
+        }
+    write_json_with_explanation(args.output, result)
+    print(json.dumps(result, indent=2, sort_keys=True))
+    return 0 if result["status"] == "completed" else 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

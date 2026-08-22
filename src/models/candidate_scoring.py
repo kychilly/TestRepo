@@ -34,9 +34,7 @@ def aggregate_mask_delta_scores(
         cell = str(row.get("cell_id", ""))
         row_state = str(row.get("state", state))
         if row_state != state:
-            raise ContractError(
-                f"Mixed state rows: expected {state}, found {row_state}"
-            )
+            raise ContractError(f"Mixed state rows: expected {state}, found {row_state}")
         if not patient or not cell:
             raise ContractError("Each mask score requires patient_id and cell_id")
         key = (patient, cell, gene)
@@ -63,8 +61,7 @@ def aggregate_mask_delta_scores(
     for gene, patient_scores in sorted(by_gene.items()):
         mean = sum(patient_scores) / len(patient_scores)
         variance = (
-            sum((value - mean) ** 2 for value in patient_scores)
-            / (len(patient_scores) - 1)
+            sum((value - mean) ** 2 for value in patient_scores) / (len(patient_scores) - 1)
             if len(patient_scores) > 1
             else 0.0
         )

@@ -47,23 +47,30 @@ def classify(path: Path, *, stale: bool = False) -> dict[str, Any]:
         "declared_status": payload.get("status") if payload else None,
         "reason": payload.get("reason") if payload else None,
         "blockers": payload.get("blockers", []) if payload else [],
+        "warnings": payload.get("warnings", []) if payload else [],
     }
 
 
 def branch_status(root: Path, ref: str) -> dict[str, Any]:
     """Record whether an available team ref is already in the current HEAD."""
-    present = subprocess.run(
-        ["git", "show-ref", "--verify", "--quiet", f"refs/remotes/{ref}"],
-        cwd=root,
-        check=False,
-    ).returncode == 0
-    integrated = False
-    if present:
-        integrated = subprocess.run(
-            ["git", "merge-base", "--is-ancestor", ref, "HEAD"],
+    present = (
+        subprocess.run(
+            ["git", "show-ref", "--verify", "--quiet", f"refs/remotes/{ref}"],
             cwd=root,
             check=False,
-        ).returncode == 0
+        ).returncode
+        == 0
+    )
+    integrated = False
+    if present:
+        integrated = (
+            subprocess.run(
+                ["git", "merge-base", "--is-ancestor", ref, "HEAD"],
+                cwd=root,
+                check=False,
+            ).returncode
+            == 0
+        )
     return {"ref": ref, "present": present, "integrated_into_head": integrated}
 
 
@@ -71,14 +78,17 @@ def run() -> dict[str, Any]:
     root = Path(__file__).resolve().parents[1]
     assets = root / "artifacts/models/scGPT_pancancer"
     artifacts = {
-        "week1_environment": classify(root / "results/compute/week1_environment_check.json"),
-        "week1_benchmark": classify(root / "results/compute/week1_scgpt_benchmark.json", stale=True),
-        "latest_model_benchmark": classify(root / "reports/week3_adit/scgpt_timing.json"),
-        "week2_adit": classify(root / "reports/week2_adit/report_current.json", stale=True),
-        "week3_manifest": classify(root / "reports/week3_adit/experiments/manifest.json"),
-        "stage34": classify(root / "reports/stage34/fixture_feasibility_clean.json"),
-        "cross_cohort": classify(root / "reports/cross_cohort_combined_v2/results.json"),
-        "readiness": classify(root / "reports/readiness/current.json"),
+        "execution_readiness": classify(root / "reports/readiness/execution_readiness.json"),
+        "baseline_bar": classify(root / "reports/pilot_baselines_verified/baseline_bar.json"),
+        "grn_sanity": classify(root / "reports/jeffrey_grn_run/grn_sanity_current.json"),
+        "stage34": classify(root / "reports/stage34/combined_full_candidate_run.json"),
+        "cross_cohort": classify(root / "reports/cross_cohort_current/results.json"),
+        "a100_benchmark_existing": classify(
+            root / "reports/week3_adit/scgpt_timing.json", stale=True
+        ),
+        "week3_manifest_existing": classify(
+            root / "reports/week3_adit/experiments/manifest.json", stale=True
+        ),
     }
     model_assets = {
         name: {"path": str(path), "exists": path.is_file(), "sha256": sha256(path)}
@@ -104,9 +114,18 @@ def run() -> dict[str, Any]:
             "refs": team_refs,
             "jeffrey_inputs": {
                 "dataset_archive_audit": str(root / "reports/readiness/dataset_archives.json"),
-                "mutation_join": str(root / "data/import_20260820/TP53 Dataset(preprocessed)/pilot/patient_gene_mutation_join.csv"),
-                "grn_train_prior": str(root / "data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv"),
-                "grn_holdout": str(root / "data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_adit_holdout_check.csv"),
+                "mutation_join": str(
+                    root
+                    / "data/import_20260820/TP53 Dataset(preprocessed)/pilot/patient_gene_mutation_join.csv"
+                ),
+                "grn_train_prior": str(
+                    root
+                    / "data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv"
+                ),
+                "grn_holdout": str(
+                    root
+                    / "data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_adit_holdout_check.csv"
+                ),
             },
             "ishaan_inputs": {
                 "validator": str(root / "validator.py"),
@@ -116,7 +135,9 @@ def run() -> dict[str, Any]:
             "alexis_inputs": {
                 "baselines": str(root / "scripts/run_baseline.py"),
                 "evaluation": str(root / "eval.py"),
-                "baseline_summary": str(root / "reports/baselines_combined/final_summary.json"),
+                "baseline_summary": str(
+                    root / "reports/pilot_baselines_verified/baseline_bar.json"
+                ),
             },
             "week3_consumers": [
                 "config/week3_adit.yaml",
@@ -126,21 +147,21 @@ def run() -> dict[str, Any]:
             ],
             "week4_consumers": [
                 "scripts/run_cross_cohort.py",
-                "reports/cross_cohort_combined_v2/results.json",
+                "reports/cross_cohort_current/results.json",
             ],
         },
-        "current_scientific_call": "no_result_until_real_scGPT_and_external_endpoint_runs_complete",
+        "current_scientific_call": "no_result_until_protein_evidence_and_a100_and_external_truth_are_complete",
         "known_issues": [
-            "Historical benchmark and Week 2 reports are stale relative to the downloaded official model assets.",
-            "Week 3 has 12 blocked runs and no completed real scGPT arm.",
-            "The current cross-cohort result is a clean-CGGA IDH CPU feature-mask analysis, not the scGPT ablation matrix.",
+            "The A100 benchmark and Week 3 matrix have not been rerun with the current checkpoint-compatible environment and code fingerprint.",
+            "Stage 3/4 has zero confirmed genes because independent protein evidence is absent; only three validator-off GPU runs are currently runnable.",
+            "scVI is data-blocked because the supplied counts layer contains non-integer log-scale values.",
             "CGGA bulk rows do not contain AC/MES/NPC/OPC truth.",
             "The GRN holdout has one unique positive edge and cannot support a paper claim.",
         ],
         "next_actions": [
-            "Run the A100 preflight with config/model_a100_local.yaml.",
             "Run the A100 preflight and exactly 1,000-cell benchmark.",
-            "Run the complete Week 3 matrix with persistent checkpoints.",
+            "Run the currently runnable validator-off seeds with persistent checkpoints.",
+            "Add independent protein evidence, rerun Stage 3/4, then complete all 12 ablations.",
             "Add an external single-cell state endpoint and independent variant/abstention truth.",
         ],
     }

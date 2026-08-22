@@ -84,10 +84,9 @@ def main(argv: list[str] | None = None) -> int:
             str(Path(parsed.output) / method),
         ]
         exit_codes.append(run_one(method_args))
-    # A scientifically inapplicable arm (for example scVI without raw counts)
-    # must remain recorded, but should not make every successfully completed
-    # baseline look like an orchestration failure.
-    return 0 if any(code == 0 for code in exit_codes) else max(exit_codes, default=2)
+    # `all` means every requested arm. A partial result remains recorded, but
+    # the process must be non-zero so automation cannot label it complete.
+    return 0 if exit_codes and all(code == 0 for code in exit_codes) else max(exit_codes, default=2)
 
 
 if __name__ == "__main__":

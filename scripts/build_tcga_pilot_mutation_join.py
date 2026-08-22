@@ -25,13 +25,30 @@ def sha256(path: Path) -> str:
 
 def mutation_rows(path: Path, patients: set[str], chunksize: int) -> list[pd.DataFrame]:
     keep = {
-        "Hugo_Symbol", "NCBI_Build", "Tumor_Sample_Barcode", "Variant_Classification",
-        "Variant_Type", "Consequence", "HGVSc", "HGVSp", "HGVSp_Short",
-        "Transcript_ID", "Protein_Change", "protein_change", "IMPACT", "build",
+        "Hugo_Symbol",
+        "NCBI_Build",
+        "Tumor_Sample_Barcode",
+        "Variant_Classification",
+        "Variant_Type",
+        "Consequence",
+        "HGVSc",
+        "HGVSp",
+        "HGVSp_Short",
+        "Transcript_ID",
+        "Protein_Change",
+        "protein_change",
+        "IMPACT",
+        "build",
     }
     out: list[pd.DataFrame] = []
-    for chunk in pd.read_csv(path, sep="\t", comment="#", usecols=lambda c: c in keep,
-                             chunksize=chunksize, low_memory=False):
+    for chunk in pd.read_csv(
+        path,
+        sep="\t",
+        comment="#",
+        usecols=lambda c: c in keep,
+        chunksize=chunksize,
+        low_memory=False,
+    ):
         chunk["patient_id"] = chunk["Tumor_Sample_Barcode"].astype(str).str[:12]
         chunk = chunk[chunk["patient_id"].isin(patients)].copy()
         chunk = chunk[chunk["Variant_Classification"].eq("Missense_Mutation")]
@@ -41,12 +58,27 @@ def mutation_rows(path: Path, patients: set[str], chunksize: int) -> list[pd.Dat
         chunk["alteration_type"] = "missense"
         chunk["genome_build"] = chunk.get("NCBI_Build", chunk.get("build", "")).astype(str)
         chunk["source_file"] = str(path)
-        out.append(chunk[[
-            "patient_id", "gene_symbol", "alteration_type", "Variant_Classification",
-            "Variant_Type", "Consequence", "HGVSc", "HGVSp", "HGVSp_Short",
-            "Transcript_ID", "Protein_Change", "protein_change", "IMPACT",
-            "genome_build", "source_file",
-        ]].rename(columns={"Variant_Classification": "variant_classification"}))
+        out.append(
+            chunk[
+                [
+                    "patient_id",
+                    "gene_symbol",
+                    "alteration_type",
+                    "Variant_Classification",
+                    "Variant_Type",
+                    "Consequence",
+                    "HGVSc",
+                    "HGVSp",
+                    "HGVSp_Short",
+                    "Transcript_ID",
+                    "Protein_Change",
+                    "protein_change",
+                    "IMPACT",
+                    "genome_build",
+                    "source_file",
+                ]
+            ].rename(columns={"Variant_Classification": "variant_classification"})
+        )
     return out
 
 
@@ -63,32 +95,54 @@ def cna_rows(path: Path, patients: set[str], threshold: float) -> pd.DataFrame:
             value = pd.to_numeric(row[column], errors="coerce")
             if pd.isna(value) or abs(float(value)) < threshold:
                 continue
-            rows.append({
-                "patient_id": str(column)[:12],
-                "gene_symbol": gene,
-                "alteration_type": "amplification" if float(value) >= threshold else "deletion",
-                "variant_classification": None,
-                "Variant_Type": None,
-                "Consequence": None,
-                "HGVSc": None,
-                "HGVSp": None,
-                "HGVSp_Short": None,
-                "Transcript_ID": None,
-                "Protein_Change": None,
-                "protein_change": None,
-                "IMPACT": None,
-                "genome_build": "TCGA CNA matrix",
-                "source_file": str(path),
-            })
+            rows.append(
+                {
+                    "patient_id": str(column)[:12],
+                    "gene_symbol": gene,
+                    "alteration_type": "amplification" if float(value) >= threshold else "deletion",
+                    "variant_classification": None,
+                    "Variant_Type": None,
+                    "Consequence": None,
+                    "HGVSc": None,
+                    "HGVSp": None,
+                    "HGVSp_Short": None,
+                    "Transcript_ID": None,
+                    "Protein_Change": None,
+                    "protein_change": None,
+                    "IMPACT": None,
+                    "genome_build": "TCGA CNA matrix",
+                    "source_file": str(path),
+                }
+            )
     return pd.DataFrame(rows)
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--pilot", type=Path, default=Path("data/import_20260820/TP53 Dataset(preprocessed)/pilot/tcga_pilot_subsample.h5ad"))
-    parser.add_argument("--mutations", type=Path, default=Path("data/import_20260820/TP53 Dataset(preprocessed)/raw/tcga/data_mutations.txt"))
-    parser.add_argument("--cna", type=Path, default=Path("data/import_20260820/TP53 Dataset(preprocessed)/raw/tcga/data_cna.txt"))
-    parser.add_argument("--output", type=Path, default=Path("data/import_20260820/TP53 Dataset(preprocessed)/pilot/patient_gene_mutation_join.csv"))
+    parser.add_argument(
+        "--pilot",
+        type=Path,
+        default=Path(
+            "data/import_20260820/TP53 Dataset(preprocessed)/pilot/tcga_pilot_subsample.h5ad"
+        ),
+    )
+    parser.add_argument(
+        "--mutations",
+        type=Path,
+        default=Path("data/import_20260820/TP53 Dataset(preprocessed)/raw/tcga/data_mutations.txt"),
+    )
+    parser.add_argument(
+        "--cna",
+        type=Path,
+        default=Path("data/import_20260820/TP53 Dataset(preprocessed)/raw/tcga/data_cna.txt"),
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path(
+            "data/import_20260820/TP53 Dataset(preprocessed)/pilot/patient_gene_mutation_join.csv"
+        ),
+    )
     parser.add_argument("--chunksize", type=int, default=50000)
     parser.add_argument("--cna-threshold", type=float, default=2.0)
     args = parser.parse_args(argv)
@@ -100,7 +154,9 @@ def main(argv: list[str] | None = None) -> int:
     joined = pd.concat([missense, cna], ignore_index=True)
     if joined.empty:
         raise SystemExit("No pilot patient rows were found in the raw TCGA files")
-    joined = joined.drop_duplicates(subset=["patient_id", "gene_symbol", "alteration_type", "HGVSp_Short", "source_file"])
+    joined = joined.drop_duplicates(
+        subset=["patient_id", "gene_symbol", "alteration_type", "HGVSp_Short", "source_file"]
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     joined.to_csv(args.output, index=False)
     result = {
@@ -110,7 +166,9 @@ def main(argv: list[str] | None = None) -> int:
         "joined_rows": int(len(joined)),
         "joined_patients": int(joined["patient_id"].nunique()),
         "genes": int(joined["gene_symbol"].nunique()),
-        "alteration_type_counts": {str(k): int(v) for k, v in joined["alteration_type"].value_counts().items()},
+        "alteration_type_counts": {
+            str(k): int(v) for k, v in joined["alteration_type"].value_counts().items()
+        },
         "output": str(args.output),
         "output_sha256": sha256(args.output),
         "sources": {

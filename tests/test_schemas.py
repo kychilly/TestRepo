@@ -89,9 +89,7 @@ def test_valid_missense_mapping_is_eligible() -> None:
 
 
 def test_validator_payload_is_simplified_for_consumer() -> None:
-    result = build_validator_inputs([candidate()], [variant()], "1.0.0")[
-        0
-    ].to_validator_payload()
+    result = build_validator_inputs([candidate()], [variant()], "1.0.0")[0].to_validator_payload()
     assert set(result["candidate"]) == {"gene", "state", "score", "rank", "seed"}
     assert result["candidate"] == {
         "gene": "EGFR",
@@ -146,10 +144,7 @@ def test_non_missense_events_remain_and_abstain() -> None:
     )
     inputs = build_validator_inputs([candidate()], [amplification], "1.0.0")
     assert inputs[0].to_dict()["validator_eligibility"] == "abstain_non_missense"
-    assert (
-        inputs[0].to_dict()["variant_provenance"][0]["alteration_type"]
-        == "amplification"
-    )
+    assert inputs[0].to_dict()["variant_provenance"][0]["alteration_type"] == "amplification"
 
 
 def test_silencing_and_missing_protein_are_preserved() -> None:
@@ -180,9 +175,7 @@ def test_multiple_transcripts_are_not_collapsed() -> None:
         protein_isoform="2",
         protein_change="p.L858R",
     )
-    result = build_validator_inputs([candidate()], [variant(), second], "1.0.0")[
-        0
-    ].to_dict()
+    result = build_validator_inputs([candidate()], [variant(), second], "1.0.0")[0].to_dict()
     assert result["join_cardinality"] == "multiple"
     assert len(result["variant_provenance"]) == 2
     assert result["validator_eligibility"] == "abstain_ambiguous"
@@ -197,9 +190,7 @@ def test_unknown_alias_fails_closed() -> None:
 
 def test_validation_patient_candidate_is_rejected() -> None:
     with pytest.raises(ContractError, match="forbidden"):
-        build_validator_inputs(
-            [candidate()], [variant()], "1.0.0", forbidden_patient_ids=["P001"]
-        )
+        build_validator_inputs([candidate()], [variant()], "1.0.0", forbidden_patient_ids=["P001"])
 
 
 def test_checkpoint_omission_is_rejected() -> None:

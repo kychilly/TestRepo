@@ -1,9 +1,8 @@
 import os
 import pandas as pd
-import numpy as np
 
 
-def assemble_grn_prior():
+def assemble_grn_prior() -> None:
     out_dir = "data/prior"
     os.makedirs(out_dir, exist_ok=True)
 
@@ -18,31 +17,29 @@ def assemble_grn_prior():
         ("TP53", "EGFR", -1, "A", "DoRothEA/TRRUST", "PMID:11896023"),
         ("E2F1", "TP53", 1, "A", "DoRothEA", "PMID:12089308"),
         ("MYC", "TP53", 1, "B", "DoRothEA", "PMID:15175249"),
-
         # EGFR regulations
         ("STAT3", "EGFR", 1, "A", "DoRothEA/TRRUST", "PMID:15684319"),
         ("SP1", "EGFR", 1, "A", "TRRUST", "PMID:1848348"),
         ("TCF7L2", "EGFR", 1, "B", "DoRothEA", "PMID:19011627"),
-
         # IDH1 regulations
         ("CEBPA", "IDH1", 1, "B", "DoRothEA", "PMID:21468032"),
         ("HIF1A", "IDH1", 1, "B", "DoRothEA", "PMID:22019774"),
         ("SREBF1", "IDH1", 1, "C", "DoRothEA", "PMID:24120932"),
-
         # RPRM regulations
         ("TP53", "RPRM", 1, "A", "TRRUST", "PMID:10888888"),
         ("E2F1", "RPRM", -1, "B", "DoRothEA", "PMID:16418182"),
         ("BRCA1", "RPRM", 1, "C", "DoRothEA", "PMID:17999012"),
     ]
 
-    df_edges = pd.DataFrame(raw_edges, columns=[
-        "source_tf", "target_gene", "mor", "confidence", "provenance_db", "pubmed_id"
-    ]).drop_duplicates()
+    df_edges = pd.DataFrame(
+        raw_edges,
+        columns=["source_tf", "target_gene", "mor", "confidence", "provenance_db", "pubmed_id"],
+    ).drop_duplicates()
 
     # Filter for edges touching our pilot gene set as target or source
     pilot_edges = df_edges[
         df_edges["target_gene"].isin(target_genes) | df_edges["source_tf"].isin(target_genes)
-        ].copy()
+    ].copy()
 
     # -------------------------------------------------------------------------
     # 2. HOLD OUT SLICE FOR SANITY CHECK
@@ -67,7 +64,9 @@ def assemble_grn_prior():
     print(f"Training Prior Edges  : {len(df_train_prior)} (Saved to {train_path})")
     print(f"Held-Out Check Edges : {len(df_holdout)} (Saved to {holdout_path})\n")
     print("--- Train Prior Preview ---")
-    print(df_train_prior[["source_tf", "target_gene", "mor", "confidence", "provenance_db"]].head(10))
+    print(
+        df_train_prior[["source_tf", "target_gene", "mor", "confidence", "provenance_db"]].head(10)
+    )
     print("\n--- Adit Holdout Check Edge ---")
     print(df_holdout[["source_tf", "target_gene", "mor", "confidence", "pubmed_id"]])
 

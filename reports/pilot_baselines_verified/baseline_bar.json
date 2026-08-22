@@ -1,0 +1,150 @@
+{
+  "completed_runs": 2,
+  "methods_not_completed": [
+    "scvi_probe"
+  ],
+  "next_actions": [
+    "Supply the original raw Neftel count matrix, preserve it in layers['counts'], then rerun scVI with the same patient split."
+  ],
+  "non_applicable_runs": 1,
+  "rows": [
+    {
+      "evaluation": {
+        "balanced_accuracy": 0.5349407054188885,
+        "confusion_matrix": {
+          "labels": [
+            "AC",
+            "MES",
+            "NPC",
+            "OPC"
+          ],
+          "values": [
+            [
+              529,
+              199,
+              12,
+              54
+            ],
+            [
+              125,
+              148,
+              2,
+              11
+            ],
+            [
+              27,
+              0,
+              108,
+              20
+            ],
+            [
+              14,
+              0,
+              26,
+              14
+            ]
+          ]
+        },
+        "macro_f1": 0.5185090865740508,
+        "multiclass_brier_score": 0.5372617367613521,
+        "multiclass_log_loss": 0.8653773559465917,
+        "per_state_f1": {
+          "AC": 0.7105439892545332,
+          "MES": 0.4676145339652449,
+          "NPC": 0.7128712871287128,
+          "OPC": 0.18300653594771243
+        },
+        "per_state_precision": {
+          "AC": 0.7611510791366907,
+          "MES": 0.4265129682997118,
+          "NPC": 0.7297297297297297,
+          "OPC": 0.1414141414141414
+        },
+        "per_state_recall": {
+          "AC": 0.6662468513853904,
+          "MES": 0.5174825174825175,
+          "NPC": 0.6967741935483871,
+          "OPC": 0.25925925925925924
+        }
+      },
+      "method": "pca_logreg",
+      "run": "reports/pilot_baselines_verified/seed42/pca_logreg/run_metadata.json",
+      "seed": 42,
+      "status": "completed"
+    },
+    {
+      "method": "scvi_probe",
+      "reason": "scVI input must be finite, non-negative, integer-like raw counts",
+      "run": "reports/pilot_baselines_verified/seed42/scvi_probe/run_error.json",
+      "seed": 42,
+      "status": "not_applicable"
+    },
+    {
+      "evaluation": {
+        "balanced_accuracy": 0.4601694551337031,
+        "confusion_matrix": {
+          "labels": [
+            "AC",
+            "MES",
+            "NPC",
+            "OPC"
+          ],
+          "values": [
+            [
+              376,
+              382,
+              25,
+              11
+            ],
+            [
+              112,
+              165,
+              7,
+              2
+            ],
+            [
+              19,
+              15,
+              111,
+              10
+            ],
+            [
+              7,
+              14,
+              29,
+              4
+            ]
+          ]
+        },
+        "macro_f1": 0.43385467212957507,
+        "multiclass_brier_score": 0.5728137561382542,
+        "multiclass_log_loss": 1.5037774588617072,
+        "per_state_f1": {
+          "AC": 0.5749235474006116,
+          "MES": 0.382830626450116,
+          "NPC": 0.6788990825688074,
+          "OPC": 0.09876543209876543
+        },
+        "per_state_precision": {
+          "AC": 0.7315175097276264,
+          "MES": 0.2864583333333333,
+          "NPC": 0.6453488372093024,
+          "OPC": 0.14814814814814814
+        },
+        "per_state_recall": {
+          "AC": 0.473551637279597,
+          "MES": 0.5769230769230769,
+          "NPC": 0.7161290322580646,
+          "OPC": 0.07407407407407407
+        }
+      },
+      "method": "harmony_knn",
+      "run": "reports/pilot_baselines_verified/seed42/harmony_knn/run_metadata.json",
+      "seed": 42,
+      "status": "completed"
+    }
+  ],
+  "scientific_note": "PCA/logistic regression and Harmony/kNN are evaluated on the same patient-held-out Neftel test split. scVI is not scientifically applicable without true raw integer counts.",
+  "scope": "three requested baselines on combined Neftel analysis cohort",
+  "status": "completed_with_blockers"
+}

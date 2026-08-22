@@ -62,15 +62,11 @@ class HarmonyKNN(Baseline):
         batches = train_data.batch.astype(str).reshape(-1, 1)
         if len(np.unique(batches)) < 2:
             raise MethodNotApplicable("Harmony requires at least two training batches")
-        n_components = min(
-            self.components, train_data.X.shape[0], train_data.X.shape[1]
-        )
+        n_components = min(self.components, train_data.X.shape[0], train_data.X.shape[1])
         if n_components < 1:
             raise BaselineError("Harmony PCA has no valid components")
         self.gene_ids = train_data.gene_ids
-        self.pca = PCA(n_components=n_components, random_state=self.seed).fit(
-            train_data.X
-        )
+        self.pca = PCA(n_components=n_components, random_state=self.seed).fit(train_data.X)
         raw = self.pca.transform(train_data.X)
         metadata = pd.DataFrame({self.harmony_covariate: batches[:, 0]})
         try:
@@ -81,17 +77,13 @@ class HarmonyKNN(Baseline):
             if corrected.shape == (raw.shape[1], raw.shape[0]):
                 corrected = corrected.T
             if corrected.shape != raw.shape:
-                raise BaselineError(
-                    "Harmony returned an unexpected corrected embedding shape"
-                )
+                raise BaselineError("Harmony returned an unexpected corrected embedding shape")
             self.harmony_version = str(getattr(harmonypy, "__version__", "unknown"))
         except (AttributeError, RuntimeError, ValueError, TypeError) as exc:
             raise MethodNotApplicable(f"Harmony training failed: {exc}") from exc
         self.batch_encoder = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
         encoded = self.batch_encoder.fit_transform(batches)
-        self.query_map = Ridge(alpha=1.0).fit(
-            np.column_stack([raw, encoded]), corrected
-        )
+        self.query_map = Ridge(alpha=1.0).fit(np.column_stack([raw, encoded]), corrected)
         transformed = self._transform(train_data)
         self.knn = KNeighborsClassifier(
             n_neighbors=min(self.n_neighbors, len(train_data.state)), weights="distance"
@@ -109,7 +101,7 @@ class HarmonyKNN(Baseline):
         transformed = self.query_map.predict(np.column_stack([raw, encoded]))
         if not np.isfinite(transformed).all():
             raise BaselineError("Harmony transformed embedding is not finite")
-        return transformed
+        return cast(NDArray[Any], transformed)
 
     def predict(self, data: CellData, metadata: dict[str, Any]) -> NDArray[Any]:
         if self.knn is None:

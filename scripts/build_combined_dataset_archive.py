@@ -8,7 +8,6 @@ import hashlib
 import json
 import zipfile
 from pathlib import Path
-from typing import Any
 
 from gbm_study.plain_english import write_json_with_explanation
 
@@ -23,16 +22,31 @@ def sha256(path: Path) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output", type=Path, default=Path("data/TP53_combined_old_new_20260820.zip"))
-    parser.add_argument("--report", type=Path, default=Path("reports/readiness/combined_dataset.json"))
+    parser.add_argument(
+        "--output", type=Path, default=Path("data/TP53_combined_old_new_20260820.zip")
+    )
+    parser.add_argument(
+        "--report", type=Path, default=Path("reports/readiness/combined_dataset.json")
+    )
     args = parser.parse_args(argv)
     root = Path.cwd()
     old = root / "TP53 Dataset(preprocessed) 2"
     state_file = root / "data/neftel_qc-002.h5ad"
-    merged = root / "data/import_20260820/TP53 Dataset(preprocessed)/processed/full_cohort_with_states.h5ad"
-    analysis_ready = root / "data/import_20260820/TP53 Dataset(preprocessed)/processed/analysis_ready_combined.h5ad"
-    clean_cgga = root / "data/import_20260820/TP53 Dataset(preprocessed)/processed/cgga_bulk_clean.h5ad"
-    mutation_join = root / "data/import_20260820/TP53 Dataset(preprocessed)/pilot/patient_gene_mutation_join.csv"
+    merged = (
+        root
+        / "data/import_20260820/TP53 Dataset(preprocessed)/processed/full_cohort_with_states.h5ad"
+    )
+    analysis_ready = (
+        root
+        / "data/import_20260820/TP53 Dataset(preprocessed)/processed/analysis_ready_combined.h5ad"
+    )
+    clean_cgga = (
+        root / "data/import_20260820/TP53 Dataset(preprocessed)/processed/cgga_bulk_clean.h5ad"
+    )
+    mutation_join = (
+        root
+        / "data/import_20260820/TP53 Dataset(preprocessed)/pilot/patient_gene_mutation_join.csv"
+    )
     required = [old, state_file, merged, analysis_ready, clean_cgga, mutation_join]
     missing = [str(path) for path in required if not path.exists()]
     if missing:
@@ -60,8 +74,12 @@ def main(argv: list[str] | None = None) -> int:
         ],
     }
     temporary_manifest = args.output.with_suffix(".manifest.json")
-    temporary_manifest.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    with zipfile.ZipFile(args.output, "w", compression=zipfile.ZIP_STORED, allowZip64=True) as archive:
+    temporary_manifest.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    with zipfile.ZipFile(
+        args.output, "w", compression=zipfile.ZIP_STORED, allowZip64=True
+    ) as archive:
         archive.write(temporary_manifest, "MANIFEST.json")
         for path in old.rglob("*"):
             if path.is_file():
@@ -72,10 +90,16 @@ def main(argv: list[str] | None = None) -> int:
         archive.write(clean_cgga, "combined/cgga_bulk_clean.h5ad")
         archive.write(mutation_join, "combined/patient_gene_mutation_join.csv")
     temporary_manifest.unlink()
-    manifest.update({
-        "archive": {"path": str(args.output), "sha256": sha256(args.output), "bytes": args.output.stat().st_size},
-        "status": "completed",
-    })
+    manifest.update(
+        {
+            "archive": {
+                "path": str(args.output),
+                "sha256": sha256(args.output),
+                "bytes": args.output.stat().st_size,
+            },
+            "status": "completed",
+        }
+    )
     write_json_with_explanation(args.report, manifest)
     print(json.dumps(manifest, indent=2, sort_keys=True))
     return 0

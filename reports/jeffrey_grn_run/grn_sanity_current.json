@@ -3,9 +3,9 @@
   "held_out_edges": 1,
   "negative_edges": 144,
   "provenance": {
-    "held_out": "data/TP53 Dataset(preprocessed) 2/prior/grn_pilot_adit_holdout_check.csv",
+    "held_out": "data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_adit_holdout_check.csv",
     "held_out_sha256": "1e597a3d371c77d15159553a5434300e11cc0f3cd4b79bd0368eacf032348ec7",
-    "train_prior": "data/TP53 Dataset(preprocessed) 2/prior/grn_pilot_train_prior.csv",
+    "train_prior": "data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv",
     "train_prior_sha256": "c734cbb6b0fb0c159b17beafa20947dd06f5f8c86a4a779955f1e713d08c3841"
   },
   "status": "completed"

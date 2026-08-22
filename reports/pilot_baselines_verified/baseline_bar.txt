@@ -1,0 +1,21 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/pilot_baselines_verified/baseline_bar.json
+
+WHAT HAPPENED
+- The job did the parts it could do, but some parts could not run.
+
+WHY
+- Method did not complete: scvi_probe
+
+WHAT IS IMPORTANT
+- Runs that finished: 2
+- PCA/logistic regression and Harmony/kNN are evaluated on the same patient-held-out Neftel test split. scVI is not scientifically applicable without true raw integer counts.
+- pca_logreg: completed; macro-F1=0.5185090865740508; balanced accuracy=0.5349407054188885
+- scvi_probe: not_applicable; reason=scVI input must be finite, non-negative, integer-like raw counts
+- harmony_knn: completed; macro-F1=0.43385467212957507; balanced accuracy=0.4601694551337031
+
+WHAT IS CONCERNING
+- Method did not complete: scvi_probe
+
+NEXT ACTIONS
+- Supply the original raw Neftel count matrix, preserve it in layers['counts'], then rerun scVI with the same patient split.

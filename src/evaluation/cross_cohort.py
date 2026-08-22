@@ -5,9 +5,10 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Callable, Iterable
 
 import numpy as np
+from numpy.typing import NDArray
 
 
 CONFIRMED_OUTCOMES = {"destabilizing_driver", "functional_driver"}
@@ -21,7 +22,7 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def rank_rows(values: np.ndarray) -> np.ndarray:
+def rank_rows(values: NDArray[Any]) -> NDArray[np.float32]:
     """Map each sample to within-sample percentile ranks.
 
     The source files use incompatible units (TCGA rank-like values and
@@ -39,11 +40,11 @@ def rank_rows(values: np.ndarray) -> np.ndarray:
     ).astype(np.float32)
 
 
-def _dense(value: Any) -> np.ndarray:
-    return np.asarray(value.toarray() if hasattr(value, "toarray") else value)
+def _dense(value: Any) -> NDArray[Any]:
+    return np.asarray(value.toarray() if hasattr(value, "toarray") else value)  # type: ignore[no-any-return]
 
 
-def _labels(values: Iterable[Any]) -> np.ndarray:
+def _labels(values: Iterable[Any]) -> NDArray[np.int8]:
     mapping = {"WT": 0, "Wildtype": 0, "Mutant": 1}
     return np.asarray([mapping[str(value)] for value in values], dtype=np.int8)
 
@@ -78,8 +79,7 @@ def load_cohorts(tcga_path: Path, full_path: Path) -> dict[str, Any]:
     y_neftel = np.zeros(len(patient_ids), dtype=np.int8)
 
     cgga_valid = (
-        (cohort == "CGGA")
-        & full.obs["IDH_status"].astype(str).isin(["WT", "Wildtype", "Mutant"])
+        (cohort == "CGGA") & full.obs["IDH_status"].astype(str).isin(["WT", "Wildtype", "Mutant"])
     ).to_numpy()
     x_cgga = rank_rows(_dense(full[cgga_valid, common].X))
     y_cgga = _labels(full.obs.loc[cgga_valid, "IDH_status"])
@@ -93,16 +93,14 @@ def load_cohorts(tcga_path: Path, full_path: Path) -> dict[str, Any]:
     }
 
 
-def feature_groups(genes: np.ndarray, verdicts_path: Path) -> dict[str, np.ndarray]:
+def feature_groups(genes: NDArray[Any], verdicts_path: Path) -> dict[str, NDArray[np.int64]]:
     import pandas as pd
 
     verdicts = pd.read_csv(verdicts_path)
     required = {"gene", "outcome"}
     if not required.issubset(verdicts.columns):
         raise ValueError(f"Verdict table must contain {sorted(required)}")
-    confirmed = set(
-        verdicts.loc[verdicts["outcome"].isin(CONFIRMED_OUTCOMES), "gene"].astype(str)
-    )
+    confirmed = set(verdicts.loc[verdicts["outcome"].isin(CONFIRMED_OUTCOMES), "gene"].astype(str))
     candidates = set(verdicts["gene"].astype(str))
     gene_list = list(map(str, genes))
     confirmed_idx = np.asarray([i for i, gene in enumerate(gene_list) if gene in confirmed])
@@ -118,7 +116,7 @@ def feature_groups(genes: np.ndarray, verdicts_path: Path) -> dict[str, np.ndarr
     }
 
 
-def binary_scores(y_true: np.ndarray, probability: np.ndarray) -> dict[str, float]:
+def binary_scores(y_true: NDArray[Any], probability: NDArray[Any]) -> dict[str, float]:
     from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 
     prediction = (probability >= 0.5).astype(np.int8)
@@ -130,7 +128,7 @@ def binary_scores(y_true: np.ndarray, probability: np.ndarray) -> dict[str, floa
 
 
 def fit_arm(
-    data: dict[str, Any], feature_idx: np.ndarray, *, seed: int
+    data: dict[str, Any], feature_idx: NDArray[np.int64], *, seed: int
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     from sklearn.linear_model import LogisticRegression
     from sklearn.model_selection import train_test_split
@@ -165,11 +163,9 @@ def fit_arm(
         "external_test_samples": int(len(y_external)),
         "internal": internal,
         "external": external,
-        "internal_to_external_macro_f1_drop": float(
-            internal["macro_f1"] - external["macro_f1"]
-        ),
+        "internal_to_external_macro_f1_drop": float(internal["macro_f1"] - external["macro_f1"]),
     }
-    predictions = []
+    predictions: list[dict[str, Any]] = []
     for scope, ids, labels, probabilities in (
         ("internal_tcga", id_tcga[internal_idx], y_tcga[internal_idx], p_internal),
         ("external_cgga", external_ids, y_external, p_external),
@@ -195,13 +191,18 @@ def summarize_runs(runs: list[dict[str, Any]]) -> dict[str, Any]:
     summaries: dict[str, Any] = {}
     for arm, values in by_arm.items():
         summaries[arm] = {}
-        for key, getter in (
+        metrics: tuple[tuple[str, Callable[[dict[str, Any]], float]], ...] = (
             ("internal_macro_f1", lambda row: row["internal"]["macro_f1"]),
             ("external_macro_f1", lambda row: row["external"]["macro_f1"]),
             ("external_idh_mutation_auroc", lambda row: row["external"]["idh_mutation_auroc"]),
-            ("internal_to_external_macro_f1_drop", lambda row: row["internal_to_external_macro_f1_drop"]),
-        ):
-            measured = np.asarray([getter(row) for row in values], dtype=float)
+            (
+                "internal_to_external_macro_f1_drop",
+                lambda row: row["internal_to_external_macro_f1_drop"],
+            ),
+        )
+        for key, getter in metrics:
+            measured_values = [float(getter(row)) for row in values]
+            measured = np.asarray(measured_values, dtype=np.float64)
             summaries[arm][key] = {
                 "mean": float(measured.mean()),
                 "standard_deviation": float(measured.std(ddof=1)) if len(measured) > 1 else 0.0,
@@ -209,9 +210,9 @@ def summarize_runs(runs: list[dict[str, Any]]) -> dict[str, Any]:
             }
     confirmed = summaries["confirmed_genes"]["internal_to_external_macro_f1_drop"]["mean"]
     unconfirmed = summaries["unconfirmed_genes"]["internal_to_external_macro_f1_drop"]["mean"]
-    shuffled = summaries["shuffled_size_matched_control"][
-        "internal_to_external_macro_f1_drop"
-    ]["mean"]
+    shuffled = summaries["shuffled_size_matched_control"]["internal_to_external_macro_f1_drop"][
+        "mean"
+    ]
     confirmed_external = summaries["confirmed_genes"]["external_macro_f1"]["mean"]
     shuffled_external = summaries["shuffled_size_matched_control"]["external_macro_f1"]["mean"]
     confirmed_beats_shuffled = confirmed < shuffled and confirmed_external > shuffled_external

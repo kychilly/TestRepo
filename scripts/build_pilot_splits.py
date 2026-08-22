@@ -9,6 +9,8 @@ from pathlib import Path
 
 import numpy as np
 
+from gbm_study.plain_english import companion_path, explain
+
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
@@ -36,6 +38,18 @@ def main(argv: list[str] | None = None) -> int:
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    companion_path(args.output).write_text(
+        explain(
+            {
+                "status": "completed",
+                "seed": args.seed,
+                "patient_count": len(patients),
+                "next_actions": ["Use this same split file for every model arm and seed."],
+            },
+            source=str(args.output),
+        ),
+        encoding="utf-8",
+    )
     print(
         json.dumps({"status": "completed", "patients": len(patients), "output": str(args.output)})
     )

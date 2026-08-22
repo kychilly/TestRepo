@@ -25081,7 +25081,7 @@
     "config_path": "config/stage34.yaml",
     "config_sha256": "4a914c76a004c208eca21560985df4f38e64c87667dd9d0fe2cb641850d2afe9",
     "records_path": "data/pilot/stage34_combined_records.jsonl",
-    "records_sha256": "a69efba80258f36303790e84fa3e1c042690b1669066907d705a2ddf962ea6df"
+    "records_sha256": "5cb96042833b27eb85d9a2f60ba38f11b64ca920eaf40921bdb8de1e6b0cbf23"
   },
   "scientifically_complete": false,
   "scope": "real_candidates",

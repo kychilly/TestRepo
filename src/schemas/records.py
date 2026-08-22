@@ -21,9 +21,7 @@ class ContractError(ValueError):
 
 
 def _load_schema(name: str) -> dict[str, Any]:
-    return cast(
-        dict[str, Any], json.loads((SCHEMA_DIR / name).read_text(encoding="utf-8"))
-    )
+    return cast(dict[str, Any], json.loads((SCHEMA_DIR / name).read_text(encoding="utf-8")))
 
 
 def _validate(document: Mapping[str, Any], schema_name: str) -> None:
@@ -40,12 +38,8 @@ def _validate(document: Mapping[str, Any], schema_name: str) -> None:
         schema,
         store={name: value for name, value in schemas.items()},
     )
-    validator = Draft202012Validator(
-        schema, resolver=resolver, format_checker=FormatChecker()
-    )
-    errors = sorted(
-        validator.iter_errors(dict(document)), key=lambda error: list(error.path)
-    )
+    validator = Draft202012Validator(schema, resolver=resolver, format_checker=FormatChecker())
+    errors = sorted(validator.iter_errors(dict(document)), key=lambda error: list(error.path))
     if errors:
         location = ".".join(str(part) for part in errors[0].path) or "$"
         raise ContractError(f"{schema_name} invalid at {location}: {errors[0].message}")
@@ -134,9 +128,7 @@ class ProteinEvidence:
         _validate(payload, "protein_evidence.schema.json")
         normalized = normalize_gene_symbol(str(payload["gene"]), aliases)
         if normalized != payload["gene"]:
-            raise ContractError(
-                "protein evidence gene must be stored in normalized canonical form"
-            )
+            raise ContractError("protein evidence gene must be stored in normalized canonical form")
         return cls(payload)
 
     def to_dict(self) -> dict[str, Any]:
@@ -159,9 +151,7 @@ def validate_candidate_gene(
             f"Candidate includes forbidden validation/external patients: {sorted(forbidden)}"
         )
     if int(record["n_patients"]) != len(patients):
-        raise ContractError(
-            "n_patients must equal the number of contributing_patient_ids"
-        )
+        raise ContractError("n_patients must equal the number of contributing_patient_ids")
 
 
 def validate_variant_record(
@@ -197,12 +187,8 @@ def _eligibility(variants: list[dict[str, Any]]) -> tuple[str, str]:
         return "none", "abstain_non_missense"
     status = variant["mapping_status"]
     if status != "resolved":
-        reason = (
-            "abstain_ambiguous" if status == "ambiguous" else "abstain_mapping_failed"
-        )
-        return (
-            "transcript_ambiguous" if status == "ambiguous" else "mapping_failed"
-        ), reason
+        reason = "abstain_ambiguous" if status == "ambiguous" else "abstain_mapping_failed"
+        return ("transcript_ambiguous" if status == "ambiguous" else "mapping_failed"), reason
     return "none", "eligible_missense"
 
 
@@ -217,14 +203,10 @@ def build_validator_inputs(
     """Create explicit candidate/variant joins; never collapse variant evidence."""
     candidate_records = [CandidateGene.from_dict(item, aliases) for item in candidates]
     variant_records = [VariantRecord.from_dict(item, aliases) for item in variants]
-    evidence_records = [
-        ProteinEvidence.from_dict(item, aliases) for item in protein_evidence
-    ]
+    evidence_records = [ProteinEvidence.from_dict(item, aliases) for item in protein_evidence]
     evidence_by_variant: dict[str, list[dict[str, Any]]] = {}
     for evidence in evidence_records:
-        evidence_by_variant.setdefault(evidence.data["variant_id"], []).append(
-            evidence.to_dict()
-        )
+        evidence_by_variant.setdefault(evidence.data["variant_id"], []).append(evidence.to_dict())
     by_candidate: list[ValidatorInput] = []
     for candidate in candidate_records:
         validate_candidate_gene(candidate.data, aliases, forbidden_patient_ids)
@@ -236,14 +218,11 @@ def build_validator_inputs(
             for variant in variant_records
             if variant.data["patient_id"] in patient_ids
             and variant.data["cohort"] == candidate.data["cohort"]
-            and normalize_gene_symbol(variant.data["gene_symbol"], aliases)
-            == candidate_gene
+            and normalize_gene_symbol(variant.data["gene_symbol"], aliases) == candidate_gene
             and variant.data["ensembl_gene_id"] == candidate_ensembl
         ]
         matches.sort(key=lambda item: item["variant_id"])
-        cardinality = (
-            "zero" if not matches else "one" if len(matches) == 1 else "multiple"
-        )
+        cardinality = "zero" if not matches else "one" if len(matches) == 1 else "multiple"
         ambiguity, eligibility = _eligibility(matches)
         protein_mapping = [
             {
@@ -279,17 +258,13 @@ def build_validator_inputs(
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
-    for line_number, line in enumerate(
-        path.read_text(encoding="utf-8").splitlines(), 1
-    ):
+    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
             continue
         try:
             value = json.loads(line)
         except json.JSONDecodeError as exc:
-            raise ContractError(
-                f"{path}:{line_number} is not valid JSON: {exc}"
-            ) from exc
+            raise ContractError(f"{path}:{line_number} is not valid JSON: {exc}") from exc
         if not isinstance(value, dict):
             raise ContractError(f"{path}:{line_number} must contain a JSON object")
         records.append(value)
@@ -298,7 +273,9 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
 
 def write_jsonl(path: Path, records: Iterable[Mapping[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as stream:
+    with tempfile.NamedTemporaryFile(
+        "w", encoding="utf-8", dir=path.parent, delete=False
+    ) as stream:
         stream.write("".join(json.dumps(dict(record), sort_keys=True) + "\n" for record in records))
         temporary = Path(stream.name)
     temporary.replace(path)

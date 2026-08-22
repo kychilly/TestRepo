@@ -1,0 +1,35 @@
+{
+  "blockers": [
+    "Both confirmed and unconfirmed feature groups must be non-empty",
+    "Current Stage 3/4 evidence has zero confirmed genes because protein/AlphaFold evidence is absent.",
+    "Do not substitute the stale reports/stage34/verdicts.csv file."
+  ],
+  "data": {
+    "cgga_labeled_samples": 966,
+    "common_genes": 1721,
+    "neftel_pseudobulk_samples": 27,
+    "tcga_samples": 160
+  },
+  "endpoint": "patient_level_IDH_mutation_status",
+  "next_actions": [
+    "Add independent AlphaFold/protein evidence and rerun Stage 3/4.",
+    "Run this same Week 4 command after the current verdict CSV is regenerated."
+  ],
+  "proposal_metrics": {
+    "abstention_accuracy": "blocked: no independent abstention gold labels",
+    "grn_edge_auroc": "not_run",
+    "internal_to_external_performance_drop": "blocked: no confirmed arm",
+    "macro_f1": "blocked: confirmed feature group is unavailable",
+    "variant_auroc": "blocked: no independent variant-effect labels and scores"
+  },
+  "provenance": {
+    "config_sha256": "f8a4d119c937b0b8d8ea76354fcbf16e7d0d4e232623e9e9723989a1257fa8b5",
+    "full_cohort_sha256": "2dae279547ec170501bc363c02e4234682b06388ac60ea12a51436701a765fac",
+    "grn_holdout_sha256": "1e597a3d371c77d15159553a5434300e11cc0f3cd4b79bd0368eacf032348ec7",
+    "grn_train_sha256": "c734cbb6b0fb0c159b17beafa20947dd06f5f8c86a4a779955f1e713d08c3841",
+    "tcga_sha256": "d9542ce4fc71bdd196aa111f83061041c53ef7ec26590a37cd76b0b0380cf132",
+    "verdicts_sha256": "791223a7ba789f7aaa6d05655b4d64e42969360691369adbcc81257b8a669c6d"
+  },
+  "scope": "Week 4 integration preflight; no model arm was fit",
+  "status": "completed_with_blockers"
+}

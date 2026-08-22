@@ -1,0 +1,20 @@
+{
+  "figures": [
+    "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/paper_figures_current/baseline_macro_f1.png",
+    "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/paper_figures_current/stage34_bucket_counts.png",
+    "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/paper_figures_current/internal_state_counts.png"
+  ],
+  "reason": "All plotted values were loaded from current run artifacts; no readiness or performance value was hard-coded.",
+  "sources": [
+    "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/readiness/execution_readiness.json",
+    "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/stage34/combined_full_candidate_run.json",
+    "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/pilot_baselines_verified/seed42/pca_logreg_eval/metrics.json",
+    "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/pilot_baselines_verified/seed42/harmony_knn_eval/metrics.json"
+  ],
+  "status": "completed",
+  "warnings": [
+    "H5AD layers['counts'] contains sampled non-integer values; scVI is data-blocked",
+    "Validator evidence has zero confirmed genes; validator-on arms are data-blocked",
+    "GRN holdout has fewer than 20 unique positive edges"
+  ]
+}

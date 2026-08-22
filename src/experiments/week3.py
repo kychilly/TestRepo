@@ -6,6 +6,7 @@ import hashlib
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from collections.abc import Sequence
 from typing import Any, Callable, Mapping
 
 import numpy as np
@@ -79,9 +80,11 @@ def _write_json(path: Path, value: Any) -> None:
     write_json_with_explanation(path, value)
 
 
-def _write_jsonl(path: Path, rows: list[Mapping[str, Any]]) -> None:
+def _write_jsonl(path: Path, rows: Sequence[Mapping[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("".join(json.dumps(dict(row), sort_keys=True) + "\n" for row in rows), encoding="utf-8")
+    path.write_text(
+        "".join(json.dumps(dict(row), sort_keys=True) + "\n" for row in rows), encoding="utf-8"
+    )
     write_jsonl_explanation(
         path,
         row_count=len(rows),
@@ -107,7 +110,11 @@ def run_matrix(config: Mapping[str, Any], runner: Runner, output: Path) -> dict[
     if len(set(seeds)) < 3:
         raise ValueError("At least three distinct seeds are required")
     timing_path = Path(str(config["week2_timing_path"]))
-    timing = json.loads(timing_path.read_text(encoding="utf-8")) if timing_path.is_file() else {"status": "blocked"}
+    timing = (
+        json.loads(timing_path.read_text(encoding="utf-8"))
+        if timing_path.is_file()
+        else {"status": "blocked"}
+    )
     matrix = ablation_matrix()
     scope = select_backbones(
         timing,
@@ -183,7 +190,9 @@ def run_matrix(config: Mapping[str, Any], runner: Runner, output: Path) -> dict[
                 _write_json(run_dir / "run.json", record)
                 runs.append(record)
     result = {
-        "status": "completed" if runs and all(run["status"] == "completed" for run in runs) else "completed_with_blockers",
+        "status": "completed"
+        if runs and all(run["status"] == "completed" for run in runs)
+        else "completed_with_blockers",
         "config_hash": config_hash,
         "seeds": seeds,
         "ablation_design": "one_variable_at_a_time",

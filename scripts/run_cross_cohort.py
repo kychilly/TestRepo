@@ -62,7 +62,7 @@ def run(config_path: Path, output: Path) -> dict[str, Any]:
     try:
         groups = feature_groups(data["genes"], verdicts_path)
     except ValueError as exc:
-        result = {
+        result: dict[str, Any] = {
             "status": "completed_with_blockers",
             "endpoint": "patient_level_IDH_mutation_status",
             "scope": "Week 4 integration preflight; no model arm was fit",
@@ -146,7 +146,9 @@ def run(config_path: Path, output: Path) -> dict[str, Any]:
             "completed_runs": len(completed),
             "expected_runs": len(seeds) * 4,
             "fingerprint": fingerprint,
-            "next_actions": ["Use a new output directory if any input, seed, or configuration changes."],
+            "next_actions": [
+                "Use a new output directory if any input, seed, or configuration changes."
+            ],
         },
     )
 
@@ -214,7 +216,7 @@ def main() -> int:
     args = parser.parse_args()
     result = run(args.config, args.output)
     print(json.dumps(result, indent=2, sort_keys=True))
-    return 0
+    return 0 if result.get("status") == "completed" else 2
 
 
 if __name__ == "__main__":

@@ -29,3 +29,8 @@ line-length = 100
 [tool.mypy]
 strict = true
 python_version = "3.11"
+ignore_missing_imports = true
+# Scientific Python packages commonly omit PEP 561 metadata. Existing ignores
+# document those boundaries and should remain valid across environments where
+# optional stubs may or may not be installed.
+warn_unused_ignores = false

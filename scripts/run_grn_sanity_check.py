@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from models.grn import load_edges, run_sanity_check, score_held_out_edges
+from gbm_study.plain_english import write_json_with_explanation
 from schemas.records import ContractError
 
 
@@ -32,9 +33,11 @@ def main(argv: list[str] | None = None) -> int:
         if isinstance(config, dict) and config.get("grn_edge_list_path")
         else None
     )
+    result: dict[str, Any]
     if args.train_prior and args.held_out:
         try:
-            train_path, held_path = args.train_prior, args.held_out
+            train_path = args.train_prior
+            held_path = args.held_out
             if not train_path.is_file() or not held_path.is_file():
                 result = {
                     "status": "blocked",
@@ -58,7 +61,7 @@ def main(argv: list[str] | None = None) -> int:
         except ContractError as exc:
             result = {"status": "failed", "reason": str(exc)}
     elif configured_path is None:
-        result: dict[str, Any] = {
+        result = {
             "status": "blocked",
             "reason": "No real GRN edge list is configured (Data Lead delivery pending)",
         }
@@ -79,10 +82,7 @@ def main(argv: list[str] | None = None) -> int:
                 )
             except ContractError as exc:
                 result = {"status": "failed", "reason": str(exc)}
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    temporary = args.output.with_suffix(args.output.suffix + ".tmp")
-    temporary.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    temporary.replace(args.output)
+    write_json_with_explanation(args.output, result)
     print(
         json.dumps(result, indent=2, sort_keys=True),
         file=sys.stderr if result["status"] == "blocked" else sys.stdout,

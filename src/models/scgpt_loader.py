@@ -35,6 +35,44 @@ def _rank_bin(values: np.ndarray[Any, Any], bins: int) -> np.ndarray[Any, Any]:
     return result
 
 
+def _truncate_and_pad(
+    gene_ids: np.ndarray[Any, Any],
+    raw_values: np.ndarray[Any, Any],
+    transformed_values: np.ndarray[Any, Any],
+    *,
+    token_length: int,
+    cls_id: int,
+    pad_id: int,
+    pad_value: float,
+) -> tuple[np.ndarray[Any, Any], np.ndarray[Any, Any]]:
+    """Keep each cell's highest-expression genes and pad to a fixed length.
+
+    The pan-cancer checkpoint was trained with ``trunc_by_sample=true``. Global
+    first-column truncation would depend on H5AD column order and could discard
+    the expressed genes in a cell, so selection is deterministic per cell.
+    """
+    if token_length < 2:
+        raise AdapterError("token_length must leave room for CLS and at least one gene")
+    if gene_ids.shape != raw_values.shape or raw_values.shape != transformed_values.shape:
+        raise AdapterError("Gene IDs and values must have matching two-dimensional shapes")
+    rows = raw_values.shape[0]
+    capacity = token_length - 1
+    output_ids = np.full((rows, token_length), pad_id, dtype=np.int64)
+    output_values = np.full((rows, token_length), pad_value, dtype=np.float32)
+    output_ids[:, 0] = cls_id
+    output_values[:, 0] = 0.0
+    for row_index in range(rows):
+        positive = np.flatnonzero(raw_values[row_index] > 0)
+        if len(positive) > capacity:
+            order = np.argsort(-raw_values[row_index, positive], kind="stable")
+            positive = positive[order[:capacity]]
+        count = len(positive)
+        if count:
+            output_ids[row_index, 1 : count + 1] = gene_ids[row_index, positive]
+            output_values[row_index, 1 : count + 1] = transformed_values[row_index, positive]
+    return output_ids, output_values
+
+
 class OfficialScGPTRunner:
     """Numpy-facing callable around a loaded official scGPT model."""
 
@@ -45,6 +83,7 @@ class OfficialScGPTRunner:
         device: str,
         cls_id: int,
         pad_id: int,
+        pad_value: float,
         token_length: int | None,
         n_input_bins: int,
         value_transform: str,
@@ -53,6 +92,7 @@ class OfficialScGPTRunner:
         self.device = device
         self.cls_id = cls_id
         self.pad_id = pad_id
+        self.pad_value = pad_value
         self.token_length = token_length
         self.n_input_bins = n_input_bins
         self.value_transform = value_transform
@@ -64,18 +104,26 @@ class OfficialScGPTRunner:
         import torch
 
         gene_ids = np.asarray(kwargs["gene_ids"], dtype=np.int64)
-        values = np.asarray(kwargs["values"], dtype=np.float32)
+        raw_values = np.asarray(kwargs["values"], dtype=np.float32)
         if self.value_transform == "rank_bin":
-            values = _rank_bin(values, self.n_input_bins)
+            values = _rank_bin(raw_values, self.n_input_bins)
         elif self.value_transform != "none":
             raise AdapterError(f"Unsupported scGPT value_transform: {self.value_transform}")
-        cls = np.full((len(values), 1), self.cls_id, dtype=np.int64)
-        cls_values = np.zeros((len(values), 1), dtype=np.float32)
-        gene_ids = np.concatenate([cls, gene_ids], axis=1)
-        values = np.concatenate([cls_values, values], axis=1)
         if self.token_length is not None:
-            gene_ids = gene_ids[:, : self.token_length]
-            values = values[:, : self.token_length]
+            gene_ids, values = _truncate_and_pad(
+                gene_ids,
+                raw_values,
+                values,
+                token_length=self.token_length,
+                cls_id=self.cls_id,
+                pad_id=self.pad_id,
+                pad_value=self.pad_value,
+            )
+        else:
+            cls = np.full((len(values), 1), self.cls_id, dtype=np.int64)
+            cls_values = np.zeros((len(values), 1), dtype=np.float32)
+            gene_ids = np.concatenate([cls, gene_ids], axis=1)
+            values = np.concatenate([cls_values, values], axis=1)
         src = torch.as_tensor(gene_ids, device=self.device)
         expression = torch.as_tensor(values, device=self.device)
         padding = src.eq(self.pad_id)
@@ -94,7 +142,7 @@ class OfficialScGPTRunner:
                 src,
                 expression,
                 src_key_padding_mask=padding,
-                CLS=True,
+                CLS=False,
                 CCE=False,
                 MVC=False,
                 ECS=False,
@@ -171,9 +219,13 @@ def load_official_scgpt(
     normalized = dict(state)
     for key in list(normalized):
         if ".self_attn.Wqkv.weight" in key:
-            normalized[key.replace(".self_attn.Wqkv.weight", ".self_attn.in_proj_weight")] = normalized.pop(key)
+            normalized[key.replace(".self_attn.Wqkv.weight", ".self_attn.in_proj_weight")] = (
+                normalized.pop(key)
+            )
         elif ".self_attn.Wqkv.bias" in key:
-            normalized[key.replace(".self_attn.Wqkv.bias", ".self_attn.in_proj_bias")] = normalized.pop(key)
+            normalized[key.replace(".self_attn.Wqkv.bias", ".self_attn.in_proj_bias")] = (
+                normalized.pop(key)
+            )
     expected = model.state_dict()
     loadable = {
         key: value
@@ -190,13 +242,22 @@ def load_official_scgpt(
             "Checkpoint is missing essential embedding/transformer weights: "
             + ", ".join(essential_missing[:10])
         )
+    if bool(config.get("checkpoint_strict", False)) and incompatible.missing_keys:
+        raise AdapterError(
+            "Strict checkpoint loading found missing instantiated-model weights: "
+            + ", ".join(incompatible.missing_keys[:10])
+        )
     model.to(device)
     model.eval()
+    pad_value_raw = config.get("pad_value")
+    if pad_value_raw is None:
+        pad_value_raw = model_args.get("pad_value", -2)
     return OfficialScGPTRunner(
         model,
         device=device,
         cls_id=vocabulary[cls_token],
         pad_id=vocabulary[pad_token],
+        pad_value=float(pad_value_raw),
         token_length=(
             int(config["token_length"])
             if config.get("token_length")

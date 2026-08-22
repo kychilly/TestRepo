@@ -5,13 +5,16 @@ WHAT HAPPENED
 - The job did the parts it could do, but some parts could not run.
 
 WHY
-- The JSON file did not give a special reason.
+- feasibility: blocked_missing_pool_candidates
+- comparison: Real and shuffled bucket counts are identical by design; provide frozen independent outcomes or a locked downstream metric.
 
 WHAT IS IMPORTANT
-- The JSON file is the exact machine-readable record.
+- Outcome buckets: abstain=2454, data_deficient=49, destabilizing_driver=0, functional_driver=0, unconfirmed=0
+- Feasibility branch: pool_additional_cancer_types (decision count 0, minimum 15)
 
 WHAT IS CONCERNING
-- Read the JSON for details before using this result.
+- feasibility: blocked_missing_pool_candidates
+- comparison: Real and shuffled bucket counts are identical by design; provide frozen independent outcomes or a locked downstream metric.
 
 NEXT ACTIONS
 - Fix the reason listed above, then run the same command again. The job can resume from its checkpoint.

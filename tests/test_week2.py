@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
+from numpy.typing import NDArray
 import pytest
 
 from gbm_study.stage5_masking import PassthroughStubOutcomeSource, mask_candidates
@@ -63,11 +64,41 @@ class StochasticModel:
     def __init__(self) -> None:
         self.calls = 0
 
-    def __call__(self, **kwargs: object) -> dict[str, np.ndarray]:
+    def __call__(self, **kwargs: object) -> dict[str, NDArray[np.float32]]:
         self.calls += 1
-        return {
-            "cell_emb": np.full((len(kwargs["values"]), 2), float(self.calls), dtype=np.float32)
-        }
+        values = kwargs["values"]
+        assert isinstance(values, np.ndarray)
+        return {"cell_emb": np.full((len(values), 2), float(self.calls), dtype=np.float32)}
+
+
+class FakeDropout:
+    def __init__(self) -> None:
+        self.training = False
+
+    def train(self, value: bool) -> None:
+        self.training = value
+
+
+class WrappedStochasticModel(StochasticModel):
+    def __init__(self) -> None:
+        super().__init__()
+        self.dropout = FakeDropout()
+        self.seen_dropout_states: list[bool] = []
+
+    def modules(self) -> list[object]:
+        return [self, self.dropout]
+
+    def __call__(self, **kwargs: object) -> dict[str, NDArray[np.float32]]:
+        self.seen_dropout_states.append(self.dropout.training)
+        return super().__call__(**kwargs)
+
+
+class RunnerWrapper:
+    def __init__(self, model: WrappedStochasticModel) -> None:
+        self.model = model
+
+    def __call__(self, **kwargs: object) -> dict[str, NDArray[np.float32]]:
+        return self.model(**kwargs)
 
 
 def test_mc_dropout_mean_variance_and_multiplier(tmp_path: Path) -> None:
@@ -112,6 +143,25 @@ def test_mc_dropout_can_emit_gene_keyed_summary(tmp_path: Path) -> None:
     result = infer_mc_dropout(adapter, prepared, n_passes=3, gene_names=("GENE1", "GENE2"))
     assert set(result.per_gene()) == {"GENE1", "GENE2"}
     assert set(result.per_gene()["GENE1"]) == {"mean", "variance"}
+
+
+def test_mc_dropout_activates_nested_runner_dropout_and_restores_state(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "checkpoint"
+    vocabulary = tmp_path / "vocab"
+    checkpoint.write_text("checkpoint")
+    vocabulary.write_text("vocab")
+    wrapped = WrappedStochasticModel()
+    adapter = ScGPTAdapter(RunnerWrapper(wrapped), {"TP53": 1}, checkpoint, vocabulary)
+    prepared = PreparedInputs(
+        np.ones((1, 1), dtype=np.float32),
+        np.array([1], dtype=np.int64),
+        __import__("models.scgpt_adapter", fromlist=["GeneMappingReport"]).GeneMappingReport(
+            ("TP53",), (), (), ()
+        ),
+    )
+    infer_mc_dropout(adapter, prepared, n_passes=3)
+    assert wrapped.seen_dropout_states == [True, True, True]
+    assert wrapped.dropout.training is False
 
 
 def test_stage5_validator_on_masks_and_off_is_noop() -> None:

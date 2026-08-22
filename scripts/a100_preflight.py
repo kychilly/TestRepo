@@ -52,13 +52,6 @@ def _version(package: str) -> str | None:
         return None
 
 
-def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    temporary.replace(path)
-
-
 def inspect(
     config_path: Path,
     repo: Path,
@@ -183,11 +176,25 @@ def inspect(
 
     packages = {
         name: _version(name)
-        for name in ("torch", "scgpt", "datasets", "numpy", "anndata", "scanpy", "pyarrow")
+        for name in (
+            "torch",
+            "torchtext",
+            "scgpt",
+            "datasets",
+            "numpy",
+            "anndata",
+            "scanpy",
+            "pyarrow",
+        )
     }
     for required in ("scgpt", "datasets", "PyYAML"):
         if _version(required) is None:
             blockers.append(f"Required package is not installed: {required}")
+    if packages.get("scgpt") == "0.2.4":
+        if not str(packages.get("torch", "")).startswith("2.3."):
+            blockers.append("scGPT 0.2.4 requires the pinned torch 2.3.x runtime")
+        if not str(packages.get("torchtext", "")).startswith("0.18."):
+            blockers.append("scGPT 0.2.4 requires the compatible torchtext 0.18.x runtime")
     if _version("scgpt") is not None:
         try:
             from scgpt.model import TransformerModel  # type: ignore[import-not-found]
@@ -228,7 +235,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--scratch", type=Path, default=None)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--deadline-utc", default="2026-08-18T06:41:00Z")
+    parser.add_argument("--deadline-utc", default="2099-01-01T00:00:00Z")
     args = parser.parse_args(argv)
     scratch = args.scratch or Path(
         os.environ.get("GBM_A100_SCRATCH", f"/tmp/gbm-a100-{os.environ.get('USER', 'researcher')}")

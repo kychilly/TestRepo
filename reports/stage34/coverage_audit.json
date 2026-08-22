@@ -1,0 +1,15 @@
+{
+  "abstain_count": 2454,
+  "abstain_fraction": 0.9804234918098282,
+  "candidate_count": 2503,
+  "data_deficient_count": 49,
+  "data_deficient_fraction": 0.019576508190171794,
+  "next_actions": [
+    "Report this coverage rather than silently dropping deficient candidates.",
+    "Add independent protein evidence and rerun Stage 3/4 to improve coverage."
+  ],
+  "scope": "candidate_level_stage34_assignments",
+  "source_report": "reports/stage34/combined_full_candidate_run.json",
+  "status": "completed",
+  "usable_non_abstain_non_deficient_count": 0
+}

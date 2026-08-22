@@ -137,10 +137,16 @@ class ScGPTAdapter:
                 "Expression matrix columns must match the number of gene identifiers"
             )
         token_ids, report = self.map_genes(gene_ids)
-        retained_indices = [
-            index for index, gene_id in enumerate(gene_ids) if gene_id in report.retained
-        ]
+        retained_set = set(report.retained)
+        retained_indices: list[int] = []
+        retained_seen: set[str] = set()
+        for index, gene_id in enumerate(gene_ids):
+            if gene_id in retained_set and gene_id not in retained_seen:
+                retained_indices.append(index)
+                retained_seen.add(gene_id)
         values = matrix[:, retained_indices].astype(np.float32, copy=False)
+        if values.shape[1] != len(token_ids):
+            raise AdapterError("Mapped expression columns do not match unique token IDs")
         if not np.isfinite(values).all():
             raise AdapterError("Input expression matrix contains NaN or infinite values")
         return PreparedInputs(values=values, token_ids=token_ids, report=report)

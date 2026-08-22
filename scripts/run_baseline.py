@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from numpy.typing import NDArray
 
 from baselines.base import (
     BaselineError,
@@ -41,7 +42,7 @@ def load_yaml(path: Path) -> dict[str, Any]:
     return payload
 
 
-def subset_cell_data(data: CellData, mask: np.ndarray) -> CellData:
+def subset_cell_data(data: CellData, mask: NDArray[np.bool_]) -> CellData:
     """Helper to slice a CellData instance using a boolean mask."""
     return CellData(
         X=data.X[mask],
@@ -158,7 +159,7 @@ def build_baseline(method: str, settings: dict[str, Any], seed: int) -> Any:
 
 
 def failure_record(
-        method: str, fold: int, seed: int, reason: str, config: dict[str, Any]
+    method: str, fold: int, seed: int, reason: str, config: dict[str, Any]
 ) -> dict[str, Any]:
     return {
         "status": "not_applicable",
@@ -194,9 +195,9 @@ def main(argv: list[str] | None = None) -> int:
         splits_path = Path(args.splits)
         splits = load_patient_splits(splits_path, args.fold)
         if any(
-                "cgga" in patient.lower()
-                for patients in splits.as_dict().values()
-                for patient in patients
+            "cgga" in patient.lower()
+            for patients in splits.as_dict().values()
+            for patient in patients
         ):
             raise BaselineError("CGGA patients are prohibited in the patient split")
 
@@ -211,7 +212,6 @@ def main(argv: list[str] | None = None) -> int:
         # Slice CellData using the helper function
         train = subset_cell_data(data, assignments["train"])
         validation = subset_cell_data(data, assignments["validation"])
-        test = subset_cell_data(data, assignments["test"])
 
         train_metadata = {"split": "train", "batch": train.batch}
         validation_selection: dict[str, Any] = {"rule": "not_applicable"}
@@ -221,9 +221,7 @@ def main(argv: list[str] | None = None) -> int:
             scored: list[tuple[float, float]] = []
             for candidate in candidates:
                 candidate_config = {**method_config, "C": float(candidate)}
-                candidate_model = build_baseline(
-                    args.method, candidate_config, args.seed
-                )
+                candidate_model = build_baseline(args.method, candidate_config, args.seed)
                 candidate_model.fit(train, train_metadata)
                 score = float(
                     np.mean(
@@ -264,7 +262,9 @@ def main(argv: list[str] | None = None) -> int:
             "".join(json.dumps(row, sort_keys=True) + "\n" for row in predictions),
             encoding="utf-8",
         )
-        write_json_with_explanation(args.output / "patient_summary.json", {"status": "completed", "patients": patients})
+        write_json_with_explanation(
+            args.output / "patient_summary.json", {"status": "completed", "patients": patients}
+        )
         write_json_with_explanation(
             args.output / "run_metadata.json",
             {

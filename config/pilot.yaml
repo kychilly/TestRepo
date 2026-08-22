@@ -1,8 +1,8 @@
-cell_data_path: TP53 Dataset(preprocessed) 2/pilot/pilot_subsample.h5ad
+cell_data_path: data/import_20260820/TP53 Dataset(preprocessed)/processed/neftel_analysis_cohort.h5ad
 patient_id_column: Sample
 gene_id_column: var_names
 gene_id_type: HGNC
-split_file: splits/neftel_pilot_patient_splits.json
+split_file: splits/combined_full_cohort_neftel_patient_splits.json
 checkpoint_path: artifacts/models/scGPT_pancancer/best_model.pt
 vocabulary_path: artifacts/models/scGPT_pancancer/vocab.json
 model_args_path: artifacts/models/scGPT_pancancer/args.json

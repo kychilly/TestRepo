@@ -18,9 +18,7 @@ from gbm_study.leakage import (
 
 def test_patient_overlap_is_rejected() -> None:
     with pytest.raises(LeakageError, match="Patient overlap"):
-        assert_zero_patient_overlap(
-            {"train": ["p1"], "validation": ["p1"], "test": ["p2"]}
-        )
+        assert_zero_patient_overlap({"train": ["p1"], "validation": ["p1"], "test": ["p2"]})
 
 
 def test_observation_outside_declared_patient_split_is_rejected() -> None:
@@ -29,9 +27,7 @@ def test_observation_outside_declared_patient_split_is_rejected() -> None:
 
 
 def test_jeffrey_split_aliases_normalize_without_overlap() -> None:
-    normalized = normalize_split_keys(
-        {"train": ["p1"], "val": ["p2"], "test_cgga": ["p3"]}
-    )
+    normalized = normalize_split_keys({"train": ["p1"], "val": ["p2"], "test_cgga": ["p3"]})
     assert normalized == {"train": ["p1"], "validation": ["p2"], "test": ["p3"]}
 
 

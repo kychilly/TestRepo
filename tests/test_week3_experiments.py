@@ -58,7 +58,12 @@ def test_matrix_persists_embeddings_rankings_predictions_and_seeds(tmp_path: Pat
     assert result["completed_runs"] == 12
     assert {run["seed"] for run in result["runs"]} == {1, 2, 3}
     first = Path(result["runs"][0]["artifacts"]["embeddings"])
-    assert set(np.load(first).files) == {"embeddings", "embedding_variance", "cell_ids", "patient_ids"}
+    assert set(np.load(first).files) == {
+        "embeddings",
+        "embedding_variance",
+        "cell_ids",
+        "patient_ids",
+    }
     assert (first.parent / "rankings.jsonl").is_file()
     assert (first.parent / "predictions.jsonl").is_file()
     assert (first.parent / "rankings.txt").is_file()

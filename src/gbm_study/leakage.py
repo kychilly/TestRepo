@@ -33,8 +33,10 @@ def normalize_split_keys(payload: Any) -> dict[str, list[str]]:
     result: dict[str, list[str]] = {}
     for name in ("train", "validation", "test"):
         patients = value[name]
-        if not isinstance(patients, list) or not patients or not all(
-            isinstance(patient, str) and patient for patient in patients
+        if (
+            not isinstance(patients, list)
+            or not patients
+            or not all(isinstance(patient, str) and patient for patient in patients)
         ):
             raise LeakageError(f"Split {name!r} must be a non-empty list of patient IDs")
         if len(set(patients)) != len(patients):
@@ -66,6 +68,4 @@ def assert_patient_split(
     allowed = set(splits[split])
     unexpected = set(patient_ids) - allowed
     if unexpected:
-        raise LeakageError(
-            f"Observations contain patients outside {split}: {sorted(unexpected)}"
-        )
+        raise LeakageError(f"Observations contain patients outside {split}: {sorted(unexpected)}")

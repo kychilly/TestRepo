@@ -47,6 +47,9 @@ class MCDropoutResult:
 def _dropout_modules(model: Any) -> list[tuple[Any, bool]]:
     modules = getattr(model, "modules", None)
     if not callable(modules):
+        # Production adapters wrap the torch module in OfficialScGPTRunner.
+        modules = getattr(getattr(model, "model", None), "modules", None)
+    if not callable(modules):
         return []
     found: list[tuple[Any, bool]] = []
     for module in modules():

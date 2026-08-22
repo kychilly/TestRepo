@@ -55,7 +55,9 @@ def main() -> int:
             "A zero-confirmed outcome is a valid data result and causes the validator-on arm to remain blocked rather than inventing genes.",
         ],
     )
-    print(json.dumps({"status": "completed", "rows": len(rows), "output": str(args.output)}, indent=2))
+    print(
+        json.dumps({"status": "completed", "rows": len(rows), "output": str(args.output)}, indent=2)
+    )
     return 0
 
 

@@ -1,94 +1,83 @@
 {
   "artifacts": {
-    "cross_cohort": {
-      "blockers": [
-        "CGGA has zero AC/MES/NPC/OPC labels, so external four-state macro-F1 cannot be calculated.",
-        "Variant-effect AUROC needs independent positive and negative labels plus variant scores; these are absent.",
-        "Abstention accuracy needs independent gold verdicts; reusing validator outputs as truth would be circular.",
-        "GRN holdout contains one unique positive edge, so its AUROC is only a software sanity check.",
-        "Only TP53 and IDH1 are confirmed; the headline comparison is exploratory and underpowered.",
-        "The confirmed pair did not beat the seeded size-matched shuffled control, so the required call is no_result.",
-        "The all-on/validator-off/GRN-off/MC-off scGPT arms still require CUDA and an external endpoint compatible with CGGA labels."
-      ],
-      "declared_status": "completed_with_blockers",
-      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/cross_cohort_combined_v2/results.json",
-      "reason": null,
-      "sha256": "3ec8ea87d3d0faeaaa502961e3e2a48d8f107bce725175a740598dedfe9b1a4b",
-      "status": "completed_with_blockers"
-    },
-    "latest_model_benchmark": {
+    "a100_benchmark_existing": {
       "blockers": [],
       "declared_status": "blocked",
       "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/week3_adit/scgpt_timing.json",
       "reason": "Missing real benchmark inputs: checkpoint_path, vocabulary_path",
       "sha256": "570a432e4eabee470b07ba368d72e8311e28fe5273fca4d49fa00b3e46e03ab5",
-      "status": "blocked"
+      "status": "stale",
+      "warnings": []
     },
-    "readiness": {
-      "blockers": [
-        "Pilot has no explicit IDH-status column; derived cell states are not a substitute for both IDH statuses",
-        "Pilot has no layers['counts']; scVI baseline is not applicable",
-        "Mutation table lacks provenance/mapping field: transcript_id",
-        "Mutation table lacks provenance/mapping field: protein_change",
-        "Mutation table lacks provenance/mapping field: genome_build",
-        "Mutation table lacks provenance/mapping field: source_file",
-        "Mutation table has no silencing calls; add methylation/CNV-derived silencing evidence or mark unavailable"
-      ],
-      "declared_status": "blocked",
-      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/readiness/current.json",
+    "baseline_bar": {
+      "blockers": [],
+      "declared_status": "completed_with_blockers",
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/pilot_baselines_verified/baseline_bar.json",
       "reason": null,
-      "sha256": "f8cb40c67bc07698e1cd7a69fb2614a04a79f08dc1e24bd7e44b490e359e0cf7",
-      "status": "blocked"
+      "sha256": "d63b7aac73bac427ddefa71ae5474066a679d43b7c0908f757189d8fb881fa0b",
+      "status": "completed_with_blockers",
+      "warnings": []
+    },
+    "cross_cohort": {
+      "blockers": [
+        "Both confirmed and unconfirmed feature groups must be non-empty",
+        "Current Stage 3/4 evidence has zero confirmed genes because protein/AlphaFold evidence is absent.",
+        "Do not substitute the stale reports/stage34/verdicts.csv file."
+      ],
+      "declared_status": "completed_with_blockers",
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/cross_cohort_current/results.json",
+      "reason": null,
+      "sha256": "510b9cdde1986bd10952bfa29e7660eb061f03a7100b0f7cc5898995d9fc0e66",
+      "status": "completed_with_blockers",
+      "warnings": []
+    },
+    "execution_readiness": {
+      "blockers": [],
+      "declared_status": "completed",
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/readiness/execution_readiness.json",
+      "reason": null,
+      "sha256": "13206cd865e6f2ebc7b8d3b855a8af032ceb330c3981633ce2dc79347967ec8f",
+      "status": "completed",
+      "warnings": [
+        "H5AD layers['counts'] contains sampled non-integer values; scVI is data-blocked",
+        "Validator evidence has zero confirmed genes; validator-on arms are data-blocked",
+        "GRN holdout has fewer than 20 unique positive edges"
+      ]
+    },
+    "grn_sanity": {
+      "blockers": [],
+      "declared_status": "completed",
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/jeffrey_grn_run/grn_sanity_current.json",
+      "reason": null,
+      "sha256": "cbabb0df111730a44598de1f7d64211d85a68ffb4bddb2bb79012f6b34d26849",
+      "status": "completed",
+      "warnings": []
     },
     "stage34": {
       "blockers": [],
       "declared_status": "completed_with_blockers",
-      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/stage34/fixture_feasibility_clean.json",
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/stage34/combined_full_candidate_run.json",
       "reason": null,
-      "sha256": "cd9c0ce23cbced548dfab5dceeb274ff2d51fb5bae55ccd35270ba4f694c48fe",
-      "status": "completed_with_blockers"
+      "sha256": "3a787ae5a09e7256630062cc9f9a84a8f04ac4ece62f450e391990859df9317d",
+      "status": "completed_with_blockers",
+      "warnings": []
     },
-    "week1_benchmark": {
-      "blockers": [],
-      "declared_status": "blocked",
-      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/results/compute/week1_scgpt_benchmark.json",
-      "reason": "Missing real benchmark inputs: cell_data_path, patient_id_column, gene_id_column, gene_id_type, split_file, checkpoint_path, vocabulary_path",
-      "sha256": "18a203fdfe2a2fcaa8bcbe720a161d6d7dad72900f49305a2a60124ba07bf733",
-      "status": "stale"
-    },
-    "week1_environment": {
-      "blockers": [],
-      "declared_status": "failed",
-      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/results/compute/week1_environment_check.json",
-      "reason": null,
-      "sha256": "14d5d95b8c46fe1be5634c1a8026faaea6910ff0923387a5e4f542d08a2a214a",
-      "status": "failed"
-    },
-    "week2_adit": {
-      "blockers": [
-        "mc_dropout: scGPT checkpoint is missing; real MC-dropout timing was not substituted"
-      ],
-      "declared_status": "completed_with_blockers",
-      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/week2_adit/report_current.json",
-      "reason": null,
-      "sha256": "799ed4f08c0ac7823f97ca217acb50c161eb0506a2e85ff577047e9c1bf90740",
-      "status": "stale"
-    },
-    "week3_manifest": {
+    "week3_manifest_existing": {
       "blockers": [],
       "declared_status": "completed_with_blockers",
       "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/week3_adit/experiments/manifest.json",
       "reason": null,
       "sha256": "40dc0f5bb7b5a2ff2c16b7342f4ad06933741cb976cfc027c7473bc62fde33ef",
-      "status": "completed_with_blockers"
+      "status": "stale",
+      "warnings": []
     }
   },
-  "current_scientific_call": "no_result_until_real_scGPT_and_external_endpoint_runs_complete",
+  "current_scientific_call": "no_result_until_protein_evidence_and_a100_and_external_truth_are_complete",
   "generated_from": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research",
   "known_issues": [
-    "Historical benchmark and Week 2 reports are stale relative to the downloaded official model assets.",
-    "Week 3 has 12 blocked runs and no completed real scGPT arm.",
-    "The current cross-cohort result is a clean-CGGA IDH CPU feature-mask analysis, not the scGPT ablation matrix.",
+    "The A100 benchmark and Week 3 matrix have not been rerun with the current checkpoint-compatible environment and code fingerprint.",
+    "Stage 3/4 has zero confirmed genes because independent protein evidence is absent; only three validator-off GPU runs are currently runnable.",
+    "scVI is data-blocked because the supplied counts layer contains non-integer log-scale values.",
     "CGGA bulk rows do not contain AC/MES/NPC/OPC truth.",
     "The GRN holdout has one unique positive edge and cannot support a paper claim."
   ],
@@ -110,16 +99,16 @@
     }
   },
   "next_actions": [
-    "Run the A100 preflight with config/model_a100_local.yaml.",
     "Run the A100 preflight and exactly 1,000-cell benchmark.",
-    "Run the complete Week 3 matrix with persistent checkpoints.",
+    "Run the currently runnable validator-off seeds with persistent checkpoints.",
+    "Add independent protein evidence, rerun Stage 3/4, then complete all 12 ablations.",
     "Add an external single-cell state endpoint and independent variant/abstention truth."
   ],
   "scope": "Adit Week 1-4 evidence inventory",
   "status": "completed",
   "team_week2_integration": {
     "alexis_inputs": {
-      "baseline_summary": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/baselines_combined/final_summary.json",
+      "baseline_summary": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/pilot_baselines_verified/baseline_bar.json",
       "baselines": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/scripts/run_baseline.py",
       "evaluation": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/eval.py"
     },
@@ -164,7 +153,7 @@
     ],
     "week4_consumers": [
       "scripts/run_cross_cohort.py",
-      "reports/cross_cohort_combined_v2/results.json"
+      "reports/cross_cohort_current/results.json"
     ]
   }
 }

@@ -38,7 +38,11 @@ def main() -> int:
                     "outcome": str(row["real_outcome"]),
                 }
             )
-    print(json.dumps({"status": "completed", "rows": len(assignments), "output": str(args.output)}, indent=2))
+    print(
+        json.dumps(
+            {"status": "completed", "rows": len(assignments), "output": str(args.output)}, indent=2
+        )
+    )
     return 0
 
 

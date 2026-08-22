@@ -38,8 +38,18 @@ def read_clinical(path: Path) -> pd.DataFrame:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--raw-root", type=Path, default=Path("data/import_20260820/TP53 Dataset(preprocessed)/raw/cgga"))
-    parser.add_argument("--output", type=Path, default=Path("data/import_20260820/TP53 Dataset(preprocessed)/processed/cgga_bulk_clean.h5ad"))
+    parser.add_argument(
+        "--raw-root",
+        type=Path,
+        default=Path("data/import_20260820/TP53 Dataset(preprocessed)/raw/cgga"),
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path(
+            "data/import_20260820/TP53 Dataset(preprocessed)/processed/cgga_bulk_clean.h5ad"
+        ),
+    )
     args = parser.parse_args(argv)
     root = args.raw_root
     expression_paths = sorted(root.glob("CGGA.mRNAseq_*.RSEM-genes*.zip"))
@@ -53,24 +63,40 @@ def main(argv: list[str] | None = None) -> int:
     obs = clinical.reindex(matrix.columns).copy()
     obs["Sample"] = obs.index.astype(str)
     obs["Cohort"] = "CGGA"
-    obs["IDH_status"] = obs["IDH_mutation_status"].astype(str).replace({"Mutant": "Mutant", "Wildtype": "Wildtype"})
+    obs["IDH_status"] = (
+        obs["IDH_mutation_status"].astype(str).replace({"Mutant": "Mutant", "Wildtype": "Wildtype"})
+    )
     obs["derived_state"] = "Unknown"
     if hasattr(ad.settings, "allow_write_nullable_strings"):
         ad.settings.allow_write_nullable_strings = True
-    result_data = ad.AnnData(X=matrix.T.to_numpy(dtype=np.float32), obs=obs, var=pd.DataFrame(index=matrix.index.astype(str)))
+    result_data = ad.AnnData(
+        X=matrix.T.to_numpy(dtype=np.float32),
+        obs=obs,
+        var=pd.DataFrame(index=matrix.index.astype(str)),
+    )
     result_data.var_names_make_unique()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     result_data.write_h5ad(args.output)
     result = {
         "status": "completed",
         "scope": "clean CGGA bulk expression rebuilt from raw RSEM ZIP members",
-        "output": {"path": str(args.output), "sha256": sha256(args.output), "shape": list(result_data.shape)},
-        "expression_sources": [{"path": str(path), "sha256": sha256(path)} for path in expression_paths],
-        "clinical_sources": [{"path": str(path), "sha256": sha256(path)} for path in clinical_paths],
+        "output": {
+            "path": str(args.output),
+            "sha256": sha256(args.output),
+            "shape": list(result_data.shape),
+        },
+        "expression_sources": [
+            {"path": str(path), "sha256": sha256(path)} for path in expression_paths
+        ],
+        "clinical_sources": [
+            {"path": str(path), "sha256": sha256(path)} for path in clinical_paths
+        ],
         "idh_counts": {str(k): int(v) for k, v in obs["IDH_status"].value_counts().items()},
         "finite_values": bool(np.isfinite(result_data.X).all()),
         "cell_state_truth": False,
-        "next_actions": ["Use this file for external patient-level IDH evaluation only; it has no AC/MES/NPC/OPC labels."],
+        "next_actions": [
+            "Use this file for external patient-level IDH evaluation only; it has no AC/MES/NPC/OPC labels."
+        ],
     }
     write_json_with_explanation(args.output.with_suffix(".json"), result)
     print(json.dumps(result, indent=2, sort_keys=True))

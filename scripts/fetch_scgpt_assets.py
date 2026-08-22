@@ -14,7 +14,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from gbm_study.plain_english import write_json_with_explanation
 
-PAN_CANCER_FOLDER = "https://drive.google.com/drive/folders/13QzLHilYUd0v3HTwa_9n4G4yEF-hdkqa?usp=sharing"
+PAN_CANCER_FOLDER = (
+    "https://drive.google.com/drive/folders/13QzLHilYUd0v3HTwa_9n4G4yEF-hdkqa?usp=sharing"
+)
 REQUIRED = ("best_model.pt", "vocab.json", "args.json")
 
 

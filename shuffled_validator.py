@@ -13,7 +13,6 @@ import random
 from collections.abc import Sequence
 
 from validator import (  # re-exported drop-in types
-    COUNTS_TOWARD_PREDICTION,
     GeneRecord,
     Outcome,
     Thresholds,
@@ -53,9 +52,7 @@ def classify_many(
     ]
 
 
-def classify(
-    record: GeneRecord, thresholds: Thresholds, *, seed: int = DEFAULT_SEED
-) -> Verdict:
+def classify(record: GeneRecord, thresholds: Thresholds, *, seed: int = DEFAULT_SEED) -> Verdict:
     """Single-record API compatibility for consumers that import ``classify``.
 
     Exact proportion preservation is impossible for one record in isolation;
