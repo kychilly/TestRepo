@@ -64,15 +64,16 @@ blocked from scientific use until the validator decision tree is signed off.
 
 ## Cohort Overview & Sample Counts
 
-| Cohort                   | Accession / Source        | Sample / Patient Count       | Local Directory |
-|:-------------------------|:--------------------------|:-----------------------------| :--- |
-| **Neftel et al. (2019)** | SCP393 / GSE131928        | 28 Patients (7,930 cells)    | data/raw/neftel/ |
-| **TCGA-GBM**             | cBioPortal                | 528 Patients (592 samples)   | data/raw/tcga/ |
-| **TCGA-cna**             | cBioPortal                | 1084 Patients (1084 samples) | data/raw/tcga/ |
-| **TCGA-Mutations**       | cBioPortal                | 812 Patients (812 samples)   | data/raw/tcga/ |
-| **CGGA (325)**           | CGGA Portal (mRNAseq_325) | 325 Patients                 | data/raw/cgga/ |
-| **CGGA (693)**           | CGGA Portal (mRNAseq_693) | 693 Patients                 | data/raw/cgga/ |
-| **CGGA (286)**           | CGGA Portal (WESeq_286)   | 286 Patients                 | data/raw/cgga/ |
+| Cohort                    | Accession / Source        | Sample / Patient Count       | Local Directory |
+|:--------------------------|:--------------------------|:-----------------------------| :--- |
+| **Neftel et al. (2019)**  | SCP393 / GSE131928        | 28 Patients (7,930 cells)    | data/raw/neftel/ |
+| **TCGA-GBM**              | cBioPortal                | 528 Patients (592 samples)   | data/raw/tcga/ |
+| **TCGA-cna**              | cBioPortal                | 1084 Patients (1084 samples) | data/raw/tcga/ |
+| **TCGA-Mutations**        | cBioPortal                | 812 Patients (812 samples)   | data/raw/tcga/ |
+| **TCGA-mrna_seq_v2_rsem** | cBioPortal                | 155 Patients (160 samples)   | data/raw/tcga/ |
+| **CGGA (325)**            | CGGA Portal (mRNAseq_325) | 325 Patients                 | data/raw/cgga/ |
+| **CGGA (693)**            | CGGA Portal (mRNAseq_693) | 693 Patients                 | data/raw/cgga/ |
+| **CGGA (286)**            | CGGA Portal (WESeq_286)   | 286 Patients                 | data/raw/cgga/ |
 
 ## File Inventory & SHA-256 Hashes
 
