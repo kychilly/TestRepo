@@ -2,15 +2,14 @@
   "adata_path": "data\\processed\\full_cohort_neftel_tcga.h5ad",
   "cohort_level": {
     "cohort_counts": {
-      "CGGA": 1338,
       "Neftel": 6576,
       "TCGA": 160
     },
     "figure": "results\\full_data_audit\\cohort_level_pca.png",
     "interpretation": "Cohort-level separation here reflects Neftel (single-cell) vs CGGA/TCGA (bulk RNA-seq) being different assay types, not purely a donor/technical batch effect within one assay. Report as an assay-type effect, not conflated with the within-cohort donor/state finding below.",
-    "n_cells": 8074,
+    "n_cells": 6736,
     "n_hvg": 2003,
-    "silhouette_by_cohort": 0.4475132303391736
+    "silhouette_by_cohort": 0.509751617865826
   },
   "neftel_donor_vs_state": {
     "batch_risk_interpretation": "donor explains more separation than cell state",
@@ -19,8 +18,8 @@
     "n_donors": 27,
     "n_state_groups": 4,
     "silhouette": {
-      "donor": 0.15843880951741915,
-      "state": 0.07924076685537833
+      "donor": 0.14667034695323167,
+      "state": 0.07932975649529314
     },
     "state_column_used": "state",
     "status": "completed"
