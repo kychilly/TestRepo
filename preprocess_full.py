@@ -1,6 +1,4 @@
-import glob
 import os
-import zipfile
 
 import anndata as ad
 import pandas as pd
@@ -121,94 +119,49 @@ def load_neftel(data_dir="data/raw/neftel", processed_dir="data/processed"):
 
 
 # ---------------------------------------------------------------------------
-# CGGA (bulk RSEM) loader
+# TCGA (bulk RSEM) loader
 # ---------------------------------------------------------------------------
 
-def _find_cgga_zip(cgga_dir, tokens):
-    """Matches CGGA zip filenames regardless of dot vs. underscore naming
-    convention -- your uploads use underscores throughout
-    (CGGA_mRNAseq_325_RSEM-genes_20200506_txt.zip), the CGGA site's own
-    convention uses dots (CGGA.mRNAseq_325.RSEM-genes.20200506.txt.zip)."""
-    for c in glob.glob(os.path.join(cgga_dir, "*.zip")):
-        base = os.path.basename(c).lower()
-        if all(tok.lower() in base for tok in tokens):
-            return c
-    return None
+def load_tcga(tcga_dir="data/raw/tcga"):
+    """Loads TCGA PanCancer Atlas RSEM expression matrix (data_mrna_seq_v2_rsem.txt).
 
+    cBioPortal's RSEM export has genes as rows (Hugo_Symbol, Entrez_Gene_Id,
+    then one column per sample barcode) -- opposite orientation from Neftel's
+    raw matrix, so this transposes explicitly rather than relying on the
+    shape-guess used elsewhere. A small number of rows have no Hugo_Symbol
+    (unnamed/uncharacterized loci) or a duplicate symbol across different
+    Entrez IDs; both are dropped since var_names must be unique and
+    symbol-matchable against Neftel.
+    """
+    expr_path = os.path.join(tcga_dir, "data_mrna_seq_v2_rsem.txt")
+    if not os.path.exists(expr_path):
+        raise FileNotFoundError(f"TCGA expression file not found at {expr_path}")
 
-def _read_first_real_member(zpath):
-    """Reads the first zip member that isn't __MACOSX junk (namelist()[0]
-    order isn't guaranteed to put the real file first on every platform)."""
-    with zipfile.ZipFile(zpath, "r") as z:
-        real_members = [
-            n for n in z.namelist()
-            if not n.startswith("__MACOSX")
-            and not os.path.basename(n).startswith("._")
-            and n.lower().endswith(".txt")
-        ]
-        if not real_members:
-            raise FileNotFoundError(f"No usable .txt member found in {zpath}")
-        with z.open(real_members[0]) as f:
-            return pd.read_csv(f, sep="\t", index_col=0, low_memory=False)
+    print(f"[Loading] Parsing raw TCGA RSEM matrix: {expr_path}...")
+    df = pd.read_csv(expr_path, sep="\t")
 
+    n_before = len(df)
+    df = df[df["Hugo_Symbol"].notna()].copy()
+    df = df.drop_duplicates(subset="Hugo_Symbol", keep="first")
+    print(f"[TCGA] Dropped {n_before - len(df)} rows with missing/duplicate Hugo_Symbol "
+          f"({len(df)} genes retained).")
 
-def load_cgga(cgga_dir="data/raw/cgga"):
-    """Parses zipped CGGA RSEM mRNA-seq matrices (325 and 693 cohorts)."""
-    cgga_adatas = []
-    cohort_specs = [("325", ["325", "rsem"]), ("693", ["693", "rsem"])]
+    df = df.set_index("Hugo_Symbol").drop(columns=["Entrez_Gene_Id"])
+    df = df.T  # genes are rows in the raw file -- transpose to samples x genes
 
-    for cohort_id, tokens in cohort_specs:
-        zpath = _find_cgga_zip(cgga_dir, tokens)
-        if zpath is None:
-            print(f"[Warning] Could not find a CGGA {cohort_id} RSEM zip in {cgga_dir} "
-                  f"(looked for files containing {tokens}).")
-            continue
+    adata = ad.AnnData(
+        X=df.values,
+        obs=pd.DataFrame(index=df.index),
+        var=pd.DataFrame(index=df.columns),
+    )
+    adata.obs["Sample"] = adata.obs.index.astype(str)
 
-        print(f"[Loading] Unzipping and reading {os.path.basename(zpath)}...")
-        df = _read_first_real_member(zpath)
-
-        if df.shape[0] > df.shape[1]:
-            df = df.T
-
-        adata_part = ad.AnnData(
-            X=df.values,
-            obs=pd.DataFrame(index=df.index),
-            var=pd.DataFrame(index=df.columns),
-        )
-        adata_part.obs["Sample"] = adata_part.obs.index
-        adata_part.obs["CGGA_cohort_size"] = cohort_id
-        cgga_adatas.append(adata_part)
-
-    if not cgga_adatas:
-        return None
-
-    print("[Merging] Combining CGGA 325 and 693 cohorts...")
-    return ad.concat(cgga_adatas, merge="unique", join="inner")
+    return adata
 
 
 # ---------------------------------------------------------------------------
-# Clinical metadata join (new -- did not exist in the original pipeline)
+# Clinical metadata join (TCGA only -- CGGA excluded from the internal cohort)
 # ---------------------------------------------------------------------------
-
-def _load_cgga_clinical(cgga_dir):
-    frames = []
-    for tokens in (["325", "clinical"], ["693", "clinical"]):
-        zpath = _find_cgga_zip(cgga_dir, tokens)
-        if zpath is None:
-            continue
-        df = _read_first_real_member(zpath).reset_index()
-        id_col = df.columns[0]  # CGGA_ID
-        df["clean_id"] = df[id_col].astype(str).apply(clean_id)
-        frames.append(df)
-
-    if not frames:
-        return pd.DataFrame()
-
-    clinical = pd.concat(frames, ignore_index=True).drop_duplicates("clean_id")
-    clinical = clinical.set_index("clean_id")
-    clinical = clinical.rename(columns={"IDH_mutation_status": "IDH_status"})
-    return clinical[["IDH_status"]] if "IDH_status" in clinical.columns else pd.DataFrame()
-
 
 def _load_tcga_clinical(tcga_dir):
     """data_clinical_sample.txt has its real header on line 5 (four leading
@@ -225,59 +178,18 @@ def _load_tcga_clinical(tcga_dir):
     keep = [c for c in ["IDH_status", "Bulk_subtype"] if c in df.columns]
     return df[keep]
 
-def load_tcga(tcga_dir="data/raw/tcga"):
-    """Loads TCGA PanCancer Atlas RSEM expression matrix (data_mrna_seq_v2_rsem.txt).
-
-    cBioPortal's RSEM export has genes as rows (Hugo_Symbol, Entrez_Gene_Id,
-    then one column per sample barcode) -- opposite orientation from Neftel's
-    raw matrix, so this transposes explicitly rather than relying on the
-    shape-guess used elsewhere. A small number of rows have no Hugo_Symbol
-    (unnamed/uncharacterized loci) or a duplicate symbol across different
-    Entrez IDs; both are dropped since var_names must be unique and
-    symbol-matchable against Neftel/CGGA.
-    """
-    expr_path = os.path.join(tcga_dir, "data_mrna_seq_v2_rsem.txt")
-    if not os.path.exists(expr_path):
-        raise FileNotFoundError(f"TCGA expression file not found at {expr_path}")
-
-    print(f"[Loading] Parsing raw TCGA RSEM matrix: {expr_path}...")
-    df = pd.read_csv(expr_path, sep="\t")
-
-    n_before = len(df)
-    df = df[df["Hugo_Symbol"].notna()].copy()
-    df = df.drop_duplicates(subset="Hugo_Symbol", keep="first")
-    print(f"[TCGA] Dropped {n_before - len(df)} rows with missing/duplicate Hugo_Symbol "
-          f"({len(df)} genes retained).")
-
-    df = df.set_index("Hugo_Symbol").drop(columns=["Entrez_Gene_Id"])
-
-    # genes are rows, samples are columns in the raw file -- transpose so
-    # samples become obs (rows) and genes become var (columns), matching
-    # every other loader in this module.
-    df = df.T
-
-    adata = ad.AnnData(
-        X=df.values,
-        obs=pd.DataFrame(index=df.index),
-        var=pd.DataFrame(index=df.columns),
-    )
-    adata.obs["Sample"] = adata.obs.index.astype(str)
-
-    return adata
-
 
 def merge_clinical_metadata(adata_full, raw_dir="data/raw"):
-    """Joins CGGA + TCGA clinical metadata into adata_full.obs on cleaned
-    patient ID, producing one standardized 'IDH_status' column
-    ('WT'/'Mutant'/NaN). Call after ad.concat(), before HVG selection."""
-    cgga_clin = _load_cgga_clinical(os.path.join(raw_dir, "cgga"))
+    """Joins TCGA clinical metadata into adata_full.obs on cleaned patient ID,
+    producing one standardized 'IDH_status' column ('WT'/'Mutant'/NaN).
+    Call after ad.concat(), before HVG selection.
+    (CGGA clinical join intentionally omitted -- CGGA is not part of the
+    internal cohort this function operates on.)
+    """
     tcga_clin = _load_tcga_clinical(os.path.join(raw_dir, "tcga"))
 
-    clinical = pd.concat([cgga_clin, tcga_clin])
-    clinical = clinical[~clinical.index.duplicated(keep="first")]
-
     adata_full.obs["clean_id"] = adata_full.obs["Sample"].astype(str).apply(clean_id)
-    adata_full.obs = adata_full.obs.join(clinical, on="clean_id")
+    adata_full.obs = adata_full.obs.join(tcga_clin, on="clean_id")
 
     if "IDH_status" in adata_full.obs.columns:
         adata_full.obs["IDH_status"] = adata_full.obs["IDH_status"].replace(
@@ -286,73 +198,80 @@ def merge_clinical_metadata(adata_full, raw_dir="data/raw"):
         n_missing = adata_full.obs["IDH_status"].isna().sum()
         print(f"[Clinical Join] IDH_status resolved for "
               f"{adata_full.n_obs - n_missing}/{adata_full.n_obs} samples "
-              f"({n_missing} unmatched).")
+              f"({n_missing} unmatched -- expected for all Neftel cells, "
+              f"which have their own IDH annotation elsewhere).")
     else:
-        print("[Warning] No IDH_status could be joined -- check that raw_dir/cgga "
-              "and raw_dir/tcga clinical files are present.")
+        print("[Warning] No IDH_status could be joined -- check that raw_dir/tcga "
+              "clinical file is present.")
 
     return adata_full
 
 
 # ---------------------------------------------------------------------------
-# Full cohort assembly
+# Full internal cohort assembly (Neftel + TCGA only -- CGGA excluded)
 # ---------------------------------------------------------------------------
 
 def build_full_cohort(
         raw_dir="data/raw", output_dir="data/processed", config_path="config/qc.yaml"
 ):
+    """Builds the full INTERNAL cohort: Neftel + TCGA only.
+
+    CGGA is deliberately excluded here. Per Week 1 ("CGGA held out entirely")
+    and Week 4 ("Preprocess CGGA with the frozen Week 1 thresholds... the
+    whole external comparison dies if we touch this"), CGGA's expression
+    data must remain completely unprocessed until its own dedicated Week 4
+    step, where it serves as the untouched external validation cohort.
+    """
     qc_cfg = load_qc_config(config_path)
     adatas = []
+    neftel_states = None
 
     try:
         adata_neftel = load_neftel(os.path.join(raw_dir, "neftel"), output_dir)
-        neftel_states = None
+        # Capture state BEFORE process_single_matrix/concat: TCGA has no
+        # equivalent per-cell state column, and ad.concat(join="inner")
+        # silently drops any obs column not common to every input cohort.
         if "state" in adata_neftel.obs.columns:
-            neftel_states = adata_neftel.obs[["Sample", "state"]].copy()
-            neftel_states["cell_id"] = adata_neftel.obs.index
+            neftel_states = adata_neftel.obs[["state"]].copy()
+            neftel_states.index = adata_neftel.obs.index
         adata_neftel = process_single_matrix(adata_neftel, qc_cfg, "Neftel")
         adatas.append(adata_neftel)
     except Exception as e:
         print(f"[Warning] Could not load Neftel: {e}")
-        neftel_states = None
 
-    try:
-        adata_cgga = load_cgga(os.path.join(raw_dir, "cgga"))
-        if adata_cgga is not None:
-            adata_cgga = process_single_matrix(adata_cgga, qc_cfg, "CGGA")
-            adatas.append(adata_cgga)
-    except Exception as e:
-        print(f"[Warning] Could not load CGGA: {e}")
-    try:
-        adata_tcga = load_tcga(os.path.join(raw_dir, "tcga"))
-        if adata_tcga is not None:
-            adata_cgga = process_single_matrix(adata_cgga, qc_cfg, "CGGA")
-            adatas.append(adata_cgga)
-    except Exception as e:
-        print(f"[Warning] Could not load CGGA: {e}")
     try:
         adata_tcga = load_tcga(os.path.join(raw_dir, "tcga"))
         adata_tcga = process_single_matrix(adata_tcga, qc_cfg, "TCGA")
         adatas.append(adata_tcga)
     except Exception as e:
         print(f"[Warning] Could not load TCGA: {e}")
+
     if not adatas:
         raise FileNotFoundError(f"No valid cohort matrices could be built from {raw_dir}.")
 
-    print("\n[Merging] Combining all datasets into full cohort...")
+    print("\n[Merging] Combining Neftel + TCGA into full internal cohort...")
     adata_full = ad.concat(adatas, merge="unique", join="inner")
     adata_full.obs_names_make_unique()
 
+    # Rejoin Neftel's per-cell state (dropped by the inner-join concat above,
+    # since TCGA has no equivalent column). Uses the pre-concat Neftel index,
+    # matched by position within the Neftel block of adata_full since
+    # obs_names_make_unique() may have altered raw index strings.
     if neftel_states is not None:
-        adata_full.obs["state"] = adata_full.obs.index.map(
-            neftel_states.set_index("cell_id")["state"]
-        )
+        neftel_mask = adata_full.obs["Cohort"] == "Neftel"
+        n_neftel_in_full = int(neftel_mask.sum())
+        if n_neftel_in_full == len(neftel_states):
+            adata_full.obs.loc[neftel_mask, "state"] = neftel_states["state"].to_numpy()
+        else:
+            print(f"[Warning] Neftel cell count changed during QC filtering "
+                  f"({len(neftel_states)} pre-QC vs {n_neftel_in_full} post-QC); "
+                  f"re-deriving state alignment by index instead of position.")
+            state_lookup = neftel_states["state"]
+            adata_full.obs["state"] = adata_full.obs_names.map(state_lookup)
         n_with_state = adata_full.obs["state"].notna().sum()
         print(f"[State Rejoin] state resolved for {n_with_state}/{adata_full.n_obs} cells "
-              f"(non-Neftel cells correctly have no state).")
+              f"(non-Neftel rows correctly have no state).")
 
-    # NEW: join clinical metadata (IDH status, TCGA bulk subtype) BEFORE HVG
-    # selection so downstream pilot stratification has something to work with.
     adata_full = merge_clinical_metadata(adata_full, raw_dir)
 
     n_top_genes = qc_cfg["hvg_selection"]["n_top_genes"]
@@ -368,9 +287,11 @@ def build_full_cohort(
     full_out_path = os.path.join(output_dir, "full_cohort_neftel_tcga.h5ad")
     adata_full.write(full_out_path)
 
-    print(f"\n[Saved] Successfully compiled full dataset to: {full_out_path}")
+    print(f"\n[Saved] Successfully compiled full INTERNAL cohort (Neftel + TCGA) to: {full_out_path}")
     print(f"Total cells/samples: {adata_full.n_obs}, Total genes: {adata_full.n_vars}")
     print(f"Cohort Breakdown:\n{adata_full.obs['Cohort'].value_counts()}")
+    print("\nCGGA was NOT included -- it is preprocessed separately in Week 4 "
+          "as the untouched external validation cohort.")
 
 
 if __name__ == "__main__":

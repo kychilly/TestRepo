@@ -52,7 +52,7 @@ def cohort_level_audit(adata, output_dir: Path, seed: int) -> dict[str, Any]:
         "figure": str(figure_path),
         "interpretation": (
             "Cohort-level separation here reflects Neftel (single-cell) vs "
-            "CGGA/TCGA (bulk RNA-seq) being different assay types, not "
+            "TCGA (bulk RNA-seq) being different assay types, not "
             "purely a donor/technical batch effect within one assay. "
             "Report as an assay-type effect, not conflated with the "
             "within-cohort donor/state finding below."
