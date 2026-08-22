@@ -311,6 +311,19 @@ def run_internal_cohort(
     if not target_states:
         raise ValueError("target_states must be non-empty")
     baseline_logits = {state: _decision_column(probe, embeddings, state) for state in target_states}
+    # Mask ranking is a training-only operation. Running every masked gene
+    # through validation/test cells wastes most of the A100 budget and creates
+    # an unnecessary opportunity to touch held-out rows. Keep the unmasked
+    # embedding over all cells for final predictions, but restrict every
+    # perturbation pass to training patients.
+    train_indices = np.flatnonzero(train_mask)
+    train_states = states[train_indices]
+    ranking_prepared = PreparedInputs(
+        prepared.values[train_indices], prepared.token_ids, prepared.report
+    )
+    ranking_embedding_samples = (
+        embedding_samples[:, train_indices] if embedding_samples is not None else None
+    )
     saved_rankings = _rows(ranking_path) if ranking_path.is_file() else []
     ranking_map = {(str(row["state"]), str(row["gene"])): dict(row) for row in saved_rankings}
     completed_genes = {
@@ -320,9 +333,11 @@ def run_internal_cohort(
     for gene in final_genes:
         if gene in completed_genes:
             continue
-        masked_values = prepared.values.copy()
+        masked_values = ranking_prepared.values.copy()
         masked_values[:, retained_index[gene]] = 0.0
-        masked_prepared = PreparedInputs(masked_values, prepared.token_ids, prepared.report)
+        masked_prepared = PreparedInputs(
+            masked_values, ranking_prepared.token_ids, ranking_prepared.report
+        )
         masked_embeddings, _, _, masked_samples = _infer(
             adapter, masked_prepared, config, ablation.mc_dropout
         )
@@ -330,7 +345,8 @@ def run_internal_cohort(
         for state in target_states:
             masked_logits = _decision_column(probe, masked_embeddings, state)
             cell_rows: list[dict[str, Any]] = []
-            for index in np.flatnonzero(train_mask & (states == state)):
+            for local_index in np.flatnonzero(train_states == state):
+                index = train_indices[local_index]
                 cell_rows.append(
                     {
                         "gene": gene,
@@ -338,7 +354,7 @@ def run_internal_cohort(
                         "cell_id": str(data.obs_names[index]),
                         "state": state,
                         "baseline_logit": float(baseline_logits[state][index]),
-                        "masked_logit": float(masked_logits[index]),
+                        "masked_logit": float(masked_logits[local_index]),
                     }
                 )
             aggregated = aggregate_mask_delta_scores(cell_rows, state=state)
@@ -346,16 +362,16 @@ def run_internal_cohort(
                 row = dict(aggregated[0])
                 if (
                     ablation.mc_dropout
-                    and embedding_samples is not None
+                    and ranking_embedding_samples is not None
                     and masked_samples is not None
                 ):
                     sample_deltas = []
-                    for sample_index in range(embedding_samples.shape[0]):
+                    for sample_index in range(ranking_embedding_samples.shape[0]):
                         base_sample = _decision_column(
-                            probe, embedding_samples[sample_index], state
+                            probe, ranking_embedding_samples[sample_index], state
                         )
                         masked_sample = _decision_column(probe, masked_samples[sample_index], state)
-                        selected = np.flatnonzero(train_mask & (states == state))
+                        selected = np.flatnonzero(train_states == state)
                         sample_deltas.append(
                             float(np.mean(base_sample[selected] - masked_sample[selected]))
                         )

@@ -1,0 +1,148 @@
+{
+  "blockers": [],
+  "code_contract_ready": true,
+  "full_scientific_matrix_ready": false,
+  "grn": {
+    "held_out_edges": 1,
+    "train_edges": 11,
+    "train_holdout_overlap": 0
+  },
+  "internal_cohort": {
+    "all_required_genes_present": true,
+    "cells": 6576,
+    "counts_layer_sampled_integer_like": false,
+    "genes": 17268,
+    "patients": 27,
+    "required_genes_present": [
+      "EGFR",
+      "IDH1",
+      "RPRM",
+      "TP53"
+    ],
+    "state_counts": {
+      "AC": 1929,
+      "MES": 1614,
+      "NPC": 1986,
+      "OPC": 1047
+    }
+  },
+  "next_actions": [
+    "Run the local CPU confirmation commands in docs/team_week2_to_week4_execution.md.",
+    "Run scripts/bootstrap_a100.sh and the A100 preflight before starting scGPT.",
+    "Add independent protein evidence before expecting validator-on conditions to complete."
+  ],
+  "patient_split": {
+    "overlap": false,
+    "test_patients": 6,
+    "train_patients": 15,
+    "validation_patients": 6
+  },
+  "required_paths": {
+    "candidate_genes": {
+      "bytes": 410201,
+      "exists": true,
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/data/pilot/internal_candidate_universe.jsonl"
+    },
+    "checkpoint": {
+      "bytes": 205385258,
+      "exists": true,
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/artifacts/models/scGPT_pancancer/best_model.pt"
+    },
+    "combined_external": {
+      "bytes": 1050639108,
+      "exists": true,
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/data/import_20260820/TP53 Dataset(preprocessed)/processed/analysis_ready_combined.h5ad"
+    },
+    "cross_cohort_verdicts": {
+      "bytes": 76565,
+      "exists": true,
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/data/pilot/stage34_verdicts_current.csv"
+    },
+    "grn_holdout": {
+      "bytes": 143,
+      "exists": true,
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_adit_holdout_check.csv"
+    },
+    "grn_train": {
+      "bytes": 499,
+      "exists": true,
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv"
+    },
+    "internal_h5ad": {
+      "bytes": 1818686988,
+      "exists": true,
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/data/import_20260820/TP53 Dataset(preprocessed)/processed/neftel_analysis_cohort.h5ad"
+    },
+    "model_args": {
+      "bytes": 1086,
+      "exists": true,
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/artifacts/models/scGPT_pancancer/args.json"
+    },
+    "patient_split": {
+      "bytes": 342,
+      "exists": true,
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/splits/combined_full_cohort_neftel_patient_splits.json"
+    },
+    "stage34_report": {
+      "bytes": 1087141,
+      "exists": true,
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/reports/stage34/combined_full_candidate_run.json"
+    },
+    "tcga": {
+      "bytes": 1754151,
+      "exists": true,
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/data/import_20260820/TP53 Dataset(preprocessed)/pilot/tcga_pilot_subsample.h5ad"
+    },
+    "validator_outcomes": {
+      "bytes": 554611,
+      "exists": true,
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/data/pilot/week3_validator_outcomes.jsonl"
+    },
+    "vocabulary": {
+      "bytes": 1317639,
+      "exists": true,
+      "path": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research/artifacts/models/scGPT_pancancer/vocab.json"
+    }
+  },
+  "status": "completed",
+  "validator": {
+    "bucket_counts": {
+      "abstain": 2454,
+      "data_deficient": 49
+    },
+    "confirmed_gene_count": 0,
+    "confirmed_genes": [],
+    "rows": 2503
+  },
+  "warnings": [
+    "H5AD layers['counts'] contains sampled non-integer values; scVI is data-blocked",
+    "Validator evidence has zero confirmed genes; validator-on arms are data-blocked",
+    "GRN holdout has fewer than 20 unique positive edges"
+  ],
+  "week3_design": {
+    "conditions": [
+      "all_on",
+      "validator_off",
+      "grn_off",
+      "mc_dropout_off"
+    ],
+    "data_blocked_conditions": [
+      "all_on",
+      "grn_off",
+      "mc_dropout_off"
+    ],
+    "expected_runnable_runs": 3,
+    "expected_total_runs": 12,
+    "gpu_runnable_conditions": [
+      "validator_off"
+    ],
+    "mc_dropout_passes": 20,
+    "seeds": [
+      17,
+      42,
+      101
+    ],
+    "token_length": 1200
+  },
+  "week4_verdict_rows": 2503
+}

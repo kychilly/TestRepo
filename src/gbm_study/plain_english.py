@@ -22,7 +22,7 @@ def _items(value: Any) -> list[str]:
 def explain(payload: Mapping[str, Any], *, source: str) -> str:
     """Explain status, meaning, concerns, and actions without technical shorthand."""
     status = str(payload.get("status", "unknown"))
-    if status == "completed":
+    if status in {"completed", "passed"}:
         happened = "The job finished and saved its result."
     elif status == "completed_with_blockers":
         happened = "The job did the parts it could do, but some parts could not run."
@@ -55,6 +55,9 @@ def explain(payload: Mapping[str, Any], *, source: str) -> str:
     for key, label in (
         ("completed_runs", "Runs that finished"),
         ("blocked_runs", "Runs that stopped"),
+        ("file_count", "Required files found"),
+        ("verified_file_count", "Files whose size and fingerprint matched"),
+        ("total_bytes", "Total required bytes"),
         ("seeds", "Seeds"),
         ("checkpoint_sha256", "Checkpoint fingerprint"),
         ("vocabulary_sha256", "Vocabulary fingerprint"),
@@ -158,9 +161,12 @@ def explain(payload: Mapping[str, Any], *, source: str) -> str:
         important.append("The JSON file is the exact machine-readable record.")
 
     concerns = _items(payload.get("warnings")) + reasons
+    concerns += _items(payload.get("limitations"))
+    concerns += [f"Missing: {item}" for item in _items(payload.get("missing"))]
+    concerns += [f"Fingerprint mismatch: {item}" for item in _items(payload.get("mismatches"))]
     if payload.get("state_label_warning"):
         concerns.append(str(payload["state_label_warning"]))
-    if not concerns and status == "completed":
+    if not concerns and status in {"completed", "passed"}:
         concerns = ["No blocking problem was recorded in this file."]
     elif not concerns:
         concerns = ["Read the JSON for details before using this result."]

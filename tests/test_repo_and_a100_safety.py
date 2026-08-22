@@ -53,3 +53,30 @@ def test_a100_preflight_fails_closed_for_unresolved_template(tmp_path: Path) -> 
     assert result["status"] == "blocked"
     assert any("Hugging Face" in blocker for blocker in result["blockers"])
     json.dumps(result)
+
+
+def test_a100_asset_verification_detects_transfer_corruption(tmp_path: Path) -> None:
+    from scripts.build_a100_asset_bundle import sha256, verify_assets
+
+    asset = tmp_path / "data" / "asset.bin"
+    asset.parent.mkdir()
+    asset.write_bytes(b"expected")
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "files": {
+                    "data/asset.bin": {
+                        "bytes": asset.stat().st_size,
+                        "sha256": sha256(asset),
+                    }
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert verify_assets(tmp_path, manifest)["status"] == "passed"
+    asset.write_bytes(b"corrupted")
+    result = verify_assets(tmp_path, manifest)
+    assert result["status"] == "blocked"
+    assert result["mismatches"]

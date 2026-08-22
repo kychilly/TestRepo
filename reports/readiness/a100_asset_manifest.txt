@@ -1,0 +1,21 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/readiness/a100_asset_manifest.json
+
+WHAT HAPPENED
+- The job finished and saved its result.
+
+WHY
+- The JSON file did not give a special reason.
+
+WHAT IS IMPORTANT
+- Required files found: 12
+- Total required bytes: 3078826591
+
+WHAT IS CONCERNING
+- These assets do not supply CGGA AC/MES/NPC/OPC truth.
+- The current validator outcomes contain zero confirmed genes.
+- The GRN holdout is a one-positive-edge software check, not a paper-ready benchmark.
+
+NEXT ACTIONS
+- Transfer the bundle or these exact files to the same relative paths on JupyterHub.
+- Run this script with --verify-manifest on JupyterHub before starting the A100 job.

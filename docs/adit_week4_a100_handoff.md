@@ -50,6 +50,28 @@ for the Neftel-only scGPT input.
 
 ## Inputs that must be present on JupyterHub
 
+The data and checkpoint files below are Git-ignored. A Git push or clone does
+not transfer them. Before requesting the A100, create an exact transfer
+manifest (and, if useful, one uncompressed tar bundle) on the source machine:
+
+```bash
+python scripts/build_a100_asset_bundle.py
+
+# Optional single-file transfer bundle (about 3 GB before filesystem overhead):
+python scripts/build_a100_asset_bundle.py \
+  --bundle /path/with/enough/space/adit_week4_a100_assets.tar
+```
+
+Extract the optional bundle from the JupyterHub repository root:
+
+```bash
+tar -xf /path/to/adit_week4_a100_assets.tar
+python scripts/build_a100_asset_bundle.py \
+  --verify-manifest reports/readiness/a100_asset_manifest.json
+```
+
+Do not start the GPU job unless verification reports `status: passed`.
+
 Copy or clone the repository so these paths exist relative to its root:
 
 ```text
@@ -86,15 +108,16 @@ export HF_DATASETS_CACHE="$HF_HOME/datasets"
 export TRANSFORMERS_CACHE="$HF_HOME/transformers"
 
 nvidia-smi
-python scripts/a100_preflight.py \
+# Phase A: preflight, environment capture, GPU plan, and benchmark only.
+python scripts/run_a100_week3.py \
   --config config/model_a100_local.yaml \
   --scratch "$GBM_A100_SCRATCH" \
-  --output "$GBM_PERSISTENT_OUTPUT_DIR/preflight.json"
+  --results "$GBM_PERSISTENT_OUTPUT_DIR" \
+  --session-id adit-week3-a100
 
-python scripts/benchmark_scgpt.py \
-  --config config/model_a100_local.yaml \
-  --output "$GBM_PERSISTENT_OUTPUT_DIR/scgpt_benchmark.json"
+# Inspect adit-week3-a100/scgpt_benchmark.json before starting the long matrix.
 
+# Phase B: same session and settings; completed setup stages are skipped.
 python scripts/run_a100_week3.py \
   --config config/model_a100_local.yaml \
   --scratch "$GBM_A100_SCRATCH" \
@@ -105,9 +128,48 @@ python scripts/run_a100_week3.py \
   --week3-output "$GBM_PERSISTENT_OUTPUT_DIR/adit-week3-a100/experiments"
 ```
 
+The first orchestrator command runs preflight, environment capture, GPU
+planning, and the 1,000-cell benchmark. The second command reuses those stages
+and starts the experiment matrix. Do not run the standalone preflight and
+benchmark first unless diagnosing a failure.
+
 Rerun the final command unchanged after interruption. The manifest skips
 finished stages; each experiment reuses its embedding checkpoint and skips
 genes already present in `ranking_checkpoint.jsonl`.
+
+## Experiments that must receive a fair A100 run
+
+Run these in this order; do not skip the benchmark and do not call a blocked
+artifact a result:
+
+1. The 1,000-cell scGPT benchmark. Record throughput, GPU time, peak memory,
+   checkpoint/vocabulary hashes, and the projected full-matrix cost.
+2. The full unmasked scGPT internal-cohort embedding pass for seeds 17, 42,
+   and 101. Save embeddings and held-out cell-state predictions.
+3. MC dropout with 20 inference passes for each runnable MC-enabled arm. Save
+   embedding mean, variance, per-pass timings, and the measured multiplier.
+4. Full candidate-gene mask ranking for every runnable arm. Mask inference is
+   restricted to training patients; test patients are used only for final
+   prediction metrics. Resume the same command until every candidate is in the
+   ranking checkpoint.
+5. The one-variable-at-a-time matrix on identical folds/seeds:
+   `all_on`, `validator_off`, `grn_off`, and `mc_dropout_off`. With the current
+   zero-confirmed-gene evidence, only `validator_off` can finish; rerun the
+   same matrix after valid protein evidence makes validator-on arms runnable.
+6. CellFM and Geneformer only if the measured timing selector chooses the
+   three-backbone branch. With the present 2,503-gene masking workload it is
+   expected to select the prespecified scGPT-only Phase 1 branch.
+
+These tasks do not need scarce A100 time and should be run afterward on CPU:
+
+- Evaluate completed prediction files with `eval.py` and preserve bootstrap
+  intervals.
+- Run Stage 3/4, the shuffled-validator comparison, coverage audit, and GRN
+  sanity check after new evidence arrives.
+- Run `scripts/run_cross_cohort.py` for the patient-level IDH endpoint.
+- Summarize the confirmed-versus-unconfirmed internal-to-external drop. If the
+  confirmed set is empty or does not beat the shuffled control, report
+  `no_result` instead of a headline claim.
 
 ## Evidence needed from teammates before all arms can finish
 
