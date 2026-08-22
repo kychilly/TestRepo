@@ -1,0 +1,24 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: results/full_data_audit/current_neftel/donor_batch_audit.json
+
+WHAT HAPPENED
+- The job finished and saved its result.
+
+WHY
+- The JSON file did not give a special reason.
+
+WHAT IS IMPORTANT
+- 2D PCA: donor silhouette=-0.20666596293449402; state silhouette=0.04967091232538223
+- 20D PCA: donor silhouette=0.15089312195777893; state silhouette=0.07770141214132309
+- Cells measured: 6576
+- Donors measured: 27
+- State groups measured: 4
+- Batch-effect conclusion: donor explains more separation than available cell-assignment labels
+
+WHAT IS CONCERNING
+- No blocking problem was recorded in this file.
+
+NEXT ACTIONS
+- Keep Harmony as the prespecified batch-corrected baseline.
+- Use the same Neftel patient split for every model arm.
+- Do not describe this PCA audit as a scGPT or Week 4 model result.

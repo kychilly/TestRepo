@@ -100,6 +100,26 @@ def explain(payload: Mapping[str, Any], *, source: str) -> str:
                 important.append(f"{name}: {value}")
     if payload.get("scientific_note"):
         important.append(str(payload["scientific_note"]))
+    silhouette = payload.get("silhouette")
+    if isinstance(silhouette, Mapping):
+        for dimension_key, dimension_label in (
+            ("two_dimensions", "2D PCA"),
+            ("twenty_dimensions", "20D PCA"),
+        ):
+            scores = silhouette.get(dimension_key)
+            if isinstance(scores, Mapping):
+                important.append(
+                    f"{dimension_label}: donor silhouette={scores.get('donor')}; "
+                    f"state silhouette={scores.get('state')}"
+                )
+    for key, label in (
+        ("n_cells", "Cells measured"),
+        ("n_donors", "Donors measured"),
+        ("n_cell_assignment_groups", "State groups measured"),
+        ("batch_risk_interpretation", "Batch-effect conclusion"),
+    ):
+        if key in payload:
+            important.append(f"{label}: {payload[key]}")
     bucket_counts = payload.get("bucket_counts")
     if isinstance(bucket_counts, Mapping):
         important.append(
@@ -138,6 +158,8 @@ def explain(payload: Mapping[str, Any], *, source: str) -> str:
         important.append("The JSON file is the exact machine-readable record.")
 
     concerns = _items(payload.get("warnings")) + reasons
+    if payload.get("state_label_warning"):
+        concerns.append(str(payload["state_label_warning"]))
     if not concerns and status == "completed":
         concerns = ["No blocking problem was recorded in this file."]
     elif not concerns:

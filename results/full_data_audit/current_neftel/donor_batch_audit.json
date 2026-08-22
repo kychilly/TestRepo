@@ -1,0 +1,25 @@
+{
+  "batch_risk_interpretation": "donor explains more separation than available cell-assignment labels",
+  "n_cell_assignment_groups": 4,
+  "n_cells": 6576,
+  "n_donors": 27,
+  "n_hvg": 2003,
+  "next_actions": [
+    "Keep Harmony as the prespecified batch-corrected baseline.",
+    "Use the same Neftel patient split for every model arm.",
+    "Do not describe this PCA audit as a scGPT or Week 4 model result."
+  ],
+  "silhouette": {
+    "twenty_dimensions": {
+      "donor": 0.15089312195777893,
+      "state": 0.07770141214132309
+    },
+    "two_dimensions": {
+      "donor": -0.20666596293449402,
+      "state": 0.04967091232538223
+    }
+  },
+  "state_column": "derived_state",
+  "state_label_warning": null,
+  "status": "completed"
+}

@@ -59,8 +59,10 @@ def run_audit(path: Path, output: Path, *, seed: int = 17) -> dict[str, Any]:
             "reason": "Donor and cell-assignment labels need at least two groups",
         }
     embedding = PCA(n_components=20, random_state=seed).fit_transform(matrix)
-    donor_silhouette = float(silhouette_score(embedding, donor))
-    state_silhouette = float(silhouette_score(embedding, cell_assignment))
+    donor_silhouette_20d = float(silhouette_score(embedding, donor))
+    state_silhouette_20d = float(silhouette_score(embedding, cell_assignment))
+    donor_silhouette_2d = float(silhouette_score(embedding[:, :2], donor))
+    state_silhouette_2d = float(silhouette_score(embedding[:, :2], cell_assignment))
     output.mkdir(parents=True, exist_ok=True)
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
     for axis, labels, title in (
@@ -82,7 +84,7 @@ def run_audit(path: Path, output: Path, *, seed: int = 17) -> dict[str, Any]:
     plt.close(fig)
     risk = (
         "donor explains more separation than available cell-assignment labels"
-        if donor_silhouette > state_silhouette
+        if donor_silhouette_20d > state_silhouette_20d
         else "available cell-assignment labels explain equal or more separation than donor"
     )
     result = {
@@ -91,7 +93,16 @@ def run_audit(path: Path, output: Path, *, seed: int = 17) -> dict[str, Any]:
         "n_hvg": int(hvg.sum()),
         "n_donors": int(len(set(donor))),
         "n_cell_assignment_groups": int(len(set(cell_assignment))),
-        "silhouette": {"donor": donor_silhouette, "cell_assignment_proxy": state_silhouette},
+        "silhouette": {
+            "two_dimensions": {
+                "donor": donor_silhouette_2d,
+                "state": state_silhouette_2d,
+            },
+            "twenty_dimensions": {
+                "donor": donor_silhouette_20d,
+                "state": state_silhouette_20d,
+            },
+        },
         "batch_risk_interpretation": risk,
         "state_column": state_key,
         "state_label_warning": (
@@ -99,6 +110,11 @@ def run_audit(path: Path, output: Path, *, seed: int = 17) -> dict[str, Any]:
             if state_key == "derived_state"
             else "CellAssignment is only a proxy, not the agreed AC/MES/NPC/OPC state label."
         ),
+        "next_actions": [
+            "Keep Harmony as the prespecified batch-corrected baseline.",
+            "Use the same Neftel patient split for every model arm.",
+            "Do not describe this PCA audit as a scGPT or Week 4 model result.",
+        ],
     }
     write_json_with_explanation(output / "donor_batch_audit.json", result)
     return result
