@@ -1,9 +1,22 @@
 # Adit Week 4 A100 handoff
 
-This file is the authoritative handoff after merging `origin/jeffrey-week34`
-into `adit-week34`. It separates code readiness from scientific completion.
+This file is the authoritative handoff after re-pulling
+`origin/jeffrey-week34` commit `6d1842d` into `week34-code` at merge commit
+`93d7fd7`. It separates code readiness from scientific completion.
 
 ## What Jeffrey's merge establishes
+
+Jeffrey's latest correction removes CGGA from his internal Neftel+TCGA
+preprocessing/audit. That is accepted: CGGA remains external and is processed
+only by the frozen Week 4 external-cohort builder. His refreshed mixed-assay
+audit contains 6,576 Neftel cells plus 160 TCGA bulk samples and reports cohort
+silhouette `0.5098`; within Neftel, the 20D donor/state scores are `0.1467` and
+`0.0793`. The cohort score is an assay-type comparison and is not a scGPT
+metric.
+
+The latest Jeffrey commit did not change Adit's configured Neftel H5AD,
+patient split, checkpoint, candidate list, validator outcomes, or GRN files.
+Therefore it does not change the runnable A100 arm count.
 
 The donor/batch conclusion reproduces on the exact Neftel H5AD used by Adit:
 
@@ -37,7 +50,8 @@ for the Neftel-only scGPT input.
 
 ## Current completion state
 
-- Repository quality gate: complete (`98` tests pass).
+- Repository quality gate: complete (`99` tests pass after reconciling the
+  re-pulled preprocessing/audit entry points).
 - scGPT/MC-dropout implementation and resumable checkpoints: code complete.
 - Local Adit Week 3 scientific runs: not complete. The existing manifest has
   `0/12` completed because it was run without CUDA.
@@ -49,6 +63,13 @@ for the Neftel-only scGPT input.
   patient-level IDH analysis, not a scGPT external-state result.
 
 ## Inputs that must be present on JupyterHub
+
+Use the integrated branch, not the older Adit-only branch:
+
+```bash
+git checkout week34-code
+git pull origin week34-code
+```
 
 The data and checkpoint files below are Git-ignored. A Git push or clone does
 not transfer them. Before requesting the A100, create an exact transfer
