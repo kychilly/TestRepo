@@ -57,6 +57,8 @@ def explain(payload: Mapping[str, Any], *, source: str) -> str:
         ("blocked_runs", "Runs that stopped"),
         ("file_count", "Required files found"),
         ("verified_file_count", "Files whose size and fingerprint matched"),
+        ("required_file_count", "Files required by the A100 contract"),
+        ("manifest_file_count", "Files listed in the supplied manifest"),
         ("total_bytes", "Total required bytes"),
         ("seeds", "Seeds"),
         ("checkpoint_sha256", "Checkpoint fingerprint"),
@@ -164,6 +166,14 @@ def explain(payload: Mapping[str, Any], *, source: str) -> str:
     concerns += _items(payload.get("limitations"))
     concerns += [f"Missing: {item}" for item in _items(payload.get("missing"))]
     concerns += [f"Fingerprint mismatch: {item}" for item in _items(payload.get("mismatches"))]
+    concerns += [
+        f"Trusted manifest is missing required entry: {item}"
+        for item in _items(payload.get("manifest_missing_entries"))
+    ]
+    concerns += [
+        f"Trusted manifest contains unexpected entry: {item}"
+        for item in _items(payload.get("manifest_unexpected_entries"))
+    ]
     if payload.get("state_label_warning"):
         concerns.append(str(payload["state_label_warning"]))
     if not concerns and status in {"completed", "passed"}:

@@ -56,27 +56,53 @@ def test_a100_preflight_fails_closed_for_unresolved_template(tmp_path: Path) -> 
 
 
 def test_a100_asset_verification_detects_transfer_corruption(tmp_path: Path) -> None:
-    from scripts.build_a100_asset_bundle import sha256, verify_assets
+    from scripts.build_a100_asset_bundle import ASSET_PATHS, sha256, verify_assets
 
-    asset = tmp_path / "data" / "asset.bin"
-    asset.parent.mkdir()
-    asset.write_bytes(b"expected")
+    files: dict[str, dict[str, int | str]] = {}
+    for relative in ASSET_PATHS:
+        asset = tmp_path / relative
+        asset.parent.mkdir(parents=True, exist_ok=True)
+        asset.write_bytes(relative.encode("utf-8"))
+        files[relative] = {"bytes": asset.stat().st_size, "sha256": sha256(asset)}
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(json.dumps({"files": files}), encoding="utf-8")
+    assert verify_assets(tmp_path, manifest)["status"] == "passed"
+    asset = tmp_path / ASSET_PATHS[0]
+    asset.write_bytes(b"corrupted")
+    result = verify_assets(tmp_path, manifest)
+    assert result["status"] == "blocked"
+    assert result["mismatches"]
+
+
+def test_a100_asset_verification_rejects_incomplete_manifest(tmp_path: Path) -> None:
+    from scripts.build_a100_asset_bundle import verify_assets
+
     manifest = tmp_path / "manifest.json"
     manifest.write_text(
         json.dumps(
             {
                 "files": {
-                    "data/asset.bin": {
-                        "bytes": asset.stat().st_size,
-                        "sha256": sha256(asset),
+                    "splits/combined_full_cohort_neftel_patient_splits.json": {
+                        "bytes": 0,
+                        "sha256": "",
                     }
                 }
             }
         ),
         encoding="utf-8",
     )
-    assert verify_assets(tmp_path, manifest)["status"] == "passed"
-    asset.write_bytes(b"corrupted")
     result = verify_assets(tmp_path, manifest)
     assert result["status"] == "blocked"
-    assert result["mismatches"]
+    assert len(result["manifest_missing_entries"]) == 11
+
+
+def test_incomplete_bundle_generation_preserves_trusted_manifest(tmp_path: Path) -> None:
+    from scripts.build_a100_asset_bundle import main
+
+    manifest = tmp_path / "trusted.json"
+    trusted = '{"trusted": true}\n'
+    manifest.write_text(trusted, encoding="utf-8")
+    return_code = main(["--root", str(tmp_path), "--manifest", str(manifest)])
+    assert return_code == 2
+    assert manifest.read_text(encoding="utf-8") == trusted
+    assert (tmp_path / "trusted_generation_error.json").is_file()

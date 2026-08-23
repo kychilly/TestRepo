@@ -83,6 +83,26 @@ python scripts/build_a100_asset_bundle.py \
   --bundle /path/with/enough/space/adit_week4_a100_assets.tar
 ```
 
+On Windows PowerShell, the complete source machine command must be entered on
+one line:
+
+```powershell
+py scripts\build_a100_asset_bundle.py --bundle "C:\Users\YOUR_NAME\Desktop\adit_week4_a100_assets.tar"
+```
+
+If split across lines, PowerShell requires a trailing backtick. `--bundle`
+cannot be entered as a separate command:
+
+```powershell
+py scripts\build_a100_asset_bundle.py `
+  --bundle "C:\Users\YOUR_NAME\Desktop\adit_week4_a100_assets.tar"
+```
+
+Bundle creation is successful only when the output says `status: completed`,
+`file_count: 12`, `missing: []`, and prints a non-null `bundle` path/hash. A
+machine reporting `file_count: 1` must receive the completed bundle from the
+source machine; it cannot manufacture the eleven missing ignored assets.
+
 Extract the optional bundle from the JupyterHub repository root:
 
 ```bash

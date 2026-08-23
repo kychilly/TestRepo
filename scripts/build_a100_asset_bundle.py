@@ -73,6 +73,10 @@ def verify_assets(root: Path, manifest_path: Path) -> dict[str, Any]:
     expected_files = expected.get("files")
     if not isinstance(expected_files, dict):
         raise ValueError("Asset manifest must contain a files object")
+    required_paths = set(ASSET_PATHS)
+    manifest_paths = {str(path) for path in expected_files}
+    manifest_missing_entries = sorted(required_paths - manifest_paths)
+    manifest_unexpected_entries = sorted(manifest_paths - required_paths)
     missing: list[str] = []
     mismatches: list[str] = []
     verified: list[str] = []
@@ -96,17 +100,33 @@ def verify_assets(root: Path, manifest_path: Path) -> dict[str, Any]:
         else:
             verified.append(str(relative))
     return {
-        "status": "passed" if not missing and not mismatches else "blocked",
+        "status": (
+            "passed"
+            if not missing
+            and not mismatches
+            and not manifest_missing_entries
+            and not manifest_unexpected_entries
+            else "blocked"
+        ),
         "scope": "byte-for-byte A100 asset verification",
         "manifest": str(manifest_path),
+        "required_file_count": len(ASSET_PATHS),
+        "manifest_file_count": len(manifest_paths),
+        "manifest_missing_entries": manifest_missing_entries,
+        "manifest_unexpected_entries": manifest_unexpected_entries,
         "verified_files": verified,
         "verified_file_count": len(verified),
         "missing": missing,
         "mismatches": mismatches,
         "next_actions": (
             ["Proceed to scripts/a100_preflight.py."]
-            if not missing and not mismatches
-            else ["Re-transfer every missing or mismatched file, then verify again."]
+            if not missing
+            and not mismatches
+            and not manifest_missing_entries
+            and not manifest_unexpected_entries
+            else [
+                "Restore the trusted 12-file manifest, re-transfer every missing or mismatched file, then verify again."
+            ]
         ),
     }
 
@@ -149,10 +169,22 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0 if result["status"] == "passed" else 2
     result = inspect_assets(root)
+    if result["status"] != "completed":
+        # Never overwrite the trusted complete manifest with an incomplete
+        # inventory. Otherwise a later verification can incorrectly pass by
+        # checking only the files that happened to exist on the broken host.
+        failure_path = args.manifest.with_name(f"{args.manifest.stem}_generation_error.json")
+        result["manifest_not_overwritten"] = str(args.manifest)
+        result["failure_report"] = str(failure_path)
+        result["next_actions"] = [
+            "Obtain the complete bundle from a source machine that has all 12 assets.",
+            "Do not use this incomplete machine to generate the trusted manifest.",
+        ]
+        write_json_with_explanation(failure_path, result)
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 2
     write_json_with_explanation(args.manifest, result)
     if args.bundle is not None:
-        if result["status"] != "completed":
-            raise SystemExit("Cannot package an incomplete A100 asset set")
         write_bundle(root, args.bundle, result)
         result["bundle"] = {
             "path": str(args.bundle),

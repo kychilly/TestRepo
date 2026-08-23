@@ -1,0 +1,19 @@
+PLAIN-ENGLISH EXPLANATION
+JSON file: reports/readiness/a100_bundle_end_to_end_verification.json
+
+WHAT HAPPENED
+- The job finished and saved its result.
+
+WHY
+- The JSON file did not give a special reason.
+
+WHAT IS IMPORTANT
+- Files whose size and fingerprint matched: 12
+- Files required by the A100 contract: 12
+- Files listed in the supplied manifest: 12
+
+WHAT IS CONCERNING
+- No blocking problem was recorded in this file.
+
+NEXT ACTIONS
+- Proceed to scripts/a100_preflight.py.

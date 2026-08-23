@@ -1,0 +1,29 @@
+{
+  "manifest": "reports/readiness/a100_asset_manifest.json",
+  "manifest_file_count": 12,
+  "manifest_missing_entries": [],
+  "manifest_unexpected_entries": [],
+  "mismatches": [],
+  "missing": [],
+  "next_actions": [
+    "Proceed to scripts/a100_preflight.py."
+  ],
+  "required_file_count": 12,
+  "scope": "byte-for-byte A100 asset verification",
+  "status": "passed",
+  "verified_file_count": 12,
+  "verified_files": [
+    "artifacts/models/scGPT_pancancer/args.json",
+    "artifacts/models/scGPT_pancancer/best_model.pt",
+    "artifacts/models/scGPT_pancancer/vocab.json",
+    "data/import_20260820/TP53 Dataset(preprocessed)/pilot/tcga_pilot_subsample.h5ad",
+    "data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_adit_holdout_check.csv",
+    "data/import_20260820/TP53 Dataset(preprocessed)/prior/grn_pilot_train_prior.csv",
+    "data/import_20260820/TP53 Dataset(preprocessed)/processed/analysis_ready_combined.h5ad",
+    "data/import_20260820/TP53 Dataset(preprocessed)/processed/neftel_analysis_cohort.h5ad",
+    "data/pilot/internal_candidate_universe.jsonl",
+    "data/pilot/stage34_verdicts_current.csv",
+    "data/pilot/week3_validator_outcomes.jsonl",
+    "splits/combined_full_cohort_neftel_patient_splits.json"
+  ]
+}
