@@ -1,5 +1,5 @@
 PLAIN-ENGLISH EXPLANATION
-JSON file: reports/readiness/a100_asset_manifest.json
+JSON file: reports\readiness\a100_asset_manifest.json
 
 WHAT HAPPENED
 - The job finished and saved its result.

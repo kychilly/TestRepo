@@ -1,0 +1,376 @@
+[33mcommit e28ad083cc20ffdc09b830549ee5e37cb1791653[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mweek34-code[m[33m, [m[1;31morigin/week34-code[m[33m)[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sat Aug 22 22:58:39 2026 -0500
+
+    Asset Bundle Error fixed: pending running as a test to ensure its truly fixed
+
+[33mcommit e24f09d30cb24ee784b624c9467b6e6d95c4ae56[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sat Aug 22 10:34:46 2026 -0500
+
+    Final A100 Running CHanges, ready to run
+
+[33mcommit 93d7fd7019caf7a338be66039d0f17e652724565[m
+Merge: 7868676 6d1842d
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sat Aug 22 10:25:28 2026 -0500
+
+    Week34 Merge Changes
+
+[33mcommit 6d1842d2fcca397f97e10b84eece19c0c6fd7abb[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Sat Aug 22 11:18:16 2026 -0400
+
+    removed cgga
+
+[33mcommit 78686761e5a2468d4e2ece6d4b5c1af0d3b4c593[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sat Aug 22 10:14:22 2026 -0500
+
+    FInalize A100 Changes, ready to run
+
+[33mcommit 60623ca1aea9191120d23ed0229a968d0d034f11[m[33m ([m[1;31morigin/adit-week34[m[33m)[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sat Aug 22 10:01:53 2026 -0500
+
+    Integrated Jeffreys changes, did review, ready to run with A100
+
+[33mcommit 48428a34dbd1d52039a9109fd2813c8eca467f62[m
+Merge: 8de4beb d06bb64
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sat Aug 22 09:45:41 2026 -0500
+
+    Merge branch 'jeffrey-week34' of https://github.com/adfgdartec/TP-53-Gblastoma-ML-Research into adit-week34
+
+[33mcommit 8de4beb1d2b3fe81f21ce5e8055450789cf2dd92[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Fri Aug 21 22:12:35 2026 -0500
+
+    Changes for Week 3 and Week 4
+
+[33mcommit 4ad2dd0ac597758edb65cc1b106187c2f922f500[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Fri Aug 21 08:10:05 2026 -0500
+
+    More changes for week 3-4. Please review and test
+
+[33mcommit d06bb648833d82c04c64f919ae49e4bfe165ccc1[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Fri Aug 21 04:24:28 2026 -0400
+
+    reran audit batch, results
+
+[33mcommit 86f11bee66df199763da49d598b9dcf077e04e34[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Thu Aug 20 04:20:15 2026 -0400
+
+    full gene-to-mutation table
+
+[33mcommit ddb10e1ce043d323a1e83058ee525c5cbaab6e3a[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Thu Aug 20 03:51:24 2026 -0400
+
+    forgot to document an added dataset
+
+[33mcommit db993dcbf09e6ba778cf42ed604a2d4d9e80609f[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Thu Aug 20 03:48:40 2026 -0400
+
+    full preprocessing + regenerated full splits
+
+[33mcommit b865075c81552f91f903a66d7bf9a445782eb299[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Thu Aug 20 00:37:42 2026 -0500
+
+    Initial code finished, needs review and testing
+
+[33mcommit 071e33c591a1d195312887b18938df643921a6a9[m[33m ([m[1;31morigin/week2-code[m[33m)[m
+Merge: f45d3ad ef79fe6
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Wed Aug 19 01:58:06 2026 -0500
+
+    Changes
+
+[33mcommit f45d3ad0c27651b3403da4b6f861598e0dd3009e[m
+Merge: b66324f bbc9b0d
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Wed Aug 19 01:57:14 2026 -0500
+
+    More merges
+
+[33mcommit b66324fe78f8d01ce57ba150a56c77b35b8901ff[m
+Merge: 6a82d50 ab10fdb
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Wed Aug 19 01:55:57 2026 -0500
+
+    Final Merges Week 2 Changes
+
+[33mcommit bbc9b0dec04d0d82069979a427cf842cc0b0890a[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Wed Aug 19 02:30:04 2026 -0400
+
+    stage3+4 and feasibility
+
+[33mcommit 88f4e4dc7c1f2ab058564619085be758aeb687c3[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Wed Aug 19 01:59:15 2026 -0400
+
+    baselines + evaluation for week4
+
+[33mcommit 2d1ea0a235d31d965d907b3097d62fb2a8dd6464[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Tue Aug 18 22:55:48 2026 -0400
+
+    akakakakakakakakakkaa
+
+[33mcommit 2291ca629f06ae2cf67bb3640a85a3f8d072aa79[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Tue Aug 18 22:46:06 2026 -0400
+
+    pilot subsample + mutation table new unsynthetic data with new provided datasets
+
+[33mcommit 5338240d1ae7164081531fb46cfc9f5093274da2[m
+Merge: 6a82d50 ab10fdb
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Mon Aug 17 05:32:19 2026 -0400
+
+    Merge branch 'Jeffrey-week2' into week2-code
+    
+    # Conflicts:
+    #       baseline_results/harmony_knn/run_error.json
+    #       baseline_results/scvi_probe/run_error.json
+    #       config/baselines.yaml
+    #       scripts/run_baseline.py
+    #       src/baselines/harmony_knn.py
+
+[33mcommit ab10fdb54f73531e1ff9fd42afe52328bbd9d9d4[m[33m ([m[1;31morigin/Jeffrey-week2[m[33m, [m[1;32mJeffrey-week2[m[33m)[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Mon Aug 17 05:18:34 2026 -0400
+
+    baselined evaluated
+
+[33mcommit a7e7609f2e804b41cbf77e848da7495021759cab[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Mon Aug 17 04:05:16 2026 -0400
+
+    still need eval.py
+
+[33mcommit 6a82d5064e1ba2241e0df063bebcd4ad9c5e9871[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sun Aug 16 23:07:10 2026 -0500
+
+    Week 2 Changes
+
+[33mcommit 101d7dd979ff72c3d4ea5f19e0e05a5e25ceda6e[m
+Merge: 0c59174 a0be1ad
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sun Aug 16 22:06:12 2026 -0500
+
+    Merge branch 'ishaan-week1' of https://github.com/adfgdartec/TP-53-Gblastoma-ML-Research into week2-code
+
+[33mcommit 0c59174ef32650ec3e3f4105342bf429b3a5a531[m
+Merge: 797fb1a a675c28
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sun Aug 16 22:01:06 2026 -0500
+
+    Merge
+
+[33mcommit a675c28fb26a4f3e5d9f4a4226cf5f2787f0fc9a[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Sun Aug 16 22:55:12 2026 -0400
+
+    help
+
+[33mcommit 707f87292fb09bd7e4754d1d772dd9f26f3cd777[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Sun Aug 16 20:59:49 2026 -0400
+
+    forgot paitent id in pilot subsample
+
+[33mcommit ef79fe68f9e5eb621af4a983cf3bd6825c74ae9b[m[33m ([m[1;31morigin/alexis-week2[m[33m)[m
+Author: dennya1 <37263364+dennya1@users.noreply.github.com>
+Date:   Sun Aug 16 20:01:21 2026 -0400
+
+    Add files via upload
+    
+    Used pilot_subsample.h5ad
+
+[33mcommit 8ee38eb31cdd2ccc3bf35dab553a9aae5c8c4d04[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Sun Aug 16 19:36:27 2026 -0400
+
+    synthetic mutation map
+
+[33mcommit dac43231d3e854635e3a74341da1a4d48652fb10[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Sun Aug 16 17:15:13 2026 -0400
+
+    mutation table
+
+[33mcommit 671e8ee7b7c8709f0be20b5e1759e44f137a594b[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Sun Aug 16 16:36:24 2026 -0400
+
+    test
+
+[33mcommit 797fb1ab2ed961864d9eb866c8abc485cc34c599[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sat Aug 15 14:52:58 2026 -0500
+
+    Week 2 changes that actually fix hardcoded and heavlily prevelant bugs
+
+[33mcommit 581643426ba06d34dbf893e37af16b5f4c87fdb1[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sat Aug 15 11:21:44 2026 -0500
+
+    Week 2 results
+
+[33mcommit 0f8e4172f37e99b48c82cc69ee5e17f9ae219fbb[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sat Aug 15 10:52:00 2026 -0500
+
+    Integrate Week 2 Adit pilot pipeline
+
+[33mcommit c86f63dfdc6026c6d798455151876afe25bc4ee5[m
+Merge: 8e42749 9bd9ebb
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sat Aug 15 09:57:37 2026 -0500
+
+    Merge branch 'Jeffrey-week2' of https://github.com/adfgdartec/TP-53-Gblastoma-ML-Research into adit-week2
+
+[33mcommit 9bd9ebbb45737b194390cc27cd087386be21ec38[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Sat Aug 15 03:36:17 2026 -0400
+
+    GRN test
+
+[33mcommit 8e427498907613880802785b5970cb431e42482f[m[33m ([m[1;31morigin/adit-week2[m[33m)[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Fri Aug 14 00:24:08 2026 -0500
+
+    Final fixes for week2 code
+
+[33mcommit b2c46690ea3c3e9324a9e58120555905e46d3cb1[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Tue Aug 11 05:54:47 2026 -0400
+
+    faulty table pt 2 w educated mutation guessing, fix later
+
+[33mcommit a61a905a3be0f11e29c197d9c6709152fe4b09c9[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Tue Aug 11 05:17:20 2026 -0400
+
+    faulty table created, guessed variant status, will change
+
+[33mcommit aa6f94bc95e0908a31bbcc1c93735f8499b08818[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Tue Aug 11 04:43:55 2026 -0400
+
+    Created pilot subsample
+
+[33mcommit e4230b003c454e618844dc751afe5f73d7e44212[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Tue Aug 11 04:33:44 2026 -0400
+
+    fallback method
+
+[33mcommit ae1fd3a5fdf4752c8748133f1ff912908e89ee14[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Mon Aug 10 16:20:04 2026 -0500
+
+    Added code changes for my tasks: needs team review for week 2
+
+[33mcommit a0be1ad4f18785954ab33af4484904ab95953acc[m[33m ([m[1;31morigin/ishaan-week1[m[33m)[m
+Author: senorishaan <senorishaan@gmail.com>
+Date:   Mon Aug 10 11:28:48 2026 -0700
+
+    Add tests for gene classification outcomes in validator
+    
+    This file contains tests for the validator.py module, focusing on various gene classification outcomes based on synthetic GeneRecord instances. It includes tests for different branches of the decision tree, ensuring that the classification logic behaves as expected under various conditions.
+
+[33mcommit 6c41132ff76277c1b069cbae70e611ef9a081a18[m
+Author: senorishaan <senorishaan@gmail.com>
+Date:   Mon Aug 10 11:28:06 2026 -0700
+
+    Create validator thresholds configuration file
+    
+    Added default thresholds for validator settings based on literature-informed values.
+
+[33mcommit aa0b5d34e22e4c9294a4fac13c099e0bfa2c24a8[m
+Merge: b834888 7813c5e
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Mon Aug 10 09:47:53 2026 -0500
+
+    Merge branch 'ishaan-week1' of https://github.com/adfgdartec/TP-53-Gblastoma-ML-Research into adit-week2
+
+[33mcommit 7813c5ed4dc50f3dfe88ebe97ace21a3723a519e[m
+Author: senorishaan <senorishaan@gmail.com>
+Date:   Sun Aug 9 23:09:33 2026 -0700
+
+    Add precomputed protein evidence for four gate genes
+    
+    Assembled precomputed protein evidence for four gate genes, including AlphaFold pLDDT, ESM1b variant effect scores, and ΔΔG stability scores. Documented sources and versions for each entry.
+
+[33mcommit ae5a67913da3fadb48989e8f8b70da84498981d4[m
+Author: senorishaan <senorishaan@gmail.com>
+Date:   Sun Aug 9 23:07:20 2026 -0700
+
+    Add decision tree validator for gene classification
+    
+    Implement a decision tree validator for gene mutations based on protein evidence and thresholds.
+
+[33mcommit b83488817f5cc14a587b4e6d2009ed1ffafdf614[m
+Merge: e2853a8 ff3135a
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Mon Aug 10 00:44:37 2026 -0500
+
+    Merge branch 'Jeffrey-week1' of https://github.com/adfgdartec/TP-53-Gblastoma-ML-Research into adit-week2
+
+[33mcommit ff3135a31c676488790d748af220c7d3e36e99e1[m[33m ([m[1;31morigin/Jeffrey-week1[m[33m)[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Mon Aug 10 01:42:21 2026 -0400
+
+    preprocessed dataset + visuals, dataset listed here https://drive.google.com/drive/u/0/folders/1mkmsBd-9sz1RXV4Qo4rrMyXaDokmJ7NB
+
+[33mcommit e2853a80ac2146dbb4cf950c04ea7d383e73f618[m[33m ([m[1;31morigin/week1code[m[33m)[m
+Merge: 55d8dcb 17b76de
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sun Aug 9 08:31:51 2026 -0500
+
+    Merge branch 'adit-week1' of https://github.com/adfgdartec/TP-53-Gblastoma-ML-Research into adit-week1
+
+[33mcommit 55d8dcb74284d95ce2087fa113b750a74f72e344[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sun Aug 9 08:31:06 2026 -0500
+
+    Code has passed testing with Jeffreys preproccesiing, awaiting for IShaans merge and full run through
+
+[33mcommit 17b76de5b091dae17f82c5d7c4f866ae299a5458[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Sun Aug 9 05:47:17 2026 -0400
+
+    preprocess + paitent splits added
+
+[33mcommit 1d6610f5366b57efacb226fefb7fa2a8a75cd52a[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Sun Aug 9 05:01:09 2026 -0400
+
+    data added
+
+[33mcommit 18f68278d2492f02be02b36e651c1b0931edd79a[m
+Author: kychilly <randomweebkeys@gmail.com>
+Date:   Sun Aug 9 04:13:49 2026 -0400
+
+    test commit
+
+[33mcommit 89f754e1f287f9333251dae138aecce9bd01b939[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sat Aug 8 22:55:59 2026 -0500
+
+    Code Implemented, needs Ishaan and Jeffery completeion with Ishaan run throigh, but code is imolemented
+
+[33mcommit f968e4a73e012472032f60f7bb8c271351c89373[m
+Author: Adit Rajaram <rajitadarth422@gmail.com>
+Date:   Sun Aug 2 20:33:07 2026 -0500
+
+    Needs full resources: Full Week 1 Changes for Adit

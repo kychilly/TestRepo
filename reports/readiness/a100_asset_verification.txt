@@ -1,5 +1,5 @@
 PLAIN-ENGLISH EXPLANATION
-JSON file: reports/readiness/a100_asset_verification.json
+JSON file: reports\readiness\a100_asset_verification.json
 
 WHAT HAPPENED
 - The job finished and saved its result.
@@ -9,6 +9,8 @@ WHY
 
 WHAT IS IMPORTANT
 - Files whose size and fingerprint matched: 12
+- Files required by the A100 contract: 12
+- Files listed in the supplied manifest: 12
 
 WHAT IS CONCERNING
 - No blocking problem was recorded in this file.

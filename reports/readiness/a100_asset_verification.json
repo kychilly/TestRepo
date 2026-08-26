@@ -1,10 +1,14 @@
 {
-  "manifest": "reports/readiness/a100_asset_manifest.json",
+  "manifest": "reports\\readiness\\a100_asset_manifest.json",
+  "manifest_file_count": 12,
+  "manifest_missing_entries": [],
+  "manifest_unexpected_entries": [],
   "mismatches": [],
   "missing": [],
   "next_actions": [
     "Proceed to scripts/a100_preflight.py."
   ],
+  "required_file_count": 12,
   "scope": "byte-for-byte A100 asset verification",
   "status": "passed",
   "verified_file_count": 12,

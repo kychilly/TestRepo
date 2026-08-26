@@ -1,9 +1,4 @@
 {
-  "bundle": {
-    "bytes": 3078860800,
-    "path": "C:\\Users\\jyam4\\Desktop\\adit_week4_a100_assets.tar",
-    "sha256": "b15f060208b59129765d1050195f94c09257b649ecf6041bf84d546427902051"
-  },
   "file_count": 12,
   "files": {
     "artifacts/models/scGPT_pancancer/args.json": {
@@ -65,7 +60,7 @@
     "Transfer the bundle or these exact files to the same relative paths on JupyterHub.",
     "Run this script with --verify-manifest on JupyterHub before starting the A100 job."
   ],
-  "root": "C:\\Users\\jyam4\\PycharmProjects\\TP-53-Gblastoma-ML-Researchh",
+  "root": "/Users/aditrajaram/Desktop/TP-53-Gblastoma-ML-Research",
   "scope": "exact local assets required by the Adit Week 3 A100 and Week 4 IDH runs",
   "status": "completed",
   "total_bytes": 3078826591
